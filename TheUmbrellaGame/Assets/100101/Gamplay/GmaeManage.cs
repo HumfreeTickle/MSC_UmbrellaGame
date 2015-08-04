@@ -55,6 +55,8 @@ public class GmaeManage : MonoBehaviour
 
 	private GameObject cameraController; // 
 
+	private AudioClip harpIntroClip;
+	private AudioSource harpIntroSource;
 	private Image PauseScreen; // pause screen image
 	private Image WhiteScreen;
 	private Image umbrellaGame;
@@ -131,7 +133,7 @@ public class GmaeManage : MonoBehaviour
 			controllerType = ControllerType.ConsoleContoller;
 			controllerTypeVertical = "Vertical_L";
 			controllerTypeHorizontal = "Horizontal_L";
-			print("Player 1: Connected");
+			print ("Player 1: Connected");
 
 
 		} else if (Input.GetJoystickNames ().Length == 0) {
@@ -139,9 +141,9 @@ public class GmaeManage : MonoBehaviour
 			controllerTypeVertical = "Vertical";
 			controllerTypeHorizontal = "Horizontal";
 
-		}else{
+		} else {
 			controllerType = ControllerType.NullState;
-			Debug.Log("Disconnected");
+			Debug.Log ("Disconnected");
 		}
 
 		//-------------------- For the different Scenes ---------------------------------
@@ -152,6 +154,9 @@ public class GmaeManage : MonoBehaviour
 			startButton = GameObject.Find ("Start Button").GetComponent<Image> ();
 			umbrellaGame = GameObject.Find ("Umbrella Logo").GetComponent<Image> ();
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
+			harpIntroSource = GameObject.Find ("Harp intro").GetComponent<AudioSource> ();
+			harpIntroClip = harpIntroSource.clip;
+			harpIntroSource.pitch = -0.6f;
 
 			umbrella = GameObject.Find ("Umbrella");
 			umbrellaRb = umbrella.GetComponent<Rigidbody> ();
@@ -210,9 +215,17 @@ public class GmaeManage : MonoBehaviour
 			}
 			
 			if (timeStart) {
-				fading.FadeOUT(startButton, 3);
+				harpIntroSource.pitch = 0.6f;
+
+				fading.FadeOUT (startButton, 3);
 				fading.FadeINandOUT (umbrellaGame, 1);
-				Invoke( "FlyUmbrellaFly", 0.5f);
+				Invoke ("FlyUmbrellaFly", 0.5f);
+
+				harpIntroSource.volume = Mathf.Lerp (harpIntroSource.volume, 0, Time.deltaTime/10);
+				if (harpIntroSource.volume < 0.2f) {
+					fading.FadeIN(WhiteScreen, 0.7f);
+					Invoke ("whichLevel", harpIntroClip.length/2);
+				}
 			}
 
 		} else if (Application.loadedLevel == 1) { //Main game screen
@@ -260,7 +273,7 @@ public class GmaeManage : MonoBehaviour
 	
 	void EndGame ()
 	{
-		if(_charge < 1){
+		if (_charge < 1) {
 			gameState = GameState.GameOver;
 		}
 
@@ -352,6 +365,11 @@ public class GmaeManage : MonoBehaviour
 				}
 			}
 		}
+	}
+
+	void whichLevel ()
+	{
+		Application.LoadLevel (1); //Changes to the next scene
 	}
 
 

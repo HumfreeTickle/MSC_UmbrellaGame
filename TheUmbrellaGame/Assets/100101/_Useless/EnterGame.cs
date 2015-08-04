@@ -32,9 +32,6 @@ namespace Useless
 			}
 		}
 		
-		void whichLevel ()
-		{
-			Application.LoadLevel (1); //Changes to the next scene
-		}
+
 	}
 }
