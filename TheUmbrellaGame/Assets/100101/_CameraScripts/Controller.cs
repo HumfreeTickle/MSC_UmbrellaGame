@@ -11,12 +11,15 @@ namespace CameraScripts
 		private float newCameraFOV;
 		public GameObject umbrella;
 		private Transform umbrellaTr;
+		public Transform umbrellaTrCanopy;
 		private Rigidbody umbrellaRb;
 		public float speed;
 		public float rotateSpeed;
 		public float xAway;
 		public float yAway;
 		public float zAway;
+		private GameObject whatAmIHitting;
+
 
 		// The distance in the x-z plane to the target
 		public float distance = 10.0f;
@@ -26,12 +29,14 @@ namespace CameraScripts
 		// How much we want to damp the movement
 		public float heightDamping = 2.0f;
 		public float rotationDamping = 3.0f;
+//		private Color transparent = new Color (1, 1, 1, 0);
 		
 		void Start ()
 		{
 			GameManager = GetComponent<GmaeManage> ();
 			gameState = GameManager.gameState;
 			camrea = GetComponent<Camera> ();
+
 			umbrellaTr = umbrella.transform;
 			umbrellaRb = umbrella.GetComponent<Rigidbody> ();
 		}
@@ -46,6 +51,8 @@ namespace CameraScripts
 					RotatePitch ();
 				}
 			} 
+
+			RayCastView ();
 			
 			//-------------------------------------------- Other Function Calls -------------------------------------------------------//
 			
@@ -126,18 +133,38 @@ namespace CameraScripts
 		
 		
 		//-------------------------------------------- Stops Blocked View -------------------------------------------------------//
-		
-		void OnTriggerStay (Collider col)
+
+		void RayCastView ()
 		{
-			if (col.gameObject.GetComponent<MeshRenderer> ()) {
-				col.gameObject.GetComponent<MeshRenderer> ().enabled = false;
-			}
-		}
-		
-		void OnTriggerExit (Collider col)
-		{
-			if (col.gameObject.GetComponent<MeshRenderer> ()) {
-				col.gameObject.GetComponent<MeshRenderer> ().enabled = true;
+			RaycastHit hit;
+			Vector3  screenPos = camrea.WorldToScreenPoint(umbrellaTr.position);
+			Ray cameraRay = camrea.ScreenPointToRay (screenPos);
+
+			Debug.DrawRay(cameraRay.origin, cameraRay.direction, Color.blue);
+
+			if (Physics.Raycast (cameraRay, out hit)) {
+				if (hit.collider.tag != "Player") {
+
+					if (hit.collider.gameObject.GetComponent<MeshRenderer> ()) {
+						if (whatAmIHitting != null) {
+							whatAmIHitting.GetComponent<MeshRenderer> ().enabled = false;
+					
+							// ----- Checks to if what is being hit is a different object ----//
+							if (whatAmIHitting != hit.collider.gameObject) {
+
+								whatAmIHitting = hit.collider.gameObject;
+								print (whatAmIHitting);
+							}
+						} else {
+							whatAmIHitting = hit.collider.gameObject;
+						}
+					}
+				}else if(hit.collider.tag == "Player") {
+					// ----- Checks to see if its empty ----//
+					if (whatAmIHitting != null) {
+						whatAmIHitting.GetComponent<MeshRenderer> ().enabled = true;
+					}
+				}
 			}
 		}
 	}

@@ -9,6 +9,7 @@ namespace Player
 	{
 		public DestroyObject destroyStuff = new Inheritence.DestroyObject ();
 		public GmaeManage gameManager;
+//	------------------------------------
 		public Rigidbody frontsphere;
 		public Rigidbody backsphere;
 		public Rigidbody leftsphere;
@@ -16,24 +17,28 @@ namespace Player
 		public Rigidbody handle;
 		public GameObject leftTrail;
 		public GameObject rightTrail;
+//	------------------------------------
 		private GameObject trail_L;
 		private GameObject trail_R;
+//	------------------------------------
 		public Animator umbrellaAnim;
 		public ForceMode movementForce;
 		public ForceMode backwardForce;
 		public ForceMode rotationForce;
+//	------------------------------------
 		private Rigidbody rb;
 		private float lsphereMass;
 		private float rsphereMass;
 		private float fsphereMass;
 		private float bsphereMass;
-		
+//	------------------------------------
 		//	private float rbMass;
 		private float handleMass;
 		public float forceAppliedToTilt; // used for tilting purposes
 		public float speed;
 		public float floating;
 		public float turningSpeed;
+//	------------------------------------
 		private string controllerTypeVertical;
 		private string controllerTypeHorizontal;
 		
@@ -52,6 +57,10 @@ namespace Player
 		
 		void FixedUpdate ()
 		{
+			if(gameManager.gameState != GameState.Game){
+				Input.ResetInputAxes(); // stops the player from making an input before the game begins
+			}
+
 			if (gameManager.gameState == GameState.Game || gameManager.gameState == GameState.Idle) {
 				Movement ();
 				HorizontalMass ();
@@ -75,7 +84,11 @@ namespace Player
 		
 		void Movement ()
 		{
+
+
+			// need to set up a check as to whether the controller is active when a game state change occurs
 			umbrellaAnim.SetFloat ("Input_Vertical", Input.GetAxis (controllerTypeVertical));
+			umbrellaAnim.SetFloat ("Input_Horizontal", Input.GetAxis (controllerTypeHorizontal));
 
 			if (Input.GetAxis (controllerTypeVertical) > 0.1f) { // Probably should only use forward for this and have back be a kind of breaking system
 				rb.AddForce (transform.TransformDirection (Vector3.forward) * Input.GetAxis (controllerTypeVertical) * speed, movementForce); //Add force in the direction it is facing

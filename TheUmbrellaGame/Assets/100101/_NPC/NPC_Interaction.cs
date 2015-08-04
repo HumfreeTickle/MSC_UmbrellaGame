@@ -11,7 +11,7 @@ namespace NPC
 		public AudioClip e_AudioClip;
 		public AudioClip g_AudioClip;
 		public AudioClip b_AudioClip;
-		public GameObject musicalNote;
+//		public GameObject musicalNote;
 
 		private AudioClip talkyTalk;
 		private AudioSource npcAudioSource;
@@ -52,7 +52,7 @@ namespace NPC
 		{
 //			int i = Mathf.RoundToInt(Random.Range(0, 3));
 //			talkyTalk = musicalNotes[i];
-			Instantiate(musicalNote, transform.position, Quaternion.identity);
+//			Instantiate(musicalNote, transform.position, Quaternion.identity);
 
 			float n = Mathf.Floor(Random.Range(-1, 1));
 			float j = Mathf.Pow(1.05946f, (12*n));
