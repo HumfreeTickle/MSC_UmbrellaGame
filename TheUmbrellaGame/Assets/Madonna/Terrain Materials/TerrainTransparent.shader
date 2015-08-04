@@ -2,14 +2,14 @@
 {
     Properties
     {
-        _Control ("Control (RGBA)", 2D) = "red" {}
+        _Control ("Transparent Map", 2D) = "red" {}
         //[HideInInspector] _Splat3 ("Layer 3 (A)", 2D) = "white" {}
          //_Splat2 ("Layer 2 (B)", 2D) = "white" {}
          //_Splat1 ("Layer 1 (G)", 2D) = "white" {}
-         _Splat0 ("Layer 0 (R)", 2D) = "white" {}
+         _Splat0 ("Texture", 2D) = "white" {}
         //Used in fallback on old cards & base map
-         _MainTex ("BaseMap (RGB)", 2D) = "white" {}
-         _Color ("Main Color", Color) = (1,1,1,1)
+//         _MainTex ("BaseMap (RGB)", 2D) = "white" {}
+//         _Color ("Main Color", Color) = (1,1,1,1)
     }
  
     SubShader
@@ -22,6 +22,7 @@
         }
         Blend SrcAlpha OneMinusSrcAlpha
         Cull off
+        
         CGPROGRAM
         #pragma surface surf Lambert alpha:fade
         struct Input
