@@ -59,7 +59,7 @@ namespace NPC
 //-------------- time in between each audio call, need to actually make this in time ----------------------------------------------//
 			timeToTalk = Random.Range(1 ,5);
 
-			print ("Note: " + talkyTalk);
+//			print ("Note: " + talkyTalk);
 			npcAudioSource.pitch = j;
 			npcAudioSource.PlayOneShot (talkyTalk, 1f);
 		}
