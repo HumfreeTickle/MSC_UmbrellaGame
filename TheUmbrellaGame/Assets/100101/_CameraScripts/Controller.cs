@@ -171,7 +171,7 @@ namespace CameraScripts
 							if (whatAmIHitting.gameObject.transform.childCount > 0) {
 
 								for (int i = 0; i < whatAmIHitting.gameObject.transform.childCount; i++) {
-									whatAmIHitting.gameObject.transform.GetChild(i).GetComponent<MeshRenderer> ().enabled = false;
+									whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ().enabled = false;
 								}
 //								foreach (MeshRenderer child in whatAmIHittingChildren) {
 //									child.enabled = false;
@@ -187,7 +187,9 @@ namespace CameraScripts
 						whatAmIHitting.GetComponent<MeshRenderer> ().material = backupMaterial;
 						if (whatAmIHitting.gameObject.transform.childCount > 0) {
 							for (int i = 0; i < whatAmIHitting.gameObject.transform.childCount; i++) {
-								whatAmIHitting.gameObject.transform.GetChild(i).GetComponent<MeshRenderer> ().enabled = true;
+								if (whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ()) {
+									whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ().enabled = true;
+								}
 							}
 							backupMaterial = null;
 							whatAmIHitting = null;
