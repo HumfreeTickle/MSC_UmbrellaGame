@@ -29,7 +29,8 @@ namespace CameraScripts
 		// How much we want to damp the movement
 		public float heightDamping = 2.0f;
 		public float rotationDamping = 3.0f;
-//		private Color transparent = new Color (1, 1, 1, 0);
+		public Material transparent;
+		public Material backupMaterial;
 		
 		void Start ()
 		{
@@ -137,17 +138,26 @@ namespace CameraScripts
 		void RayCastView ()
 		{
 			RaycastHit hit;
-			Vector3  screenPos = camrea.WorldToScreenPoint(umbrellaTr.position);
+			Vector3 screenPos = camrea.WorldToScreenPoint (umbrellaTr.position);
 			Ray cameraRay = camrea.ScreenPointToRay (screenPos);
 
-			Debug.DrawRay(cameraRay.origin, cameraRay.direction, Color.blue);
+			Debug.DrawRay (cameraRay.origin, cameraRay.direction, Color.blue);
 
 			if (Physics.Raycast (cameraRay, out hit)) {
 				if (hit.collider.tag != "Player") {
 
 					if (hit.collider.gameObject.GetComponent<MeshRenderer> ()) {
 						if (whatAmIHitting != null) {
-							whatAmIHitting.GetComponent<MeshRenderer> ().enabled = false;
+//							whatAmIHitting.GetComponent<MeshRenderer> ().enabled = false;
+
+							//--- stores the material that was on the object for use later -------
+							if (backupMaterial != transparent) {
+								backupMaterial = whatAmIHitting.GetComponent<MeshRenderer> ().material;
+							}
+
+							//--- changes objects material to a transparent texture -------------
+							whatAmIHitting.GetComponent<MeshRenderer> ().sharedMaterial = transparent;
+
 					
 							// ----- Checks to if what is being hit is a different object ----//
 							if (whatAmIHitting != hit.collider.gameObject) {
@@ -159,10 +169,12 @@ namespace CameraScripts
 							whatAmIHitting = hit.collider.gameObject;
 						}
 					}
-				}else if(hit.collider.tag == "Player") {
+				} else if (hit.collider.tag == "Player") {
 					// ----- Checks to see if its empty ----//
 					if (whatAmIHitting != null) {
-						whatAmIHitting.GetComponent<MeshRenderer> ().enabled = true;
+						//--- returns object to original state -----
+						whatAmIHitting.GetComponent<MeshRenderer> ().material = backupMaterial;
+//						whatAmIHitting.GetComponent<MeshRenderer> ().enabled = true;
 					}
 				}
 			}
