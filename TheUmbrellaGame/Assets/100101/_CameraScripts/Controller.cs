@@ -19,7 +19,7 @@ namespace CameraScripts
 		public float yAway;
 		public float zAway;
 		private GameObject whatAmIHitting;
-
+		public MeshRenderer[] whatAmIHittingChildren;
 
 		// The distance in the x-z plane to the target
 		public float distance = 10.0f;
@@ -31,7 +31,7 @@ namespace CameraScripts
 		public float rotationDamping = 3.0f;
 		public Material transparent;
 		public Material backupMaterial;
-		
+
 		void Start ()
 		{
 			GameManager = GetComponent<GmaeManage> ();
@@ -140,45 +140,63 @@ namespace CameraScripts
 			RaycastHit hit;
 			Vector3 screenPos = camrea.WorldToScreenPoint (umbrellaTr.position);
 			Ray cameraRay = camrea.ScreenPointToRay (screenPos);
-
-			Debug.DrawRay (cameraRay.origin, cameraRay.direction, Color.blue);
+			Vector3 cameraDir = cameraRay.direction * 100;
+			Debug.DrawRay (cameraRay.origin, cameraDir, Color.blue);
 
 			if (Physics.Raycast (cameraRay, out hit)) {
-				if (hit.collider.tag != "Player") {
 
-					if (hit.collider.gameObject.GetComponent<MeshRenderer> ()) {
-						if (whatAmIHitting != null) {
-//							whatAmIHitting.GetComponent<MeshRenderer> ().enabled = false;
 
-							//--- stores the material that was on the object for use later -------
-							if (backupMaterial != transparent) {
-								backupMaterial = whatAmIHitting.GetComponent<MeshRenderer> ().material;
-							}
+				if (hit.collider.tag != "Player") {//hits anything other then the player
 
-							//--- changes objects material to a transparent texture -------------
-							whatAmIHitting.GetComponent<MeshRenderer> ().sharedMaterial = transparent;
+					if (hit.collider.gameObject.GetComponent<MeshRenderer> ()) {// checks to see if it has a mesh renderer
+//						print (hit.collider.name);
+						if (whatAmIHitting != null) { //
 
-					
 							// ----- Checks to if what is being hit is a different object ----//
 							if (whatAmIHitting != hit.collider.gameObject) {
+								whatAmIHitting.GetComponent<MeshRenderer> ().material = backupMaterial; // changes the old object back
+								whatAmIHitting = hit.collider.gameObject; // assigns the new object
 
-								whatAmIHitting = hit.collider.gameObject;
-								print (whatAmIHitting);
+								//--- stores the material that was on the object for use later -------
+								backupMaterial = whatAmIHitting.GetComponent<MeshRenderer> ().sharedMaterial;
+
+								//--- changes objects material to a transparent texture -------------
+								whatAmIHitting.GetComponent<MeshRenderer> ().sharedMaterial = transparent;
 							}
+
 						} else {
 							whatAmIHitting = hit.collider.gameObject;
+							backupMaterial = whatAmIHitting.GetComponent<MeshRenderer> ().sharedMaterial;
+							whatAmIHitting.GetComponent<MeshRenderer> ().sharedMaterial = transparent;
+							if (whatAmIHitting.gameObject.transform.childCount > 0) {
+
+								for (int i = 0; i < whatAmIHitting.gameObject.transform.childCount; i++) {
+									whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ().enabled = false;
+								}
+//								foreach (MeshRenderer child in whatAmIHittingChildren) {
+//									child.enabled = false;
+//								}
+							}
 						}
 					}
+
 				} else if (hit.collider.tag == "Player") {
 					// ----- Checks to see if its empty ----//
 					if (whatAmIHitting != null) {
 						//--- returns object to original state -----
 						whatAmIHitting.GetComponent<MeshRenderer> ().material = backupMaterial;
-//						whatAmIHitting.GetComponent<MeshRenderer> ().enabled = true;
+						if (whatAmIHitting.gameObject.transform.childCount > 0) {
+							for (int i = 0; i < whatAmIHitting.gameObject.transform.childCount; i++) {
+								if (whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ()) {
+									whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ().enabled = true;
+								}
+							}
+							backupMaterial = null;
+							whatAmIHitting = null;
+						}
 					}
 				}
 			}
 		}
 	}
 }
-

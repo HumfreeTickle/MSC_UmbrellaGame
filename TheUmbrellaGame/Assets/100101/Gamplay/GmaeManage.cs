@@ -1,9 +1,14 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 using UnityStandardAssets.ImageEffects;
 using Inheritence;
 using CameraScripts;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public enum GameState // sets what game state is currently being viewed
 {
@@ -55,12 +60,18 @@ public class GmaeManage : MonoBehaviour
 
 	private GameObject cameraController; // 
 
+	//--- Audio Stuff ---
 	private AudioClip harpIntroClip;
 	private AudioSource harpIntroSource;
+	public AudioMixerSnapshot start;
+
+	//-- Canvas Stuff ---
 	private Image PauseScreen; // pause screen image
 	private Image WhiteScreen;
 	private Image umbrellaGame;
 	private Image startButton;
+
+	//-- The rest :) --
 	private GameObject umbrella;
 	public Rigidbody umbrellaRb;
 	public float autoPauseTimer; // idle timer till game auto pauses
@@ -158,6 +169,7 @@ public class GmaeManage : MonoBehaviour
 			harpIntroClip = harpIntroSource.clip;
 			harpIntroSource.pitch = -0.6f;
 
+
 			umbrella = GameObject.Find ("Umbrella");
 			umbrellaRb = umbrella.GetComponent<Rigidbody> ();
 
@@ -221,10 +233,12 @@ public class GmaeManage : MonoBehaviour
 				fading.FadeINandOUT (umbrellaGame, 1);
 				Invoke ("FlyUmbrellaFly", 0.5f);
 
-				harpIntroSource.volume = Mathf.Lerp (harpIntroSource.volume, 0, Time.deltaTime/10);
+				start.TransitionTo(40);
+
+				harpIntroSource.volume = Mathf.Lerp (harpIntroSource.volume, 0, Time.deltaTime / 5);
 				if (harpIntroSource.volume < 0.2f) {
-					fading.FadeIN(WhiteScreen, 0.7f);
-					Invoke ("whichLevel", harpIntroClip.length/2);
+					fading.FadeIN (WhiteScreen, 0.7f);
+					Invoke ("whichLevel", harpIntroClip.length / 2);
 				}
 			}
 
@@ -251,18 +265,19 @@ public class GmaeManage : MonoBehaviour
 	void PauseGame ()
 	{
 		if (Input.GetButtonDown ("Submit")) {
+
 			if (gameState == GameState.Game) {
 				gameState = GameState.Pause;
 
+
 			} else if (gameState == GameState.Pause) {
 				gameState = GameState.Game;
-
+				NotPaused ();
 			}
 		}
-		
 		if (gameState == GameState.Pause) {
 			Paused ();
-		} else if (gameState != GameState.Pause) {
+		} else if (gameState == GameState.Game) {
 			NotPaused ();
 		}
 		
@@ -318,7 +333,9 @@ public class GmaeManage : MonoBehaviour
 		GetComponent<BlurOptimized> ().enabled = true;
 		
 		Time.timeScale = 0; //game paused
+
 		fading.FadeIN (PauseScreen, transitionSpeed);
+
 	}
 	
 	void NotPaused ()

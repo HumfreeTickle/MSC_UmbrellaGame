@@ -15,6 +15,7 @@ Shader "TRI/THS/BumpMapped"
 		[HideInInspector] _Normal2("Normal 2 (B)", 2D) = "bump" {}
 		[HideInInspector] _Normal1("Normal 1 (G)", 2D) = "bump" {}
 		[HideInInspector] _Normal0("Normal 0 (R)", 2D) = "bump" {}
+		
 		// used in fallback on old cards & base map
 		[HideInInspector] _MainTex("BaseMap (RGB)", 2D) = "white" {}
 		[HideInInspector] _Color("Main Color", Color) = (1,1,1,1)
