@@ -61,16 +61,10 @@ namespace Player
 				Input.ResetInputAxes(); // stops the player from making an input before the game begins
 			}
 
-			if (gameManager.gameState == GameState.Game || gameManager.gameState == GameState.Idle) {
+			if (gameManager.gameState == GameState.Game) {
 				Movement ();
 				HorizontalMass ();
 				VerticalMass ();
-
-//				if(rb.velocity.magnitude <= 2){
-//					gameManager.gameState = GameState.Idle;
-//				}else{
-//					gameManager.gameState = GameState.Game;
-//				}
 
 				if (Input.GetButton ("DropFromSky")) {
 					TheDescent ();
@@ -84,7 +78,6 @@ namespace Player
 		
 		void Movement ()
 		{
-
 
 			// need to set up a check as to whether the controller is active when a game state change occurs
 			umbrellaAnim.SetFloat ("Input_Vertical", Input.GetAxis (controllerTypeVertical));
