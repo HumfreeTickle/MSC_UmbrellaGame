@@ -19,7 +19,6 @@ namespace CameraScripts
 		public float yAway;
 		public float zAway;
 		private GameObject whatAmIHitting;
-		public MeshRenderer[] whatAmIHittingChildren;
 
 		// The distance in the x-z plane to the target
 		public float distance = 10.0f;
@@ -145,7 +144,7 @@ namespace CameraScripts
 
 			if (Physics.Raycast (cameraRay, out hit)) {
 
-				print (hit.collider.name);
+//				print (hit.collider.name);
 
 				if (hit.collider.tag != "Player") {//hits anything other then the player
 

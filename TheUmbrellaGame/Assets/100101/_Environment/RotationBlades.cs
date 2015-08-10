@@ -25,12 +25,14 @@ namespace Environment
 			}
 		}
 
-		void OnTriggerEnter (Collider other)
+		void OnTriggerStay (Collider other)
 		{
 			if (other.gameObject.tag == "Player") {//if the umbrella interacts with the windmill
-				rotation = true;//turn on the windmill
-				Destroy (landHere);//get rid of the halo
-				other.GetComponent<Rigidbody> ().AddForce (direction * blowforce);//blow back the umbrella
+				if (Input.GetButtonDown ("Interact")) {
+					rotation = true;//turn on the windmill
+					Destroy (landHere);//get rid of the halo
+					other.GetComponent<Rigidbody> ().AddForce (direction * blowforce);//blow back the umbrella
+				}
 			}
 		}
 	}
