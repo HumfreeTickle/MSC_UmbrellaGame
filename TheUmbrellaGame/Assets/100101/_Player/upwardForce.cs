@@ -6,11 +6,10 @@ namespace Player
 	public class upwardForce : MonoBehaviour
 	{
 
-		public float upwardsforce = 10f;
+		public GmaeManage gameManager;
+		public float upwardsforce;
 		private Rigidbody rb;
 		public float conterBalance = 1;
-//	private float mainMass;
-
 		private float sw;
 		public float sine;
 		public ForceMode theForce;
@@ -23,9 +22,11 @@ namespace Player
 	
 		void FixedUpdate ()
 		{
-			SineWave ();
-			Vector3 force = Vector3.up * upwardsforce;
-			rb.AddForce (force, theForce);
+			if (gameManager.gameState != GameState.Pause) {
+				SineWave ();
+				Vector3 force = Vector3.up * upwardsforce;
+				rb.AddForce (force, theForce);
+			}
 		}
 
 		//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------

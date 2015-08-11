@@ -22,6 +22,15 @@ namespace Player.PhysicsStuff
 		private Rigidbody umbrellaRb;
 		public float bounceBack;
 
+		private RaycastHit hit;
+
+		public RaycastHit RaycastingInfo{
+			get{
+				return hit;
+			}
+		}
+
+
 		void Start ()
 		{
 			GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
@@ -61,9 +70,7 @@ namespace Player.PhysicsStuff
 //---------------------------- RAYCASTING STUFF -----------------------------------------------------------------------
 
 				Vector3 downRayDown = Vector3.down;
-				RaycastHit hit;
 
-		
 				if (Physics.Raycast (transform.position + baseUmbrella, downRayDown, out hit, Mathf.Infinity)) {
 
 					//------------- DEBUGGING -----------------------------

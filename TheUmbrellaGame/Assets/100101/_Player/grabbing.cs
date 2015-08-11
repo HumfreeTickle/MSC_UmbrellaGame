@@ -6,7 +6,7 @@ namespace Player
 	public class grabbing : MonoBehaviour
 	{
 		private Rigidbody umbrellaBody;
-		public GameObject player;
+		private GameObject pickup;
 		public GameObject Landing;
 		public bool JumpKey;
 
@@ -14,7 +14,7 @@ namespace Player
 		{
 			if (transform.childCount > 0) {
 
-				if (Input.GetButtonDown ("Fire3")) {
+				if (Input.GetButtonDown ("Interact")) {
 					JumpKey = !JumpKey;
 				}
 
@@ -26,19 +26,22 @@ namespace Player
 		{
 			if (JumpKey == true) {
 				transform.DetachChildren ();
-				player.AddComponent<Rigidbody> ();
+				if (!pickup.GetComponent<Rigidbody> ()) {
+					pickup.AddComponent<Rigidbody> ();
+				}
 				Landing.SetActive (false);
 			}
 		}
 
-		void OnTriggerEnter (Collider other)
+		void OnTriggerStay (Collider other)
 		{
-			if (other.tag == "Collectable") {
-				player = other.gameObject;
-				other.transform.parent = transform;
-				Landing.SetActive (true);
-				JumpKey = false;
-
+			if (other.gameObject.tag == "Interaction") {
+				if (Input.GetButtonDown ("Interact")) {
+					pickup = other.gameObject;
+					other.transform.parent = transform;
+					Landing.SetActive (true);
+					JumpKey = false;
+				}
 			}
 		}
 	}

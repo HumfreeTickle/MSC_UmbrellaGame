@@ -41,7 +41,11 @@ namespace Player
 //	------------------------------------
 		private string controllerTypeVertical;
 		private string controllerTypeHorizontal;
-		
+
+//  ------------------------------------
+		private RaycastHit hit;
+		private upwardForce upForce;
+
 		void Start ()
 		{
 			rb = GetComponent<Rigidbody> ();
@@ -50,33 +54,26 @@ namespace Player
 			fsphereMass = frontsphere.mass;
 			bsphereMass = backsphere.mass;
 			handleMass = handle.mass;
-			
+			upForce = GetComponent<upwardForce> ();
 			controllerTypeVertical = gameManager.ControllerTypeVertical;
 			controllerTypeHorizontal = gameManager.ControllerTypesHorizontal;
 		}
 		
 		void FixedUpdate ()
 		{
-			if(gameManager.gameState != GameState.Game){
-				Input.ResetInputAxes(); // stops the player from making an input before the game begins
+			if (gameManager.gameState != GameState.Game) {
+				Input.ResetInputAxes (); // stops the player from making an input before the game begins
 			}
 
-			if (gameManager.gameState == GameState.Game || gameManager.gameState == GameState.Idle) {
+			if (gameManager.gameState == GameState.Game) {
 				Movement ();
 				HorizontalMass ();
 				VerticalMass ();
-
-//				if(rb.velocity.magnitude <= 2){
-//					gameManager.gameState = GameState.Idle;
-//				}else{
-//					gameManager.gameState = GameState.Game;
-//				}
-
-				if (Input.GetButton ("DropFromSky")) {
-					TheDescent ();
-				} 
-			} else if (gameManager.gameState == GameState.GameOver) {
+				hit = GetComponent<CreateWind> ().RaycastingInfo;
 				TheDescent ();
+
+			} else if (gameManager.gameState == GameState.GameOver) {
+				GetComponent<upwardForce> ().enabled = false;
 			}
 		}
 		
@@ -84,7 +81,6 @@ namespace Player
 		
 		void Movement ()
 		{
-
 
 			// need to set up a check as to whether the controller is active when a game state change occurs
 			umbrellaAnim.SetFloat ("Input_Vertical", Input.GetAxis (controllerTypeVertical));
@@ -106,42 +102,32 @@ namespace Player
 			}
 			
 			if (Input.GetAxis (controllerTypeVertical) < 0.1f) { // Probably should only use forward for this and have back be a kind of breaking system
-				
-				if (Input.GetAxis (controllerTypeVertical) > 0) { // Probably should only use forward for this and have back be a kind of breaking system
-					rb.AddForce (transform.forward * Input.GetAxis (controllerTypeVertical) * speed, movementForce); //Add force in the direction it is facing
-				}
-				if (Input.GetAxis (controllerTypeVertical) < 0) { // Probably should only use forward for this and have back be a kind of breaking system
-					
-					rb.AddForce (transform.forward * Input.GetAxis (controllerTypeVertical), movementForce); //Add force in the direction it is facing
-					
-					rb.AddForce (transform.forward * Input.GetAxis (controllerTypeVertical), backwardForce); //Add force in the direction it is facing
 
-					rb.AddForce (transform.forward * Input.GetAxis (controllerTypeVertical), movementForce); //Add force in the direction it is facing
-					
-				}
-				
-				if (Mathf.Abs (Input.GetAxis (controllerTypeHorizontal)) > 0) { //This shoould rotate the player rather than move sideways
-					rb.AddTorque (transform.up * Input.GetAxis (controllerTypeHorizontal) * turningSpeed, rotationForce);
-
-					//--------------------------------------- create trail -----------------------------------------------//
-					if (Input.GetAxis (controllerTypeHorizontal) > 0) {
-						if (leftsphere.transform.childCount == 0) {
-							trail_L = Instantiate (leftTrail, leftsphere.transform.position, Quaternion.identity) as GameObject;
-							trail_L.transform.parent = leftsphere.transform;
-						}
-					} else if (Input.GetAxis (controllerTypeHorizontal) < 0) {
-						if (rightsphere.transform.childCount == 0) {
-							trail_R = Instantiate (rightTrail, rightsphere.transform.position, Quaternion.identity) as GameObject;
-							trail_R.transform.parent = rightsphere.transform;
-						}
-					}
-				} 
-
-				if (rb.velocity.magnitude < 0.3f) {
-					destroyStuff.DestroyOnTimer (trail_L, 1);
-					destroyStuff.DestroyOnTimer (trail_R, 1);
-				}
+				rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime);
 			}
+				
+			if (Mathf.Abs (Input.GetAxis (controllerTypeHorizontal)) > 0) { //This shoould rotate the player rather than move sideways
+				rb.AddTorque (transform.up * Input.GetAxis (controllerTypeHorizontal) * turningSpeed, rotationForce);
+
+				//--------------------------------------- create trail -----------------------------------------------//
+				if (Input.GetAxis (controllerTypeHorizontal) > 0) {
+					if (leftsphere.transform.childCount == 0) {
+						trail_L = Instantiate (leftTrail, leftsphere.transform.position, Quaternion.identity) as GameObject;
+						trail_L.transform.parent = leftsphere.transform;
+					}
+				} else if (Input.GetAxis (controllerTypeHorizontal) < 0) {
+					if (rightsphere.transform.childCount == 0) {
+						trail_R = Instantiate (rightTrail, rightsphere.transform.position, Quaternion.identity) as GameObject;
+						trail_R.transform.parent = rightsphere.transform;
+					}
+				}
+			} 
+
+			if (rb.velocity.magnitude < 0.3f) {
+				destroyStuff.DestroyOnTimer (trail_L, 1);
+				destroyStuff.DestroyOnTimer (trail_R, 1);
+			}
+
 		}
 		
 		void HorizontalMass ()
@@ -172,7 +158,21 @@ namespace Player
 		
 		void TheDescent ()
 		{
-			GetComponent<upwardForce> ().enabled = !GetComponent<upwardForce> ().enabled;
+			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) {
+				if(hit.collider.gameObject.tag == null){ // Failsafe to check if a gameObject doesn't have a tag
+					print(hit.collider.gameObject);
+					return;
+				}
+				upForce.upwardsforce = 44;
+				upForce.enabled = true;
+			} else {
+				upForce.upwardsforce = 34;
+				
+				if (Input.GetButtonDown ("DropFromSky")) {
+					upForce.enabled = !upForce.enabled;
+				}
+
+			}
 		}
 	}
 }

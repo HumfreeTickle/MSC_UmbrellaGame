@@ -1,71 +1,92 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
-public class Tutuorial : MonoBehaviour {
+public class Tutuorial : MonoBehaviour
+{
 
 //------------------------------------------ Needs to be completely overhalled ------------------------------------------
 //------------------------------------------- "Don't leave half of the tutorial out" - Owen Harris, 2015 ------------------------------------------
 
+	public GmaeManage GameManager;
 	private Animator animator;
-	public int x = 0; 
-	public bool upClicked = false;
-	public bool backClicked = false;
+	public int x;
+
+	public int X {
+		get {
+			return x;
+		}
+		set {
+			x = value;
+		}
+	}
+
 	public float _time = 0;
 	
-	
-	void Start () {
-		animator = GetComponent<Animator>();
+	void Start ()
+	{
+		animator = GetComponent<Animator> ();
 	}
 	
-	void Update () {
-		WalkThroughConditions();
-		animator.SetInteger("Section",x);
-	}
-	
-	void WalkThroughConditions(){
-		if(Input.GetKeyUp(KeyCode.Return)){
-			x = 5;
+	void Update ()
+	{
+		//------------- Failsafe ----------------//
+		if (GameManager == null) {
+			return;
 		}
-		switch(x){
-		case 0:
-			if(Input.GetKeyUp(KeyCode.UpArrow)){
-				x = 1;
-			}
-			break;
-		case 1:
-			if(Input.GetKeyUp(KeyCode.DownArrow)){
-				x = 2;
-			}
-			break;
-		case 2:
-			if(Input.GetKeyUp(KeyCode.UpArrow)){
-				upClicked = true;
-			}
-			if(Input.GetKeyUp(KeyCode.DownArrow)){
-				backClicked = true;
-			}
-			if(upClicked & backClicked){
-				x = 3;
-			}
-			break;
-		case 3:
-			if(Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow)) {
-				x = 4;
-			}
-			break;
-		case 4:
-			
-			if(Input.GetKey(KeyCode.Space)){
+
+		//----------------- Changes the tutorial animation ----------------//
+		if (GameManager.gameState == GameState.Idle) {
+			animator.SetBool ("GameState", false);
+			X = 5;
+		} else if (GameManager.gameState == GameState.Game) {
+			WalkThroughConditions ();
+			animator.SetBool ("GameState", true);
+			GetComponent<Image> ().enabled = true;
+		} else {
+			animator.SetBool ("GameState", false);
+		}
+
+		//------------- Removes tutorial if game is paused or character is dead ---------------------//
+		if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver) {
+			GetComponent<Image> ().enabled = false;
+		} else {
+			GetComponent<Image> ().enabled = true;
+		}
+	}
+
+//-------------------------------------- Switch statement for all the various Tutorial states --------------------------------------
+
+	void WalkThroughConditions ()
+	{
+
+		switch (x) {
+
+		case 0: // Movement
+			if (Mathf.Abs (Input.GetAxisRaw ("Vertical_L")) > 0 || Mathf.Abs (Input.GetAxisRaw ("Horizontal_L")) > 0) {
 				_time += Time.deltaTime;
+				if (_time > 5) {
+					x = 5;
+					_time = 0;
+				}
 			}
-			if(Input.GetKeyUp(KeyCode.Space) & _time >= 1){
+			break;
+
+		case 1: //L1
+			if (Input.GetButtonDown ("Talk")) {
 				x = 5;
 			}
 			break;
-		case 5:
-			this.gameObject.SetActive(false);
+
+		case 2: //R1
+			if (Input.GetButtonDown ("Interact")) {
+				x = 5;
+			}
 			break;
-		default:
+
+		case 5: //Default blank state
+			break;
+		default: //Fail safe
 			break;
 		}
 	}

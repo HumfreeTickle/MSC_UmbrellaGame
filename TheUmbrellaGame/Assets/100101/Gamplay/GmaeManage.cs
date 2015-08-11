@@ -65,6 +65,12 @@ public class GmaeManage : MonoBehaviour
 	private AudioSource harpIntroSource;
 	public AudioMixerSnapshot start;
 
+	private AudioClip mainThemeMusic;
+	private AudioSource backgroundMusic;
+	public AudioMixerSnapshot PausedSnapShot;
+	public AudioMixerSnapshot InGameSnapShot;
+
+
 	//-- Canvas Stuff ---
 	private Image PauseScreen; // pause screen image
 	private Image WhiteScreen;
@@ -184,6 +190,8 @@ public class GmaeManage : MonoBehaviour
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
 			WhiteScreen.color = Color.white;
 
+			backgroundMusic = GameObject.Find("Music").GetComponent<AudioSource>();
+
 			if (!PauseScreen || !WhiteScreen) {
 				return;
 			}
@@ -268,11 +276,12 @@ public class GmaeManage : MonoBehaviour
 
 			if (gameState == GameState.Game) {
 				gameState = GameState.Pause;
-
+				PausedSnapShot.TransitionTo(0);
 
 			} else if (gameState == GameState.Pause) {
 				gameState = GameState.Game;
 				NotPaused ();
+				InGameSnapShot.TransitionTo(0);
 			}
 		}
 		if (gameState == GameState.Pause) {
@@ -335,6 +344,7 @@ public class GmaeManage : MonoBehaviour
 		Time.timeScale = 0; //game paused
 
 		fading.FadeIN (PauseScreen, transitionSpeed);
+		backgroundMusic.pitch = -1;
 
 	}
 	
@@ -345,6 +355,7 @@ public class GmaeManage : MonoBehaviour
 		
 		Time.timeScale = 1f; //runs at regular time
 		fading.FadeOUT (PauseScreen, transitionSpeed);
+		backgroundMusic.pitch = 1;
 	}
 	
 	void FixedPause ()

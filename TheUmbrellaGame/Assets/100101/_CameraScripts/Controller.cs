@@ -19,7 +19,6 @@ namespace CameraScripts
 		public float yAway;
 		public float zAway;
 		private GameObject whatAmIHitting;
-		public MeshRenderer[] whatAmIHittingChildren;
 
 		// The distance in the x-z plane to the target
 		public float distance = 10.0f;
@@ -91,8 +90,10 @@ namespace CameraScripts
 					
 					if (umbrellaRb.velocity.magnitude > 10) {
 						newCameraFOV = camrea.fieldOfView + (umbrellaRb.velocity.magnitude * Time.fixedDeltaTime);
-						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, Mathf.Clamp (newCameraFOV, 60, 80), Time.fixedDeltaTime * speed);
-					} 
+						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, Mathf.Clamp (newCameraFOV, 60, 90), Time.fixedDeltaTime * speed);
+					}else{
+						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, 60, Time.fixedDeltaTime/speed);
+					}
 					
 					transform.position = Vector3.Lerp (transform.position, umbrellaTr.position, Time.fixedDeltaTime * speed);
 					transform.position -= currentRotation * Vector3.forward * distance;
@@ -110,6 +111,7 @@ namespace CameraScripts
 
 				if (GameManager.Timer > 2) {
 					transform.position = transform.position + new Vector3 (xAway, yAway, zAway);
+					transform.LookAt (umbrellaTr);
 				} else {
 					transform.LookAt (umbrellaTr);
 				}
@@ -145,11 +147,11 @@ namespace CameraScripts
 
 			if (Physics.Raycast (cameraRay, out hit)) {
 
+//				print (hit.collider.name);
 
 				if (hit.collider.tag != "Player") {//hits anything other then the player
 
 					if (hit.collider.gameObject.GetComponent<MeshRenderer> ()) {// checks to see if it has a mesh renderer
-//						print (hit.collider.name);
 						if (whatAmIHitting != null) { //
 
 							// ----- Checks to if what is being hit is a different object ----//
@@ -171,7 +173,9 @@ namespace CameraScripts
 							if (whatAmIHitting.gameObject.transform.childCount > 0) {
 
 								for (int i = 0; i < whatAmIHitting.gameObject.transform.childCount; i++) {
-									whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ().enabled = false;
+									if (whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ()) {
+										whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ().enabled = false;
+									}
 								}
 //								foreach (MeshRenderer child in whatAmIHittingChildren) {
 //									child.enabled = false;
