@@ -38,11 +38,10 @@ public class Tutuorial : MonoBehaviour
 		//----------------- Changes the tutorial animation ----------------//
 		if (GameManager.gameState == GameState.Idle) {
 			animator.SetBool ("GameState", false);
-			X = 5;
 		} else if (GameManager.gameState == GameState.Game) {
 			WalkThroughConditions ();
+			animator.SetInteger("State", X);
 			animator.SetBool ("GameState", true);
-			GetComponent<Image> ().enabled = true;
 		} else {
 			animator.SetBool ("GameState", false);
 		}
@@ -65,7 +64,7 @@ public class Tutuorial : MonoBehaviour
 		case 0: // Movement
 			if (Mathf.Abs (Input.GetAxisRaw ("Vertical_L")) > 0 || Mathf.Abs (Input.GetAxisRaw ("Horizontal_L")) > 0) {
 				_time += Time.deltaTime;
-				if (_time > 5) {
+				if (_time >= 5) {
 					x = 5;
 					_time = 0;
 				}

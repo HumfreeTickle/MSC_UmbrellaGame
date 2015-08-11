@@ -64,7 +64,6 @@ public class GmaeManage : MonoBehaviour
 	private AudioClip harpIntroClip;
 	private AudioSource harpIntroSource;
 	public AudioMixerSnapshot start;
-
 	private AudioClip mainThemeMusic;
 	private AudioSource backgroundMusic;
 	public AudioMixerSnapshot PausedSnapShot;
@@ -190,7 +189,7 @@ public class GmaeManage : MonoBehaviour
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
 			WhiteScreen.color = Color.white;
 
-			backgroundMusic = GameObject.Find("Music").GetComponent<AudioSource>();
+			backgroundMusic = GameObject.Find ("Music").GetComponent<AudioSource> ();
 
 			if (!PauseScreen || !WhiteScreen) {
 				return;
@@ -241,7 +240,7 @@ public class GmaeManage : MonoBehaviour
 				fading.FadeINandOUT (umbrellaGame, 1);
 				Invoke ("FlyUmbrellaFly", 0.5f);
 
-				start.TransitionTo(40);
+				start.TransitionTo (40);
 
 				harpIntroSource.volume = Mathf.Lerp (harpIntroSource.volume, 0, Time.deltaTime / 5);
 				if (harpIntroSource.volume < 0.2f) {
@@ -276,12 +275,12 @@ public class GmaeManage : MonoBehaviour
 
 			if (gameState == GameState.Game) {
 				gameState = GameState.Pause;
-				PausedSnapShot.TransitionTo(0);
+				PausedSnapShot.TransitionTo (0);
 
 			} else if (gameState == GameState.Pause) {
 				gameState = GameState.Game;
 				NotPaused ();
-				InGameSnapShot.TransitionTo(0);
+				InGameSnapShot.TransitionTo (0);
 			}
 		}
 		if (gameState == GameState.Pause) {
@@ -361,7 +360,9 @@ public class GmaeManage : MonoBehaviour
 	void FixedPause ()
 	{
 		if (!Input.anyKey) {
-			autoPauseTimer += Time.deltaTime;
+			if (Mathf.Abs (Input.GetAxisRaw ("Vertical_L")) > 0 || Mathf.Abs (Input.GetAxisRaw ("Horizontal_L")) == 0) {
+				autoPauseTimer += Time.deltaTime;
+			}
 			
 			if (autoPauseTimer >= 60) {
 				gameState = GameState.Pause;//when the timer reaches 0 then the pause screen will activate

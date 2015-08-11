@@ -18,7 +18,6 @@ namespace Player
 	
 		void OnTriggerStay (Collider col)
 		{
-//			print (col.gameObject);
 			if (helloTutorial) {
 				if (col.gameObject.tag == "NPC") {
 					tutorial.X = 1;
