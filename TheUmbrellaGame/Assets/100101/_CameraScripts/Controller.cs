@@ -90,8 +90,10 @@ namespace CameraScripts
 					
 					if (umbrellaRb.velocity.magnitude > 10) {
 						newCameraFOV = camrea.fieldOfView + (umbrellaRb.velocity.magnitude * Time.fixedDeltaTime);
-						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, Mathf.Clamp (newCameraFOV, 60, 80), Time.fixedDeltaTime * speed);
-					} 
+						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, Mathf.Clamp (newCameraFOV, 60, 90), Time.fixedDeltaTime * speed);
+					}else{
+						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, 60, Time.fixedDeltaTime/speed);
+					}
 					
 					transform.position = Vector3.Lerp (transform.position, umbrellaTr.position, Time.fixedDeltaTime * speed);
 					transform.position -= currentRotation * Vector3.forward * distance;
@@ -109,6 +111,7 @@ namespace CameraScripts
 
 				if (GameManager.Timer > 2) {
 					transform.position = transform.position + new Vector3 (xAway, yAway, zAway);
+					transform.LookAt (umbrellaTr);
 				} else {
 					transform.LookAt (umbrellaTr);
 				}

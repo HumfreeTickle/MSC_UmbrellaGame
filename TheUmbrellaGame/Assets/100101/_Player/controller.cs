@@ -41,7 +41,11 @@ namespace Player
 //	------------------------------------
 		private string controllerTypeVertical;
 		private string controllerTypeHorizontal;
-		
+
+//  ------------------------------------
+		private RaycastHit hit;
+		private upwardForce upForce;
+
 		void Start ()
 		{
 			rb = GetComponent<Rigidbody> ();
@@ -50,7 +54,7 @@ namespace Player
 			fsphereMass = frontsphere.mass;
 			bsphereMass = backsphere.mass;
 			handleMass = handle.mass;
-			
+			upForce = GetComponent<upwardForce> ();
 			controllerTypeVertical = gameManager.ControllerTypeVertical;
 			controllerTypeHorizontal = gameManager.ControllerTypesHorizontal;
 		}
@@ -65,10 +69,9 @@ namespace Player
 				Movement ();
 				HorizontalMass ();
 				VerticalMass ();
+				hit = GetComponent<CreateWind> ().RaycastingInfo;
+				TheDescent ();
 
-				if (Input.GetButtonDown ("DropFromSky")) {
-					TheDescent ();
-				} 
 			} else if (gameManager.gameState == GameState.GameOver) {
 				GetComponent<upwardForce> ().enabled = false;
 			}
@@ -100,19 +103,7 @@ namespace Player
 			
 			if (Input.GetAxis (controllerTypeVertical) < 0.1f) { // Probably should only use forward for this and have back be a kind of breaking system
 
-				rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.fixedDeltaTime);
-//				if (Input.GetAxis (controllerTypeVertical) > 0) { // Probably should only use forward for this and have back be a kind of breaking system
-//					rb.AddForce (transform.forward * Input.GetAxis (controllerTypeVertical) * speed, movementForce); //Add force in the direction it is facing
-//				}
-//				if (Input.GetAxis (controllerTypeVertical) < 0) { // Probably should only use forward for this and have back be a kind of breaking system
-//					
-//					rb.AddForce (transform.forward * Input.GetAxis (controllerTypeVertical), movementForce); //Add force in the direction it is facing
-//					
-//					rb.AddForce (transform.forward * Input.GetAxis (controllerTypeVertical), backwardForce); //Add force in the direction it is facing
-//
-//					rb.AddForce (transform.forward * Input.GetAxis (controllerTypeVertical), movementForce); //Add force in the direction it is facing
-//					
-//				}
+				rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime);
 			}
 				
 			if (Mathf.Abs (Input.GetAxis (controllerTypeHorizontal)) > 0) { //This shoould rotate the player rather than move sideways
@@ -167,7 +158,21 @@ namespace Player
 		
 		void TheDescent ()
 		{
-			GetComponent<upwardForce> ().enabled = !GetComponent<upwardForce> ().enabled;
+			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) {
+				if(hit.collider.gameObject.tag == null){ // Failsafe to check if a gameObject doesn't have a tag
+					print(hit.collider.gameObject);
+					return;
+				}
+				upForce.upwardsforce = 44;
+				upForce.enabled = true;
+			} else {
+				upForce.upwardsforce = 34;
+				
+				if (Input.GetButtonDown ("DropFromSky")) {
+					upForce.enabled = !upForce.enabled;
+				}
+
+			}
 		}
 	}
 }

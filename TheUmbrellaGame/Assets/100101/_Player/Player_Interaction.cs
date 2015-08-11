@@ -18,6 +18,7 @@ namespace Player
 	
 		void OnTriggerStay (Collider col)
 		{
+//			print (col.gameObject);
 			if (helloTutorial) {
 				if (col.gameObject.tag == "NPC") {
 					tutorial.X = 1;
@@ -37,8 +38,10 @@ namespace Player
 			}
 		}
 
-		void OnTriggerExit(Collider col){
+		void OnTriggerExit(Collider col){ //failsafe incase they leave the trigger without finishing the tutorial.
 			tutorial.X = 5;
+			helloTutorial = true;
+			interactTutorial = true;
 		}
 	}
 }

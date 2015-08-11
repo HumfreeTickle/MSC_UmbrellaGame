@@ -7,7 +7,7 @@ namespace Player
 	{
 
 		public GmaeManage gameManager;
-		public float upwardsforce = 10f;
+		public float upwardsforce;
 		private Rigidbody rb;
 		public float conterBalance = 1;
 		private float sw;
@@ -22,7 +22,6 @@ namespace Player
 	
 		void FixedUpdate ()
 		{
-
 			if (gameManager.gameState != GameState.Pause) {
 				SineWave ();
 				Vector3 force = Vector3.up * upwardsforce;

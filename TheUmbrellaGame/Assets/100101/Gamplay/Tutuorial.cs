@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class Tutuorial : MonoBehaviour
 {
@@ -11,11 +12,11 @@ public class Tutuorial : MonoBehaviour
 	private Animator animator;
 	public int x;
 
-	public int X{
-		get{
+	public int X {
+		get {
 			return x;
 		}
-		set{
+		set {
 			x = value;
 		}
 	}
@@ -29,24 +30,39 @@ public class Tutuorial : MonoBehaviour
 	
 	void Update ()
 	{
-		if(GameManager == null){
+		//------------- Failsafe ----------------//
+		if (GameManager == null) {
 			return;
 		}
 
-		if(GameManager.gameState == GameState.Idle){
+		//----------------- Changes the tutorial animation ----------------//
+		if (GameManager.gameState == GameState.Idle) {
+			animator.SetBool ("GameState", false);
 			X = 5;
-		}else if (GameManager.gameState == GameState.Game) {
+		} else if (GameManager.gameState == GameState.Game) {
 			WalkThroughConditions ();
-			animator.SetInteger ("State", X);
+			animator.SetBool ("GameState", true);
+			GetComponent<Image> ().enabled = true;
+		} else {
+			animator.SetBool ("GameState", false);
+		}
+
+		//------------- Removes tutorial if game is paused or character is dead ---------------------//
+		if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver) {
+			GetComponent<Image> ().enabled = false;
+		} else {
+			GetComponent<Image> ().enabled = true;
 		}
 	}
-	
+
+//-------------------------------------- Switch statement for all the various Tutorial states --------------------------------------
+
 	void WalkThroughConditions ()
 	{
 
 		switch (x) {
 
-		case 0:
+		case 0: // Movement
 			if (Mathf.Abs (Input.GetAxisRaw ("Vertical_L")) > 0 || Mathf.Abs (Input.GetAxisRaw ("Horizontal_L")) > 0) {
 				_time += Time.deltaTime;
 				if (_time > 5) {
@@ -56,34 +72,21 @@ public class Tutuorial : MonoBehaviour
 			}
 			break;
 
-		case 1:
+		case 1: //L1
 			if (Input.GetButtonDown ("Talk")) {
 				x = 5;
 			}
 			break;
 
-		case 2:
+		case 2: //R1
 			if (Input.GetButtonDown ("Interact")) {
 				x = 5;
 			}
 			break;
-//		case 3:
-//			if (Input.GetKeyUp (KeyCode.LeftArrow) || Input.GetKeyUp (KeyCode.RightArrow)) {
-//				x = 4;
-//			}
-//			break;
-//		case 4:
-//			
-//			if (Input.GetKey (KeyCode.Space)) {
-//				_time += Time.deltaTime;
-//			}
-//			if (Input.GetKeyUp (KeyCode.Space) & _time >= 1) {
-//				x = 5;
-//			}
-//			break;
-		case 5:
+
+		case 5: //Default blank state
 			break;
-		default:
+		default: //Fail safe
 			break;
 		}
 	}
