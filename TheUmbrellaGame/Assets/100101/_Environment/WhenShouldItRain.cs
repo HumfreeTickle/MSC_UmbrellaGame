@@ -29,7 +29,8 @@ namespace Environment
 		public GameObject raining; //rain sound
 		public GameObject sunshine; //daytime sound
 		public GameObject morningCrickets; //morning sound
-		public GameObject nightTimeSanter; //nighttime sound
+		public GameObject nightTimeSaunter; //nighttime sound
+		public Transform centralPoint;
 
 		// private functions shhhhhh ------------//
 		private float whenToRain;
@@ -62,30 +63,33 @@ namespace Environment
 			if (relaxingTwilight == nullColour) {
 				relaxingTwilight = Color.grey;
 			}
+			if(centralPoint == null){
+				return;
+			}
 			sunLight.color = morningSun;
 			sunlightIntensity = 1;
 			currentTimeofDay = daytimeMadness;
-			StartCoroutine ("TimeOfDay");
+//			StartCoroutine ("TimeOfDay");
 
 		}
 
 		void Update ()
 		{
-//			whenToRain += Time.deltaTime;
+			whenToRain += Time.deltaTime;
 
 			if (whenToRain > 60) {
 //				weatherSkybox = GetComponent<Renderer>().material.Lerp(weatherSkybox, storm, Time.deltaTime);
-				RenderSettings.skybox = storm;
-				sunLight.color = Color.Lerp (sunLight.color, rainySkies, Time.deltaTime);
-				sunLight.intensity = Mathf.Lerp (sunLight.intensity, 0.5f, Time.deltaTime);
+//				RenderSettings.skybox = storm;
+//				sunLight.color = Color.Lerp (sunLight.color, rainySkies, Time.deltaTime);
+//				sunLight.intensity = Mathf.Lerp (sunLight.intensity, 0.5f, Time.deltaTime);
 				raining.SetActive (true);
 				sunshine.SetActive (false);
 
 			} else if (whenToRain > 120) {
 //				weatherSkybox = GetComponent<Renderer>().material.Lerp(weatherSkybox, sun, Time.deltaTime);
-				RenderSettings.skybox = sun;
-				sunLight.color = Color.Lerp (sunLight.color, morningSun, Time.deltaTime);
-				sunLight.intensity = Mathf.Lerp (sunLight.intensity, 0.78f, Time.deltaTime);
+//				RenderSettings.skybox = sun;
+//				sunLight.color = Color.Lerp (sunLight.color, morningSun, Time.deltaTime);
+//				sunLight.intensity = Mathf.Lerp (sunLight.intensity, 0.78f, Time.deltaTime);
 				raining.SetActive (false);
 				sunshine.SetActive (true);
 			} 
@@ -105,7 +109,7 @@ namespace Environment
 				print (progress);
 				sunLight.color = Color.Lerp (sunLight.color, currentTimeofDay, progress);
 				sunLight.intensity = Mathf.Lerp(sunLight.intensity, sunlightIntensity, progress);
-
+				sunLight.transform.RotateAround(centralPoint.position, Vector3.right, progress);
 				progress += increment;
 				yield return new WaitForSeconds (smoothness);
 			}

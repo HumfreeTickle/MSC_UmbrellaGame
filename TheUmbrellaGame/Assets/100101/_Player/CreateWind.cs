@@ -14,31 +14,27 @@ namespace Player.PhysicsStuff
 		private Vector3 spawnDistance;
 		private float charge;
 		public float maxTerrainDistance = 1.0f;
-
 		private Material umbrellaColour;
 		private Vector3 baseUmbrella = new Vector3 (0f, -5f, 0f);
-
 		private GameObject umbrella;
 		private Rigidbody umbrellaRb;
 		public float bounceBack;
-
 		private RaycastHit hit;
 
-		public RaycastHit RaycastingInfo{
-			get{
-				return hit;
+		public RaycastHit RaycastingInfo {
+			get {
+					return hit;
 			}
 		}
-
 
 		void Start ()
 		{
 			GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			gameState = GameManager.gameState;
 			umbrella = GameObject.Find ("Umbrella");
-			umbrellaRb = this.gameObject.GetComponent<Rigidbody>();
+			umbrellaRb = this.gameObject.GetComponent<Rigidbody> ();
 
-			umbrellaColour = umbrella.transform.GetChild(0).GetComponent<Renderer> ().material;
+			umbrellaColour = umbrella.transform.GetChild (0).GetComponent<Renderer> ().material;
 			charge = GameManager.WindCharge;
 		}
 
@@ -46,13 +42,13 @@ namespace Player.PhysicsStuff
 		{
 			charge = GameManager.WindCharge;
 
-			bounceBack = Mathf.Clamp(bounceBack, Mathf.NegativeInfinity, 0);
+			bounceBack = Mathf.Clamp (bounceBack, Mathf.NegativeInfinity, 0);
 			gameState = GameManager.gameState;
 
 			if (gameState != GameState.Pause || gameState != GameState.GameOver) {
 				if (Input.GetButtonDown ("CrateWind") && charge >= 1) {
 					SummonWind ();
-					GameManager.WindCharge = Mathf.Clamp( Mathf.Lerp (GameManager.WindCharge, 0, Time.fixedDeltaTime * 10), 2, 100);
+					GameManager.WindCharge = Mathf.Clamp (Mathf.Lerp (GameManager.WindCharge, 0, Time.fixedDeltaTime * 10), 2, 100);
 				}
 
 //---------------- TURN OFF UPWARDFORCE ---------------------
@@ -69,23 +65,20 @@ namespace Player.PhysicsStuff
 
 //---------------------------- RAYCASTING STUFF -----------------------------------------------------------------------
 
-				Vector3 downRayDown = Vector3.down;
+				Vector3 downRayDown = (Vector3.down * 100);
 
 				if (Physics.Raycast (transform.position + baseUmbrella, downRayDown, out hit, Mathf.Infinity)) {
 
 					//------------- DEBUGGING -----------------------------
 					Debug.DrawRay (transform.position + baseUmbrella, downRayDown, Color.green, Mathf.Infinity, false);
-//					print (hit.collider);
-//					print ("Distance: " + hit.distance);
 
 					//------------- CONDITIONS ----------------------------
 					if (hit.collider.tag == "Terrain" && hit.distance < maxTerrainDistance) {
-						GameManager.WindCharge = Mathf.Clamp( Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 2, 100);
+						GameManager.WindCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 2, 100);
 					} 
 				} else {
 					GameManager.WindCharge = Mathf.Lerp (charge, 0, Time.deltaTime);
-
-					umbrellaRb.AddForce(transform.TransformDirection(this.gameObject.transform.forward) * bounceBack);
+					umbrellaRb.AddForce (transform.TransformDirection (this.gameObject.transform.forward) * bounceBack);
 					//not really working. Need to try something else
 				}
 			}

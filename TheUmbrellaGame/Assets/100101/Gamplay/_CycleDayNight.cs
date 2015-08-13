@@ -5,6 +5,7 @@ namespace Environment
 {
 	public class _CycleDayNight : MonoBehaviour
 	{  
+		public bool GUIOn;
 		/// number of seconds in a day  
 		public float dayCycleLength = 1440;  
 	
@@ -25,10 +26,10 @@ namespace Environment
 		public float dawnTimeOffset;  
 	
 		/// calculated hour of the day, based on the hoursPerDay setting.  
-		public int worldTimeHour;  
+		private int worldTimeHour;  
 	
 		/// calculated minutes of the day, based on the hoursPerDay setting.  
-		public int minutes;
+		private int minutes;
 		private float timePerHour ;  
 	
 		/// The scene ambient color used for full daylight.  
@@ -66,7 +67,10 @@ namespace Environment
 		private Light sun;
 		/// The specified intensity of the directional light, if one exists. This value will be  
 		/// faded to 0 during dusk, and faded from 0 back to this value during dawn.  
-		private float lightIntensity;  
+		private float lightIntensity;
+
+		// blend value of skybox using SkyBoxBlend Shader in render settings range 0-1  
+		private float SkyboxBlendFactor = 0.0f;  
 	
 		/// Initializes working variables and performs starting calculations.  
 		void Initialize ()
@@ -88,9 +92,9 @@ namespace Environment
 		/// Sets the script control fields to reasonable default values for an acceptable day/night cycle effect.  
 		void Reset ()
 		{  
-			dayCycleLength = 120.0f;  
-			hoursPerDay = 24.0f;  
-			dawnTimeOffset = 3.0f;  
+//			dayCycleLength = 120.0f;  
+//			hoursPerDay = 24.0f;  
+//			dawnTimeOffset = 3.0f;  
 			fullDark = new Color (32.0f / 255.0f, 28.0f / 255.0f, 46.0f / 255.0f);  
 			fullLight = new Color (253.0f / 255.0f, 248.0f / 255.0f, 223.0f / 255.0f);  
 			dawnDuskFog = new Color (133.0f / 255.0f, 124.0f / 255.0f, 102.0f / 255.0f);  
@@ -106,18 +110,19 @@ namespace Environment
 	
 		void OnGUI ()
 		{  
-			string jam = worldTimeHour.ToString ();  
-			string menit = minutes.ToString ();  
-			if (worldTimeHour < 10) {  
-				jam = "0" + worldTimeHour;  
-			}  
-			if (minutes < 10) {  
-				menit = "0" + minutes;  
-			}  
-			GUI.Button (new Rect (500, 20, 100, 26), currentPhase.ToString () + " : " + jam + ":" + menit);  
+			if (GUIOn) {
+				string jam = worldTimeHour.ToString ();  
+				string menit = minutes.ToString ();  
+				if (worldTimeHour < 10) {  
+					jam = "0" + worldTimeHour;  
+				}  
+				if (minutes < 10) {  
+					menit = "0" + minutes;  
+				}  
+				GUI.Button (new Rect (500, 20, 100, 26), currentPhase.ToString () + " : " + jam + ":" + menit); 
+			}
 		}  
 	
-		// Update is called once per frame  
 		void Update ()
 		{  
 			// Rudementary phase-check algorithm:  
@@ -134,7 +139,8 @@ namespace Environment
 			// Perform standard updates:  
 			UpdateWorldTime ();  
 			UpdateDaylight ();  
-			UpdateFog ();  
+			UpdateFog (); 
+			UpdateSkyboxBlendFactor ();
 		
 			// Update the current cycle time:  
 			currentCycleTime += Time.deltaTime;  
@@ -236,5 +242,29 @@ namespace Environment
 			Day = 2,  
 			Dusk = 3  
 		}  
+
+		private void UpdateSkyboxBlendFactor ()
+		{  
+			// I need to increase this to a 5 phase blend instead of a 2 phase
+			// blend = 0 : dawn
+			// blend = 1 : day
+			// blend = 2 : dusk
+			// blend = 3 : d_night
+			// blend = 4 : stormy stuff
+
+			if (currentPhase == DayPhase.Dawn) {  
+				float relativeTime = currentCycleTime - dawnTime;  
+				SkyboxBlendFactor = 1 - (relativeTime / halfquarterDay);  
+			} else if (currentPhase == DayPhase.Day) {  
+				SkyboxBlendFactor = 0.0f;  
+			} else if (currentPhase == DayPhase.Dusk) {  
+				float relativeTime = currentCycleTime - duskTime;  
+				SkyboxBlendFactor = relativeTime / halfquarterDay;  
+			} else if (currentPhase == DayPhase.Night) {  
+				SkyboxBlendFactor = 1.0f;  
+			}  
+			
+			RenderSettings.skybox.SetFloat ("_Blend", SkyboxBlendFactor);  
+		} 
 	}  
 }

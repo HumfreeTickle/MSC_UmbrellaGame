@@ -69,9 +69,11 @@ namespace Player
 				Movement ();
 				HorizontalMass ();
 				VerticalMass ();
+//				if (GetComponent<CreateWind> ().RaycastingInfo != null) {
 				hit = GetComponent<CreateWind> ().RaycastingInfo;
-				TheDescent ();
-
+				if (hit.collider != null) {
+					TheDescent ();
+				}
 			} else if (gameManager.gameState == GameState.GameOver) {
 				GetComponent<upwardForce> ().enabled = false;
 			}
@@ -159,14 +161,11 @@ namespace Player
 		void TheDescent ()
 		{
 			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) {
-				if(hit.collider.gameObject.tag == null || hit.distance == Mathf.Infinity){ // Failsafe to check if a gameObject doesn't have a tag
-					print(hit.collider.gameObject);
-					return;
-				}
-				upForce.upwardsforce = Mathf.Lerp(upForce.upwardsforce, 44, Time.deltaTime);
+				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 44, Time.deltaTime);
 				upForce.enabled = true;
+
 			} else {
-				upForce.upwardsforce = Mathf.Lerp(upForce.upwardsforce, 34, Time.deltaTime);
+				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 34, Time.deltaTime);
 				
 				if (Input.GetButtonDown ("DropFromSky")) {
 					upForce.enabled = !upForce.enabled;
