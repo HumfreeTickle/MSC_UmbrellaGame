@@ -10,7 +10,7 @@ public class Tutuorial : MonoBehaviour
 
 	public GmaeManage GameManager;
 	private Animator animator;
-	public int x;
+	private int x;
 
 	public int X {
 		get {
@@ -22,9 +22,14 @@ public class Tutuorial : MonoBehaviour
 	}
 
 	public float _time = 0;
-	
+	public Sprite frontPS3;
+	public Sprite backPS3;
+	private Image tutorialImage;
+
 	void Start ()
 	{
+		tutorialImage = GetComponent<Image>();
+		tutorialImage.sprite = frontPS3;
 		animator = GetComponent<Animator> ();
 	}
 	
@@ -36,13 +41,14 @@ public class Tutuorial : MonoBehaviour
 		}
 
 		//----------------- Changes the tutorial animation ----------------//
-		if (GameManager.gameState == GameState.Idle) {
+		if (GameManager.gameState == GameState.Intro) {
 			animator.SetBool ("GameState", false);
-			X = 5;
+			tutorialImage.overrideSprite = frontPS3;
+
 		} else if (GameManager.gameState == GameState.Game) {
 			WalkThroughConditions ();
+			animator.SetInteger("State", X);
 			animator.SetBool ("GameState", true);
-			GetComponent<Image> ().enabled = true;
 		} else {
 			animator.SetBool ("GameState", false);
 		}
@@ -63,7 +69,9 @@ public class Tutuorial : MonoBehaviour
 		switch (x) {
 
 		case 0: // Movement
-			if (Mathf.Abs (Input.GetAxisRaw ("Vertical_L")) > 0 || Mathf.Abs (Input.GetAxisRaw ("Horizontal_L")) > 0) {
+			tutorialImage.sprite = frontPS3;
+
+			if (Mathf.Abs (Input.GetAxis ("Vertical_L")) > 0.1f || Mathf.Abs (Input.GetAxis ("Horizontal_L")) > 0.1f) {
 				_time += Time.deltaTime;
 				if (_time > 5) {
 					x = 5;
@@ -73,12 +81,15 @@ public class Tutuorial : MonoBehaviour
 			break;
 
 		case 1: //L1
+			tutorialImage.sprite = backPS3;
 			if (Input.GetButtonDown ("Talk")) {
 				x = 5;
 			}
 			break;
 
 		case 2: //R1
+			tutorialImage.sprite = backPS3;
+
 			if (Input.GetButtonDown ("Interact")) {
 				x = 5;
 			}
