@@ -45,7 +45,7 @@ namespace CameraScripts
 		{
 			gameState = GameManager.gameState;
 
-			if (gameState == GameState.Pause || gameState == GameState.Idle) {
+			if (gameState == GameState.Pause) {
 				if (GameManager.controllerType != ControllerType.Keyboard) {
 					RotateYaw ();
 					RotatePitch ();

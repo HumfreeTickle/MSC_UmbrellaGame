@@ -159,14 +159,14 @@ namespace Player
 		void TheDescent ()
 		{
 			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) {
-				if(hit.collider.gameObject.tag == null){ // Failsafe to check if a gameObject doesn't have a tag
+				if(hit.collider.gameObject.tag == null || hit.distance == Mathf.Infinity){ // Failsafe to check if a gameObject doesn't have a tag
 					print(hit.collider.gameObject);
 					return;
 				}
-				upForce.upwardsforce = 44;
+				upForce.upwardsforce = Mathf.Lerp(upForce.upwardsforce, 44, Time.deltaTime);
 				upForce.enabled = true;
 			} else {
-				upForce.upwardsforce = 34;
+				upForce.upwardsforce = Mathf.Lerp(upForce.upwardsforce, 34, Time.deltaTime);
 				
 				if (Input.GetButtonDown ("DropFromSky")) {
 					upForce.enabled = !upForce.enabled;
