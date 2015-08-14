@@ -70,8 +70,11 @@ namespace Environment
 		private float lightIntensity;
 
 		// blend value of skybox using SkyBoxBlend Shader in render settings range 0-1  
-		private float SkyboxBlendFactor = 0.0f;  
-	
+		private float SkyboxBlendFactor = 0.0f;
+		public Material dawn;
+		public Material day;
+		public Material evening;
+		public Material night;
 		/// Initializes working variables and performs starting calculations.  
 		void Initialize ()
 		{  
@@ -121,7 +124,7 @@ namespace Environment
 				}  
 				GUI.Button (new Rect (500, 20, 100, 26), currentPhase.ToString () + " : " + jam + ":" + menit); 
 			}
-		}  
+		}
 	
 		void Update ()
 		{  
@@ -154,7 +157,10 @@ namespace Environment
 			if (sun != null) {
 				sun.enabled = true;
 			}  
-			currentPhase = DayPhase.Dawn;  
+			currentPhase = DayPhase.Dawn;
+			if (RenderSettings.skybox != dawn) {
+				RenderSettings.skybox = dawn;
+			}
 		}  
 	
 		/// Sets the currentPhase to Day, ensuring full day color ambient light, and full  
@@ -165,13 +171,21 @@ namespace Environment
 			if (sun != null) {
 				sun.intensity = lightIntensity;
 			}  
-			currentPhase = DayPhase.Day;  
+			currentPhase = DayPhase.Day;
+			if (RenderSettings.skybox != day) {
+				RenderSettings.skybox = day;
+			}
+
 		}  
 	
 		/// Sets the currentPhase to Dusk.  
 		public void SetDusk ()
 		{  
-			currentPhase = DayPhase.Dusk;  
+			currentPhase = DayPhase.Dusk;
+			if (RenderSettings.skybox != evening) {
+				RenderSettings.skybox = evening;
+			}
+
 		}  
 	
 		/// Sets the currentPhase to Night, ensuring full night color ambient light, and  
@@ -183,6 +197,10 @@ namespace Environment
 				sun.enabled = false;
 			}  
 			currentPhase = DayPhase.Night;  
+			if (RenderSettings.skybox != night) {
+				RenderSettings.skybox = night;
+			}
+
 		}  
 	
 		/// If the currentPhase is dawn or dusk, this method adjusts the ambient light color and direcitonal  
@@ -251,17 +269,21 @@ namespace Environment
 			// blend = 2 : dusk
 			// blend = 3 : d_night
 			// blend = 4 : stormy stuff
-
 			if (currentPhase == DayPhase.Dawn) {  
 				float relativeTime = currentCycleTime - dawnTime;  
-				SkyboxBlendFactor = 1 - (relativeTime / halfquarterDay);  
-			} else if (currentPhase == DayPhase.Day) {  
-				SkyboxBlendFactor = 0.0f;  
+				SkyboxBlendFactor = Mathf.Lerp(SkyboxBlendFactor, 0 ,(relativeTime / halfquarterDay));
+
+			} else if (currentPhase == DayPhase.Day) { 
+				float relativeTime = currentCycleTime - dayTime;
+				SkyboxBlendFactor = Mathf.Lerp(SkyboxBlendFactor, 1 , relativeTime / halfquarterDay); 
+
 			} else if (currentPhase == DayPhase.Dusk) {  
-				float relativeTime = currentCycleTime - duskTime;  
-				SkyboxBlendFactor = relativeTime / halfquarterDay;  
-			} else if (currentPhase == DayPhase.Night) {  
-				SkyboxBlendFactor = 1.0f;  
+				float relativeTime = currentCycleTime - duskTime;
+				SkyboxBlendFactor = Mathf.Lerp(SkyboxBlendFactor, 0 ,(relativeTime / halfquarterDay)); 
+
+			} else if (currentPhase == DayPhase.Night) {
+				float relativeTime = currentCycleTime - nightTime;
+				SkyboxBlendFactor = Mathf.Lerp(SkyboxBlendFactor, 1 , relativeTime / halfquarterDay);  
 			}  
 			
 			RenderSettings.skybox.SetFloat ("_Blend", SkyboxBlendFactor);  
