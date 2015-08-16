@@ -10,6 +10,7 @@ public class Tutuorial : MonoBehaviour
 
 	public GmaeManage GameManager;
 	private Animator animator;
+	private int numberOfPresses;
 	private int x;
 
 	public int X {
@@ -43,7 +44,7 @@ public class Tutuorial : MonoBehaviour
 		//----------------- Changes the tutorial animation ----------------//
 		if (GameManager.gameState == GameState.Intro) {
 			animator.SetBool ("GameState", false);
-			tutorialImage.overrideSprite = frontPS3;
+			tutorialImage.sprite = frontPS3;
 
 		} else if (GameManager.gameState == GameState.Game) {
 			WalkThroughConditions ();
@@ -65,32 +66,56 @@ public class Tutuorial : MonoBehaviour
 
 	void WalkThroughConditions ()
 	{
-
+		print (X);
 		switch (x) {
 
 		case 0: // Movement
 			tutorialImage.sprite = frontPS3;
-
+			animator.SetBool("Controller", false);
 			if (Mathf.Abs (Input.GetAxis ("Vertical_L")) > 0.1f || Mathf.Abs (Input.GetAxis ("Horizontal_L")) > 0.1f) {
 				_time += Time.deltaTime;
 				if (_time > 5) {
-					x = 5;
+					x = 1;
 					_time = 0;
+					animator.SetBool("Controller", true);
 				}
 			}
 			break;
 
-		case 1: //L1
+		case 1: //R2
 			tutorialImage.sprite = backPS3;
-			if (Input.GetButtonDown ("Talk")) {
-				x = 5;
+			animator.SetBool("Controller", true);
+			if (Input.GetButtonDown("CrateWind")) {
+				x = 2;
+			}
+			break;
+			
+		case 2: //L2
+			tutorialImage.sprite = backPS3;
+			animator.SetBool("Controller", true);
+			if (Input.GetButtonUp ("DropFromSky")) {
+
+				numberOfPresses += 1;
+
+				if(numberOfPresses >= 2){
+					x = 5;
+				}
 			}
 			break;
 
-		case 2: //R1
+		case 3: //R1
 			tutorialImage.sprite = backPS3;
+			animator.SetBool("Controller", true);
 
 			if (Input.GetButtonDown ("Interact")) {
+				x = 5;
+			}
+			break;
+				
+		case 4: //L1
+			tutorialImage.sprite = backPS3;
+			animator.SetBool("Controller", true);
+			if (Input.GetButtonDown ("Talk")) {
 				x = 5;
 			}
 			break;

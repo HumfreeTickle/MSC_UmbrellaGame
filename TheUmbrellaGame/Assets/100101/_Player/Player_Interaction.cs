@@ -20,7 +20,9 @@ namespace Player
 		{
 			if (helloTutorial) {
 				if (col.gameObject.tag == "NPC") {
-					tutorial.X = 1;
+					if (tutorial.X == 5) {
+						tutorial.X = 4;
+					}
 					if (Input.GetButtonUp ("Talk")) {
 						helloTutorial = false;
 					}
@@ -29,7 +31,9 @@ namespace Player
 
 			if (interactTutorial) {
 				if (col.gameObject.tag == "Interaction") {
-					tutorial.X = 2;
+					if (tutorial.X == 5) {
+						tutorial.X = 3;
+					}
 					if (Input.GetButtonUp ("Interact")) {
 						interactTutorial = false;
 					}
@@ -37,10 +41,13 @@ namespace Player
 			}
 		}
 
-		void OnTriggerExit(Collider col){ //failsafe incase they leave the trigger without finishing the tutorial.
-			tutorial.X = 5;
-			helloTutorial = true;
-			interactTutorial = true;
+		void OnTriggerExit (Collider col)
+		{ //failsafe incase they leave the trigger without finishing the tutorial.
+			if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "NPC") {
+				tutorial.X = 5;
+				helloTutorial = true;
+				interactTutorial = true;
+			}
 		}
 	}
 }
