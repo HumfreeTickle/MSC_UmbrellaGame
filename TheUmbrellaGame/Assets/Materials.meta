@@ -1,7 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: cf200e8e80502444aa6eb6c6631165a8
 folderAsset: yes
 timeCreated: 1439285131
+=======
+guid: c5ef67e2a510843fcbe061da1576de37
+folderAsset: yes
+timeCreated: 1438334347
+>>>>>>> Peter
 licenseType: Free
 DefaultImporter:
   userData: 

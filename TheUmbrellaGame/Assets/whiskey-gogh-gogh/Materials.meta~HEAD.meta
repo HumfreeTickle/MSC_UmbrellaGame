@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: f0334db4f812e4eaa931af84f214d3cd
 timeCreated: 1439285131
+=======
+guid: 95b96047814f14abd9a9b4346d6d4aca
+timeCreated: 1439285019
+>>>>>>> Peter
 licenseType: Free
 DefaultImporter:
   userData: 
