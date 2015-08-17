@@ -34,6 +34,8 @@ namespace Player
 		public float speed;
 		public float floating;
 		public float turningSpeed;
+		public float keyheld;
+
 //	------------------------------------
 		private string controllerTypeVertical;
 		private string controllerTypeHorizontal;
@@ -125,17 +127,27 @@ namespace Player
 			}
 		}
 		
-		void TheDescent ()
+		void TheDescent () //allow the umbrella to go down
 		{
-			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) {
+			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) { // prevents the palyer from getting caught in the ground
 				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 44, Time.deltaTime);
 				upForce.enabled = true;
 
 			} else {
-				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 34, Time.deltaTime);
-				
-				if (Input.GetButtonDown ("DropFromSky")) {
+				// ------------ Standard on/off for the descent ---------------
+				if (Input.GetButtonUp("DropFromSky") && keyheld < 0.1f) {
 					upForce.enabled = !upForce.enabled;
+
+				// ------------ Slow descent ---------------
+				}else if(Input.GetButton("DropFromSky")){
+					keyheld += Time.deltaTime;
+					upForce.upwardsforce = Mathf.Lerp(upForce.upwardsforce, 0, Time.deltaTime/10);
+				}
+
+				// ------------ brings the umbrella back to equilibrium ---------------
+				else{
+					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 34, Time.deltaTime);
+					keyheld = 0;
 				}
 
 			}
