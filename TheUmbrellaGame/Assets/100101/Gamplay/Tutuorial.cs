@@ -66,7 +66,6 @@ public class Tutuorial : MonoBehaviour
 
 	void WalkThroughConditions ()
 	{
-		print (X);
 		switch (x) {
 
 		case 0: // Movement

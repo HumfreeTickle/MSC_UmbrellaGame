@@ -5,13 +5,10 @@ namespace Environment
 {
 	public class RotationBlades : MonoBehaviour
 	{
-		bool rotation = false;//this is the blades turning
+		private bool rotation;//this is the blades turning
 		public GameObject landHere;//the halo pointing where to interact with the windmill
-		public GameObject brolly;//the umbrella
 		public float blowforce;//the force that will be applied to the blowback from the windmill
-		public Vector3 direction;//the direction the umbrella will be pushed in
-		public bool turning;
-		public float timer;
+		private bool turning;
 	
 		void Update ()
 		{
@@ -31,7 +28,7 @@ namespace Environment
 				if (Input.GetButtonDown ("Interact")) {
 					rotation = true;//turn on the windmill
 					Destroy (landHere);//get rid of the halo
-					other.GetComponent<Rigidbody> ().AddForce (direction * blowforce);//blow back the umbrella
+					other.GetComponent<Rigidbody> ().AddForce (other.transform.forward * -1 * blowforce);//blow back the umbrella
 				}
 			}
 		}
