@@ -224,7 +224,7 @@ namespace Environment
 			}  
 		
 			//transform.Rotate(Vector3.up * ((Time.deltaTime / dayCycleLength) * 360.0f), Space.Self);  
-			transform.RotateAround (rotation.position, Vector3.forward, ((Time.deltaTime / dayCycleLength) * 360.0f));  
+			transform.RotateAround (rotation.position, Vector3.right, ((Time.deltaTime / dayCycleLength) * -360.0f));  
 		}  
 	
 		/// Interpolates the fog color between the specified phase colors during each phase's transition.  
