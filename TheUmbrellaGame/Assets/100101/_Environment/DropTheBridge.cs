@@ -21,16 +21,13 @@ public class DropTheBridge : MonoBehaviour {
 	void Update () {
 	
 		if (drop){
-<<<<<<< HEAD
 			//transform.rotation = Quaternion.Slerp(from.rotation, to.rotation, Time.time * speed);
 // 			float angle = Mathf.LerpAngle (minAngle, maxAngle, Time.deltaTime * speed);
 			transform.eulerAngles = new Vector3(-112,0,0);
-=======
 //			//transform.rotation = Quaternion.Slerp(from.rotation, to.rotation, Time.time * speed);
 // 			float angle = Mathf.LerpAngle (minAngle, maxAngle, Time.deltaTime * speed);
 //			transform.eulerAngles = new Vector3(-112,0,0);
 			animator.SetBool("Fixed", false);
->>>>>>> Peter
 		}
 	}
 }

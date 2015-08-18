@@ -10,8 +10,8 @@ namespace CameraScripts
 		private Camera camrea;
 		private float newCameraFOV;
 		public GameObject umbrella;
+
 		private Transform umbrellaTr;
-		public Transform umbrellaTrCanopy;
 		private Rigidbody umbrellaRb;
 		public float speed;
 		public float rotateSpeed;
@@ -50,7 +50,11 @@ namespace CameraScripts
 					RotateYaw ();
 					RotatePitch ();
 				}
-			} 
+			}
+
+			if(gameState == GameState.Talking){
+				umbrellaTr = umbrella.transform;
+			}
 
 			RayCastView ();
 			

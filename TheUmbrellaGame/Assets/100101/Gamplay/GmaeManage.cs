@@ -15,7 +15,7 @@ public enum GameState // sets what game state is currently being viewed
 	NullState,
 	Intro,
 	Pause,
-//	Idle,
+	Talking,
 	Game,
 	GameOver
 }

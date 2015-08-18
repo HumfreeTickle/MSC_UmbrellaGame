@@ -17,8 +17,24 @@ namespace NPC
 		private float timeToTalk; // time in between each audio call
 		List<AudioClip> musicalNotes = new List<AudioClip> ();
 
+		private bool tutorialMission;
 
-		// Use this for initialization
+		/// <summary>
+		/// Gets or sets a value indicating whether this <see cref="NPC.NPC_Interaction"/> tutorial mission.
+		/// </summary>
+		/// <value><c>true</c> if tutorial mission; otherwise, <c>false</c>.</value>
+		public bool TutorialMission{
+
+			get{
+				return tutorialMission;
+			}
+
+			set{
+				tutorialMission = value;
+			}
+		}
+
+
 		void Start ()
 		{
 			musicalNotes.Add (c_AudioClip);
@@ -46,6 +62,7 @@ namespace NPC
 				if (Input.GetButtonDown ("Talk")) {
 					if (!IsInvoking ("TalkBack")) {
 						Invoke ("TalkBack", 1);
+						tutorialMission = true;
 					}
 				}
 			}
@@ -67,6 +84,7 @@ namespace NPC
 
 			float n = Mathf.Floor (Random.Range (-1, 1));
 			float j = Mathf.Pow (1.05946f, (12 * n));
+
 //-------------- time in between each audio call, need to actually make this in time ----------------------------------------------//
 			timeToTalk = Random.Range (1, 5);
 

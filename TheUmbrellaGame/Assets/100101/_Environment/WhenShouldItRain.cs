@@ -26,7 +26,7 @@ namespace Environment
 
 		void Update ()
 		{
-			whenToRain += Time.deltaTime;
+//			whenToRain += Time.deltaTime;
 
 			if (whenToRain > 60) {
 				raining.SetActive (true);
