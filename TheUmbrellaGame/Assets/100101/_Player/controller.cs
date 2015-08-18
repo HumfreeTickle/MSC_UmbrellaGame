@@ -129,13 +129,23 @@ namespace Player
 		
 		void TheDescent () //allow the umbrella to go down
 		{
+<<<<<<< HEAD
 			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) { // prevents the palyer from getting caught in the ground
+=======
+			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) {
+>>>>>>> Peter
 				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 44, Time.deltaTime);
 				upForce.enabled = true;
 
 			} else {
+<<<<<<< HEAD
 				// ------------ Standard on/off for the descent ---------------
 				if (Input.GetButtonUp("DropFromSky") && keyheld < 0.1f) {
+=======
+				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 34, Time.deltaTime);
+				
+				if (Input.GetButtonDown ("DropFromSky")) {
+>>>>>>> Peter
 					upForce.enabled = !upForce.enabled;
 
 				// ------------ Slow descent ---------------

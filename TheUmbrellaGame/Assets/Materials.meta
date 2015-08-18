@@ -1,5 +1,6 @@
 fileFormatVersion: 2
 <<<<<<< HEAD
+<<<<<<< HEAD
 guid: cf200e8e80502444aa6eb6c6631165a8
 folderAsset: yes
 timeCreated: 1439285131
@@ -7,6 +8,16 @@ timeCreated: 1439285131
 guid: c5ef67e2a510843fcbe061da1576de37
 folderAsset: yes
 timeCreated: 1438334347
+>>>>>>> Peter
+=======
+guid: c5ef67e2a510843fcbe061da1576de37
+folderAsset: yes
+timeCreated: 1438334347
+=======
+guid: cf200e8e80502444aa6eb6c6631165a8
+folderAsset: yes
+timeCreated: 1439285131
+>>>>>>> origin/Changes_Stephen
 >>>>>>> Peter
 licenseType: Free
 DefaultImporter:
