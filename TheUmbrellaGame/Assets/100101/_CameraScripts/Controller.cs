@@ -12,8 +12,8 @@ namespace CameraScripts
 
 		//----------------- UmbrellaStuff ---------------//
 		public GameObject umbrella;
+
 		private Transform umbrellaTr;
-		public Transform umbrellaTrCanopy;
 		private Rigidbody umbrellaRb;
 		//-----------------------------------------------//
 
@@ -54,7 +54,17 @@ namespace CameraScripts
 					RotateYaw ();
 					RotatePitch ();
 				}
+<<<<<<< HEAD
 			} 
+=======
+			}
+
+			if(gameState == GameState.Talking){
+				umbrellaTr = umbrella.transform;
+			}
+
+			RayCastView ();
+>>>>>>> origin/master
 			
 			//-------------------------------------------- Other Function Calls -------------------------------------------------------//
 			
