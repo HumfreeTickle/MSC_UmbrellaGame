@@ -133,8 +133,6 @@ public class GmaeManage : MonoBehaviour
 		}
 	}
 
-
-
 	//------------------------------------------ State Checks ------------------------------------------//
 	
 	public GameState gameState { get; set; }
@@ -198,6 +196,7 @@ public class GmaeManage : MonoBehaviour
 
 			backgroundMusic = GameObject.Find ("Music").GetComponent<AudioSource> ();
 
+
 			if (!PauseScreen || !WhiteScreen) {
 				return;
 			}
@@ -208,6 +207,7 @@ public class GmaeManage : MonoBehaviour
 
 	void Update ()
 	{
+
 		if (gameState == GameState.Intro) {
 			StartGame ();
 
@@ -344,7 +344,6 @@ public class GmaeManage : MonoBehaviour
 
 	void Paused ()
 	{
-		GetComponent<Grayscale> ().enabled = true;
 		GetComponent<BlurOptimized> ().enabled = true;
 		
 		Time.timeScale = 0; //game paused
@@ -356,7 +355,6 @@ public class GmaeManage : MonoBehaviour
 	
 	void NotPaused ()
 	{
-		GetComponent<Grayscale> ().enabled = false;
 		GetComponent<BlurOptimized> ().enabled = false;
 		
 		Time.timeScale = 1f; //runs at regular time

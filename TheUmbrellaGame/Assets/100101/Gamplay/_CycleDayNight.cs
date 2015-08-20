@@ -3,6 +3,14 @@ using System.Collections;
 
 namespace Environment
 {
+	public enum DayPhase
+	{  
+		Night = 0,  
+		Dawn = 1,  
+		Day = 2,  
+		Dusk = 3  
+	}  
+
 	public class _CycleDayNight : MonoBehaviour
 	{  
 		public bool GUIOn;
@@ -19,8 +27,14 @@ namespace Environment
 		public Transform rotation;  
 	
 		/// current day phase  
-		public DayPhase currentPhase;  
-	
+		private DayPhase currentPhase; 
+		public DayPhase CurrentPhase{
+			get{
+				return currentPhase;
+			}
+		}
+		                        
+			
 		/// Dawn occurs at currentCycleTime = 0.0f, so this offsets the WorldHour time to make  
 		/// dawn occur at a specified hour. A value of 3 results in a 5am dawn for a 24 hour world clock.  
 		public float dawnTimeOffset;  
@@ -253,13 +267,7 @@ namespace Environment
 			minutes = (int)(Mathf.Ceil ((currentCycleTime * (60 / timePerHour)) % 60));  
 		}  
 	
-		public enum DayPhase
-		{  
-			Night = 0,  
-			Dawn = 1,  
-			Day = 2,  
-			Dusk = 3  
-		}  
+
 
 		private void UpdateSkyboxBlendFactor ()
 		{  

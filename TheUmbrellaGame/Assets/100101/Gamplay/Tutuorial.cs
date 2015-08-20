@@ -42,6 +42,8 @@ public class Tutuorial : MonoBehaviour
 			return;
 		}
 		if (GameManager.controllerType == ControllerType.ConsoleContoller) {
+
+
 			//----------------- Changes the tutorial animation ----------------//
 			if (GameManager.gameState == GameState.Intro) {
 				animator.SetBool ("GameState", false);
@@ -56,7 +58,7 @@ public class Tutuorial : MonoBehaviour
 			}
 
 			//------------- Removes tutorial if game is paused or character is dead ---------------------//
-			if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver) {
+			if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver || GameManager.gameState == GameState.Talking) {
 				GetComponent<Image> ().enabled = false;
 			} else {
 				GetComponent<Image> ().enabled = true;

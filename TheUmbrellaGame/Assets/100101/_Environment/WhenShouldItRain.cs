@@ -28,14 +28,14 @@ namespace Environment
 		{
 			whenToRain += Time.deltaTime;
 
-			if (whenToRain > 60) {
-				raining.SetActive (true);
-				sunshine.SetActive (false);
-
-			} else if (whenToRain > 120) {
-				raining.SetActive (false);
-				sunshine.SetActive (true);
-			} 
+//			if (whenToRain > 60) {
+//				raining.SetActive (true);
+//				sunshine.SetActive (false);
+//
+//			} else if (whenToRain > 120) {
+//				raining.SetActive (false);
+//				sunshine.SetActive (true);
+//			} 
 
 		}
 

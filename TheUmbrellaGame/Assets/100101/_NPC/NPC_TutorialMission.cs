@@ -8,55 +8,114 @@ namespace NPC
 	public class NPC_TutorialMission : MonoBehaviour
 	{
 		public float talkingSpeed;
+		public float TalkingSpeed {
 
+			get{
+				return talkingSpeed/10;
+			}
+		}
+
+		//-------------- Tutorial Conditions ---------------//
 		private bool tutorialMission;
+		private bool tutorialRunning;
+		//--------------------------------------------------// 
+
 		private GameObject windmill;
 		private GameObject umbrella;
 		private GameObject cmaera;
 		private GameObject cameraSet;
-		private Text npc_Talking;
 
+		//-------------- Talking Stuff ---------------//
+		private Text npc_Talking;
+		public Image npc_TalkingBox;
 		public string npc_Message = "Can you please help me restart the windmill?";
+		//--------------------------------------------//
 
 		void Start ()
 		{
-			windmill = GameObject.Find("windmill02");
-			umbrella = GameObject.Find ("main_sphere");
-			cmaera = GameObject.Find("Follow Camera");
-			npc_Talking = GameObject.Find("NPC_Talking").GetComponent<Text>();
-			cameraSet = cmaera.GetComponent<Controller>().umbrella;
+			windmill = GameObject.Find ("windmill02");
+
+			cmaera = GameObject.Find ("Follow Camera");
+			umbrella =  cmaera.GetComponent<Controller> ().umbrella;
+
+			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
+			npc_TalkingBox = GameObject.Find ("NPC_TalkBox").GetComponent<Image> ();
+
+			cameraSet = cmaera.GetComponent<Controller> ().umbrella;
 		}
 	
 		void Update ()
 		{
-			tutorialMission = GetComponent<NPC_Interaction>().TutorialMission;
-			if(tutorialMission){
-				StartCoroutine(Tutotial_Mission());
+			tutorialMission = GetComponent<NPC_Interaction> ().TutorialMission;
+
+			if (tutorialMission) {
+				if (!tutorialRunning) {
+					StartCoroutine (Tutotial_Mission ());
+				}
 			}
 		}
 
-		IEnumerator Tutotial_Mission(){
+		IEnumerator Tutotial_Mission ()
+		{
+			int x = 0;
 			int i = 0;
-			while(i <= npc_Message.Length + 1){
-				cmaera.GetComponent<GmaeManage>().gameState = GameState.Talking;
-				npc_Talking.text = (npc_Message.Substring(0, i));
-				i += 1;
 
-				if(i == npc_Message.Length + 1){
-					i = 0;
+			while (x < 2) {
+				tutorialRunning = true;
+				cmaera.GetComponent<GmaeManage> ().gameState = GameState.Talking;
+				npc_TalkingBox.enabled = true;
+
+				switch (x) {
+
+				case 0:
+					npc_Message = "Can you please help me restart the windmill?";
+					npc_Talking.text = (npc_Message.Substring (0, i));
+					i += 1;
+
+					while (i >= npc_Message.Length + 1) {
+						yield return new WaitForSeconds (0.5f);
+
+						i = 0;
+						x = 1;
+					}
+					break;
+
+				case 1:
 					npc_Message = "Not sure how you could do it but maybe if you get a closer look.";
+					npc_Talking.text = (npc_Message.Substring (0, i));
 					cameraSet = windmill;
-					print (cameraSet);
-				}
+					cmaera.GetComponent<Controller> ().umbrella = cameraSet;
+					i += 1;
 
-				yield return new WaitForSeconds(talkingSpeed);
+					if (i >= npc_Message.Length + 1) {
+
+						yield return new WaitForSeconds (0.5f);
+						npc_Message = "";
+						npc_TalkingBox.enabled = false;
+						npc_Talking.text = npc_Message;
+						i = 0;
+						x = 2;
+					}
+					break;
+
+				default:
+					Debug.Log ("Default");
+
+					break;
+				}
+				yield return new WaitForSeconds (TalkingSpeed);
 			}
-//			cameraSet = umbrella;
-//			cmaera.GetComponent<GmaeManage>().gameState = GameState.Game;
-//			print (cameraSet);
-//
-//
-//
+
+			cameraSet = umbrella;
+			cmaera.GetComponent<Controller> ().umbrella = cameraSet;
+
+			tutorialRunning = false;
+			GetComponent<NPC_Interaction> ().TutorialMission = false;
+
+			cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+
+			StopCoroutine (Tutotial_Mission ());
+
 //			yield return null;
 		}
 	}

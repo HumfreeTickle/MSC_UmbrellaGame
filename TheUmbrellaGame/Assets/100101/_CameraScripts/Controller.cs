@@ -9,10 +9,14 @@ namespace CameraScripts
 		private GameState gameState;
 		private Camera camrea;
 		private float newCameraFOV;
+
+		//----------------- UmbrellaStuff ---------------//
 		public GameObject umbrella;
 		private Transform umbrellaTr;
 		public Transform umbrellaTrCanopy;
 		private Rigidbody umbrellaRb;
+		//-----------------------------------------------//
+
 		public float speed;
 		public float rotateSpeed;
 		public float xAway;
@@ -51,8 +55,6 @@ namespace CameraScripts
 					RotatePitch ();
 				}
 			} 
-
-			RayCastView ();
 			
 			//-------------------------------------------- Other Function Calls -------------------------------------------------------//
 			
@@ -67,7 +69,7 @@ namespace CameraScripts
 			if (gameState != GameState.GameOver) {
 				
 				if (gameState == GameState.Game || gameState == GameState.Intro) {
-					
+					RayCastView ();
 					// Calculate gameState == GameState.Pausethe current rotation angles (only need quaternion for movement)
 					float wantedRotationAngle = umbrellaTr.eulerAngles.y;
 					
@@ -103,6 +105,11 @@ namespace CameraScripts
 					
 					// Set the LookAt property to remain fixed on the target
 					transform.LookAt (umbrellaTr);
+
+
+				} else if(gameState == GameState.Talking ){
+					umbrellaTr = umbrella.transform;
+					transform.LookAt (umbrellaTr);
 				}
 			}
 				//-------------------------------------------- Camera Changes on Death -------------------------------------------------------//
@@ -115,6 +122,7 @@ namespace CameraScripts
 				} else {
 					transform.LookAt (umbrellaTr);
 				}
+
 			}
 		}
 		

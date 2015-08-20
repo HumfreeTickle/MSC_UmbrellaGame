@@ -74,6 +74,8 @@ namespace Player
 				}
 			} else if (gameManager.gameState == GameState.GameOver) {
 				GetComponent<upwardForce> ().enabled = false;
+			} else if(gameManager.gameState == GameState.Talking){
+				Stabilize ();
 			}
 		}
 		
@@ -156,6 +158,13 @@ namespace Player
 				}
 
 			}
+		}
+
+		//stops the umbrella from drifting away when she's chatting
+		void Stabilize(){
+			rb.velocity = Vector3.zero;
+			upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 34, Time.deltaTime);
+			upForce.enabled = true;
 		}
 	}
 }
