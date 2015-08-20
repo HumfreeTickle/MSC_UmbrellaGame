@@ -83,6 +83,7 @@ public class GmaeManage : MonoBehaviour
 	public float transitionSpeed; // speed of transitions
 	public float _gameOverTimer; // 
 	public float _charge; // the umbrella's energy charge
+	public float progression = 1;
 
 	//Start script Stuff
 	private bool nextLevel; // has the transtion to Level-1 been activated
@@ -102,13 +103,19 @@ public class GmaeManage : MonoBehaviour
 		}
 	}
 
-	//Needs to be renamed to UmbrellaCharge or WindCharge
-	public float WindCharge {
+	// The total charge left in the umbrella
+	public float UmbrellaCharge {
 		get {
 			return _charge;
 		}
 		set {
 			_charge = value;
+		}
+	}
+
+	public float Progression{
+		get {
+			return progression;
 		}
 	}
 
@@ -125,6 +132,7 @@ public class GmaeManage : MonoBehaviour
 			return controllerTypeVertical;
 		}
 	}
+
 
 
 	//------------------------------------------ State Checks ------------------------------------------//
@@ -144,7 +152,6 @@ public class GmaeManage : MonoBehaviour
 	void Awake ()
 	{
 		//-------------------- For the different controllers ---------------------------------
-
 		if (Input.GetJoystickNames ().Length > 0) {// checks to see if a controller is connected
 			controllerType = ControllerType.ConsoleContoller;
 			controllerTypeVertical = "Vertical_L";

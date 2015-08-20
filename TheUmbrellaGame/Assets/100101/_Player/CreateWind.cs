@@ -13,6 +13,7 @@ namespace Player.PhysicsStuff
 		private GameObject instatiatedWind;
 		private Vector3 spawnDistance;
 		private float charge;
+		public float progression;
 		public float maxTerrainDistance = 1.0f;
 		private Material umbrellaColour;
 		private Vector3 baseUmbrella = new Vector3 (0f, -5f, 0f);
@@ -35,12 +36,13 @@ namespace Player.PhysicsStuff
 			umbrellaRb = this.gameObject.GetComponent<Rigidbody> ();
 
 			umbrellaColour = umbrella.transform.GetChild (0).GetComponent<Renderer> ().material;
-			charge = GameManager.WindCharge;
+			charge = GameManager.UmbrellaCharge;
 		}
 
 		void Update ()
 		{
-			charge = GameManager.WindCharge;
+			charge = GameManager.UmbrellaCharge;
+			progression = GameManager.Progression;
 
 			bounceBack = Mathf.Clamp (bounceBack, Mathf.NegativeInfinity, 0);
 			gameState = GameManager.gameState;
@@ -48,7 +50,7 @@ namespace Player.PhysicsStuff
 			if (gameState != GameState.Pause || gameState != GameState.GameOver) {
 				if (Input.GetButtonDown ("CrateWind") && charge >= 1) {
 					SummonWind ();
-					GameManager.WindCharge = Mathf.Clamp (Mathf.Lerp (GameManager.WindCharge, 0, Time.fixedDeltaTime * 10), 2, 100);
+					GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (GameManager.UmbrellaCharge, 0, Time.fixedDeltaTime * 10), 2, 100);
 				}
 
 //---------------- TURN OFF UPWARDFORCE ---------------------
@@ -74,10 +76,10 @@ namespace Player.PhysicsStuff
 
 					//------------- CONDITIONS ----------------------------
 					if (hit.collider.tag == "Terrain" && hit.distance < maxTerrainDistance) {
-						GameManager.WindCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 2, 100);
+						GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 2, 100);
 					} 
 				} else {
-					GameManager.WindCharge = Mathf.Lerp (charge, 0, Time.deltaTime);
+					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime/ progression);
 					umbrellaRb.AddForce (transform.TransformDirection (this.gameObject.transform.forward) * bounceBack);
 					//not really working. Need to try something else
 				}
