@@ -8,10 +8,11 @@ namespace NPC
 	public class NPC_TutorialMission : MonoBehaviour
 	{
 		public float talkingSpeed;
+
 		public float TalkingSpeed {
 
-			get{
-				return talkingSpeed/10;
+			get {
+				return talkingSpeed / 10;
 			}
 		}
 
@@ -36,9 +37,11 @@ namespace NPC
 			windmill = GameObject.Find ("windmill02");
 
 			cmaera = GameObject.Find ("Follow Camera");
-			umbrella =  cmaera.GetComponent<Controller> ().umbrella;
+			umbrella = cmaera.GetComponent<Controller> ().umbrella;
 
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
+			npc_Talking.fontSize = 30;
+
 			npc_TalkingBox = GameObject.Find ("NPC_TalkBox").GetComponent<Image> ();
 
 			cameraSet = cmaera.GetComponent<Controller> ().umbrella;
@@ -49,9 +52,12 @@ namespace NPC
 			tutorialMission = GetComponent<NPC_Interaction> ().TutorialMission;
 
 			if (tutorialMission) {
+				npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
 				if (!tutorialRunning) {
 					StartCoroutine (Tutotial_Mission ());
 				}
+			} else {
+				npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0f), Time.deltaTime);
 			}
 		}
 
@@ -60,6 +66,7 @@ namespace NPC
 			int x = 0;
 			int i = 0;
 
+			                                     
 			while (x < 2) {
 				tutorialRunning = true;
 				cmaera.GetComponent<GmaeManage> ().gameState = GameState.Talking;

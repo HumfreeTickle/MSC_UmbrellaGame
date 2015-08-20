@@ -33,16 +33,16 @@ namespace Player
 			}
 		}
 
-		void OnTriggerStay (Collider other)
-		{
-			if (other.gameObject.tag == "Interaction") {
-				if (Input.GetButtonDown ("Interact")) {
-					pickup = other.gameObject;
-					other.transform.parent = transform;
-					Landing.SetActive (true);
-					JumpKey = false;
-				}
-			}
-		}
+//		void OnTriggerStay (Collider other)
+//		{
+//			if (other.gameObject.tag == "Interaction") {
+//				if (Input.GetButtonDown ("Interact")) {
+//					pickup = other.gameObject;
+//					other.transform.parent = transform;
+////					Landing.SetActive (true);
+//					JumpKey = false;
+//				}
+//			}
+//		}
 	}
 }
