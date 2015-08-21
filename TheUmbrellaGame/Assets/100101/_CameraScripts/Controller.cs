@@ -113,7 +113,9 @@ namespace CameraScripts
 
 				} else if (gameState == GameState.Talking) {
 					umbrellaTr = umbrella.transform;
-					transform.LookAt (umbrellaTr);
+
+					Quaternion rotation = Quaternion.LookRotation(umbrellaTr.position - transform.position);
+					transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * (speed/2));
 				}
 			}
 				//-------------------------------------------- Camera Changes on Death -------------------------------------------------------//

@@ -162,7 +162,7 @@ namespace Player
 
 		//stops the umbrella from drifting away when she's chatting
 		void Stabilize(){
-			rb.velocity = Vector3.zero;
+			rb.velocity = Vector3.Lerp(rb.velocity, Vector3.zero, Time.fixedDeltaTime * 10);
 			upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 34, Time.deltaTime);
 			upForce.enabled = true;
 		}

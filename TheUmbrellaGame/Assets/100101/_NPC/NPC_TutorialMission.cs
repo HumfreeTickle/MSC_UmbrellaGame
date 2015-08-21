@@ -7,18 +7,34 @@ namespace NPC
 {
 	public class NPC_TutorialMission : MonoBehaviour
 	{
-		public float talkingSpeed;
 
+		//------------- Talking variables -----------------//
+		public float talkingSpeed;
 		public float TalkingSpeed {
 
 			get {
 				return talkingSpeed / 10;
 			}
 		}
+		public float delay;
 
 		//-------------- Tutorial Conditions ---------------//
+
+		//This is a mess
+		//*****
 		private bool tutorialMission;
 		private bool tutorialRunning;
+		private bool tutorialStarted;
+		public bool TutorialMission{
+			get{
+				return tutorialStarted;
+			}
+
+			set{
+				tutorialStarted = value;
+			}
+		}
+		//*****
 		//--------------------------------------------------// 
 
 		private GameObject windmill;
@@ -28,20 +44,18 @@ namespace NPC
 
 		//-------------- Talking Stuff ---------------//
 		private Text npc_Talking;
-		public Image npc_TalkingBox;
+		private Image npc_TalkingBox;
 		public string npc_Message = "Can you please help me restart the windmill?";
 		//--------------------------------------------//
 
 		void Start ()
 		{
 			windmill = GameObject.Find ("windmill02");
-
 			cmaera = GameObject.Find ("Follow Camera");
 			umbrella = cmaera.GetComponent<Controller> ().umbrella;
 
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
 			npc_Talking.fontSize = 30;
-
 			npc_TalkingBox = GameObject.Find ("NPC_TalkBox").GetComponent<Image> ();
 
 			cameraSet = cmaera.GetComponent<Controller> ().umbrella;
@@ -63,9 +77,10 @@ namespace NPC
 
 		IEnumerator Tutotial_Mission ()
 		{
+			//<Might have to add some more cases for when the player has finished the windmill section
+
 			int x = 0;
 			int i = 0;
-
 			                                     
 			while (x < 2) {
 				tutorialRunning = true;
@@ -80,7 +95,7 @@ namespace NPC
 					i += 1;
 
 					while (i >= npc_Message.Length + 1) {
-						yield return new WaitForSeconds (0.5f);
+						yield return new WaitForSeconds (delay);
 
 						i = 0;
 						x = 1;
@@ -96,7 +111,7 @@ namespace NPC
 
 					if (i >= npc_Message.Length + 1) {
 
-						yield return new WaitForSeconds (0.5f);
+						yield return new WaitForSeconds (delay);
 						npc_Message = "";
 						npc_TalkingBox.enabled = false;
 						npc_Talking.text = npc_Message;
@@ -115,15 +130,17 @@ namespace NPC
 
 			cameraSet = umbrella;
 			cmaera.GetComponent<Controller> ().umbrella = cameraSet;
-
+			tutorialStarted = true;
 			tutorialRunning = false;
 			GetComponent<NPC_Interaction> ().TutorialMission = false;
+
+			yield return new WaitForSeconds(1);
 
 			cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
 
 			StopCoroutine (Tutotial_Mission ());
 
-//			yield return null;
+			yield return null;
 		}
 	}
 }
