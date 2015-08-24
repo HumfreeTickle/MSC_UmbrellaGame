@@ -3,11 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class Tutuorial : MonoBehaviour
-{
-
-//------------------------------------------ Needs to be completely overhalled ------------------------------------------
-//------------------------------------------- "Don't leave half of the tutorial out" - Owen Harris, 2015 ------------------------------------------
-
+{	
 	public GmaeManage GameManager;
 	private Animator animator;
 	private int numberOfPresses;

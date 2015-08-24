@@ -5,34 +5,38 @@ namespace Environment
 {
 	public class TurnOnLight : MonoBehaviour
 	{
+		public bool LitUp = false;
+		private DayPhase day_Night;
+		private _CycleDayNight sun;
 
-
-		public bool LitUp;
-
-		// Use this for initialization
-		void Start ()
+		void Awake ()
 		{
-	
-			LitUp = false;
+			sun = GameObject.Find ("Sun").GetComponent<_CycleDayNight> ();
 		}
 
 		void Update ()
 		{
+			day_Night = sun.CurrentPhase;
 
-			if (LitUp) {
+			if (day_Night == DayPhase.Night || day_Night == DayPhase.Dusk) {
+				this.tag = "Interaction";
 
-				GetComponent<Light> ().enabled = true;
+				if (LitUp) {
+					GetComponent<Light> ().enabled = true;
+				}
+
+			} else {
+				this.tag = "Untagged";
+				GetComponent<Light> ().enabled = false;
 			}
 		}
-		// Update is called once per frame
 
-		void OnTriggerEnter (Collider other)
+		void OnTriggerEnter (Collider col)
 		{
-
-			if (other.gameObject.tag == "Player") {
-
-				LitUp = true;
-		
+			if (col.gameObject.tag == "Player") {
+				if (day_Night == DayPhase.Night || day_Night == DayPhase.Dusk) {
+					LitUp = true;
+				}
 			}
 		}
 	}

@@ -20,6 +20,7 @@ public enum GameState // sets what game state is currently being viewed
 	GameOver
 }
 
+//Might work better as a delegate
 public enum ControllerType
 {
 	NullState,
@@ -54,7 +55,7 @@ public class GmaeManage : MonoBehaviour
 //------------------------------------------- Inherited Classes ------------------------------------//
 
 	public FadeScript fading = new FadeScript ();
-
+	private NPCManage npcManager;
 //--------------------------------------------------------------------------------------------------//
 
 
@@ -195,7 +196,7 @@ public class GmaeManage : MonoBehaviour
 			WhiteScreen.color = Color.white;
 
 			backgroundMusic = GameObject.Find ("Music").GetComponent<AudioSource> ();
-
+			npcManager = this.GetComponent<NPCManage>();
 
 			if (!PauseScreen || !WhiteScreen) {
 				return;
@@ -220,7 +221,7 @@ public class GmaeManage : MonoBehaviour
 			}
 			EndGame ();
 		}
-
+		progression = Mathf.Clamp(progression + npcManager.MissionsComplete, 1, Mathf.Infinity);
 		CheckStates ();
 	}
 

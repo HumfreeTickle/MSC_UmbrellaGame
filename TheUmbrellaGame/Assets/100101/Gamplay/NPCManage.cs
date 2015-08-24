@@ -1,15 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NPCManage : MonoBehaviour {
+public class NPCManage: MonoBehaviour
+{
 
-	// Use this for initialization
-	void Start () {
-	
+	public int missionsComplete;
+
+	public int MissionsComplete {
+		get {
+			return missionsComplete;
+		}
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public bool windmillMisson;
+
+	public bool WindmillMission {
+		set {
+			windmillMisson = value;
+			missionsComplete += 1;
+		}
 	}
 }

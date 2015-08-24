@@ -16,24 +16,9 @@ namespace NPC
 		private AudioSource npcAudioSource;
 		private float timeToTalk; // time in between each audio call
 		List<AudioClip> musicalNotes = new List<AudioClip> ();
-
-		private bool tutorialMission;
-
-		/// <summary>
-		/// Gets or sets a value indicating whether this <see cref="NPC.NPC_Interaction"/> tutorial mission.
-		/// </summary>
-		/// <value><c>true</c> if tutorial mission; otherwise, <c>false</c>.</value>
-		public bool TutorialMission{
-
-			get{
-				return tutorialMission;
-			}
-
-			set{
-				tutorialMission = value;
-			}
-		}
-
+	
+		public delegate void MissionDelegation();
+		public MissionDelegation misssionDelegate;
 
 		void Start ()
 		{
@@ -60,9 +45,11 @@ namespace NPC
 		{
 			if (col.gameObject.tag == "Player") {
 				if (Input.GetButtonDown ("Talk")) {
+					if(misssionDelegate != null){
+						misssionDelegate();
+					}
 					if (!IsInvoking ("TalkBack")) {
 						Invoke ("TalkBack", 1);
-						tutorialMission = true;
 					}
 				}
 			}
@@ -73,6 +60,8 @@ namespace NPC
 			if (IsInvoking ("TalkBack")) {
 				CancelInvoke ("TalkBack");
 			}
+//			misssionDelegate = null;
+
 			timeToTalk = talkyTalk.length;
 		}
 

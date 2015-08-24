@@ -11,13 +11,14 @@ namespace Environment
 		public NPC_TutorialMission npc_TutorialMission;
 		public float blowforce;//the force that will be applied to the blowback from the windmill
 		private bool turning;
-		public bool tutorialMission;
+		private bool tutorialRunning;
+		private NPCManage npcManager = new NPCManage();
 	    
 		void Update ()
 		{
-			tutorialMission = npc_TutorialMission.TutorialMission;
+			tutorialRunning = npc_TutorialMission.TutorialRunning;
 
-			if (tutorialMission) {
+			if (this.tag == "Interaction") {
 				activeLight.enabled = true;
 			}
 
@@ -34,14 +35,15 @@ namespace Environment
 		void OnTriggerStay (Collider col)
 		{
 			if (col.gameObject.tag == "Player") {//if the umbrella interacts with the windmill
-				print ("Player1");
 				if (Input.GetButtonDown ("Interact")) {
-					print ("Clicked");
-					if (tutorialMission) {
+					if (tutorialRunning) {
 						rotation = true;//turn on the windmill
 						activeLight.enabled = false;
-						npc_TutorialMission.TutorialMission = false;
+						this.tag = "Untagged";
+						npc_TutorialMission.X = 3;
 						col.GetComponent<Rigidbody> ().AddForce (col.transform.forward * -1 * blowforce);//blow back the umbrella
+						npcManager.WindmillMission = true;
+						npc_TutorialMission.TutorialRunning = false;
 					}
 				}
 			}
