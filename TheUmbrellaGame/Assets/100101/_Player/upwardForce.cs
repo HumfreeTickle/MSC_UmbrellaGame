@@ -5,19 +5,16 @@ namespace Player
 {
 	public class upwardForce : MonoBehaviour
 	{
-
 		public GmaeManage gameManager;
 		public float upwardsforce;
 		private Rigidbody rb;
 		public float conterBalance = 1;
 		private float sw;
 		public float sine;
-		public ForceMode theForce;
 
 		void Start ()
 		{
 			rb = GetComponent<Rigidbody> ();
-
 		}
 	
 		void FixedUpdate ()
@@ -25,7 +22,7 @@ namespace Player
 			if (gameManager.gameState != GameState.Pause) {
 				SineWave ();
 				Vector3 force = Vector3.up * upwardsforce;
-				rb.AddForce (force, theForce);
+				rb.AddForce (force);
 			}
 		}
 
