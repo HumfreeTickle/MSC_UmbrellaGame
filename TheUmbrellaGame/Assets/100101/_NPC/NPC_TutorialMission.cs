@@ -164,7 +164,8 @@ namespace NPC
 					npc_Message = "Can I ask you for one more favour. My friends cat is stuck in a tree";
 					npc_Talking.text = (npc_Message.Substring (0, i));
 					cameraSet = cat;
-					cat.tag = "Interaction";
+					cat.transform.Find("Activate").GetComponent<Light>().enabled = true;
+					cat.tag = "Pickup";
 					
 					cmaera.GetComponent<Controller> ().umbrella = cameraSet;
 					i += 1;
