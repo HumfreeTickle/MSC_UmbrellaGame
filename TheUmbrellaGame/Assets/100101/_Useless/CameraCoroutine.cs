@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Uesless
+namespace Useless
 {
 	public class CameraCoroutine : MonoBehaviour
 	{

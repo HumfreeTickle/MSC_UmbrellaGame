@@ -213,6 +213,7 @@ public class GmaeManage : MonoBehaviour
 			StartGame ();
 
 		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
+			progression = Mathf.Clamp(progression + npcManager.MissionsComplete, 1, Mathf.Infinity);
 
 			RestartGame ();
 
@@ -221,7 +222,6 @@ public class GmaeManage : MonoBehaviour
 			}
 			EndGame ();
 		}
-		progression = Mathf.Clamp(progression + npcManager.MissionsComplete, 1, Mathf.Infinity);
 		CheckStates ();
 	}
 

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-namespace Uselsss
+namespace Useless
 {
 	public class TheFollower : MonoBehaviour
 	{

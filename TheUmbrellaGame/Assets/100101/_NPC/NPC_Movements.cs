@@ -5,12 +5,14 @@ namespace NPC
 {
 	public class NPC_Movements : MonoBehaviour
 	{
-
+//		[RequireComponent (typeof (NavMeshAgent))]
 		private NavMeshAgent npcNavMeshAgent;
 		public Transform waypoint1;
 		public Transform waypoint2;
 		public Transform destination;
 		public GameObject lasthit;
+		private NPC_Class npc_class = new NPC_Class ();
+
 
 //--------------------------------------------------- Sets up all the relevent stuff ------------------------------------------
 
@@ -47,24 +49,6 @@ namespace NPC
 			} else {
 				destination = waypoint1;
 			}
-		}
-
-//--------------------------------------------------- Was supposed to stop the NPC from constantly walking into walls ------------------------------------------
-	
-		void OnCollisionEnter (Collision col)
-		{
-//		print (this.gameObject + " hit " + col.gameObject);
-			lasthit = col.gameObject;
-			if (col.gameObject != lasthit || col.gameObject == null) {
-				npcNavMeshAgent.Stop ();
-				if (destination == waypoint1) {
-					destination = waypoint2;
-				} else {
-					destination = waypoint1;
-				}
-				npcNavMeshAgent.Resume ();
-			}
-
 		}
 	}
 }

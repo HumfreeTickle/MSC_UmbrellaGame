@@ -10,34 +10,33 @@ namespace NPC
 		public AudioClip e_AudioClip;
 		public AudioClip g_AudioClip;
 		public AudioClip b_AudioClip;
-//		public GameObject musicalNote;
-
-		private AudioClip talkyTalk;
+		private float talktime;
 		private AudioSource npcAudioSource;
-		private float timeToTalk; // time in between each audio call
-		List<AudioClip> musicalNotes = new List<AudioClip> ();
 	
-		public delegate void MissionDelegation();
+
+		public delegate void MissionDelegation ();
+
 		public MissionDelegation misssionDelegate;
+		private NPC_Class npc_class = new NPC_Class ();
 
 		void Start ()
 		{
-			musicalNotes.Add (c_AudioClip);
-			musicalNotes.Add (e_AudioClip);
-			musicalNotes.Add (g_AudioClip);
-			musicalNotes.Add (b_AudioClip);
-
-			talkyTalk = c_AudioClip;
-			timeToTalk = talkyTalk.length;
 			npcAudioSource = GetComponent<AudioSource> ();
 		}
 	
 		void OnTriggerEnter (Collider col)
 		{
+//			Debug.Log(npc_class.coroutineRunning);
+			talktime = Random.Range (3, 5);
 			if (col.gameObject.tag == "Player") {
-				if (!IsInvoking ("TalkBack")) {
-					Invoke ("TalkBack", talkyTalk.length / timeToTalk);
+				if (!npc_class.coroutineRunning) {
+					npc_class.coroutineRunning = true;
+					StartCoroutine (npc_class.Talk (talktime, npcAudioSource, c_AudioClip, e_AudioClip, g_AudioClip, b_AudioClip));
 				}
+			}
+			if (col.gameObject.tag == "NPC") {
+				StartCoroutine (npc_class.Talk (talktime, npcAudioSource, c_AudioClip, e_AudioClip, g_AudioClip, b_AudioClip));
+				// stop whatever they're doing
 			}
 		}
 
@@ -45,11 +44,8 @@ namespace NPC
 		{
 			if (col.gameObject.tag == "Player") {
 				if (Input.GetButtonDown ("Talk")) {
-					if(misssionDelegate != null){
-						misssionDelegate();
-					}
-					if (!IsInvoking ("TalkBack")) {
-						Invoke ("TalkBack", 1);
+					if (misssionDelegate != null) {
+						misssionDelegate ();
 					}
 				}
 			}
@@ -57,29 +53,8 @@ namespace NPC
 
 		void OnTriggerExit ()
 		{
-			if (IsInvoking ("TalkBack")) {
-				CancelInvoke ("TalkBack");
-			}
-//			misssionDelegate = null;
-
-			timeToTalk = talkyTalk.length;
-		}
-
-		void TalkBack ()
-		{
-//			int i = Mathf.RoundToInt(Random.Range(0, 3));
-//			talkyTalk = musicalNotes[i];
-//			Instantiate(musicalNote, transform.position, Quaternion.identity);
-
-			float n = Mathf.Floor (Random.Range (-1, 1));
-			float j = Mathf.Pow (1.05946f, (12 * n));
-
-//-------------- time in between each audio call, need to actually make this in time ----------------------------------------------//
-			timeToTalk = Random.Range (1, 5);
-
-//			print ("Note: " + talkyTalk);
-			npcAudioSource.pitch = j;
-			npcAudioSource.PlayOneShot (talkyTalk, 1f);
+//			Debug.Log(npc_class.coroutineRunning);
+			npc_class.coroutineRunning = false;
 		}
 	}
 }

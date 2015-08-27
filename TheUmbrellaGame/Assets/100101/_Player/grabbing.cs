@@ -5,44 +5,59 @@ namespace Player
 {
 	public class grabbing : MonoBehaviour
 	{
-		private Rigidbody umbrellaBody;
-		private GameObject pickup;
-		public GameObject Landing;
-		public bool JumpKey;
+		public GameObject pickup;
+		public Transform originalParent;
 
 		void Update ()
 		{
-			if (transform.childCount > 0) {
-
+			if (pickup != null) {
 				if (Input.GetButtonDown ("Interact")) {
-					JumpKey = !JumpKey;
+					if (Input.GetButtonDown ("Interact")) {
+						if (!IsInvoking ("Pickup")) {
+							Invoke ("Pickup", 0);
+						}
+					}
 				}
-
-				Detachment ();
+			}
+			if (transform.childCount > 0) {
+				if (Input.GetButtonDown ("Interact")) {
+					if (!IsInvoking ("Detachment")) {
+						Invoke ("Detachment", 0);
+					}
+				}
 			}
 		}
-		
+
+		void Pickup ()
+		{
+			pickup.transform.parent = transform;
+			pickup.transform.localPosition = Vector3.zero;
+			if(pickup.GetComponent<Rigidbody>()){
+				Destroy (pickup.GetComponent<Rigidbody>());
+			}
+		}
+
 		void Detachment ()
 		{
-			if (JumpKey == true) {
-				transform.DetachChildren ();
-				if (!pickup.GetComponent<Rigidbody> ()) {
-					pickup.AddComponent<Rigidbody> ();
-				}
-				Landing.SetActive (false);
+			transform.DetachChildren ();
+			pickup.transform.parent = originalParent;
+			pickup.AddComponent<Rigidbody>();
+		}
+
+		void OnTriggerEnter (Collider col)
+		{
+			if (col.gameObject.tag == "Interaction") {
+				pickup = col.gameObject;
+				originalParent = pickup.transform.parent;
 			}
 		}
 
-//		void OnTriggerStay (Collider other)
-//		{
-//			if (other.gameObject.tag == "Interaction") {
-//				if (Input.GetButtonDown ("Interact")) {
-//					pickup = other.gameObject;
-//					other.transform.parent = transform;
-////					Landing.SetActive (true);
-//					JumpKey = false;
-//				}
-//			}
-//		}
+		void OnTriggerExit (Collider col)
+		{
+			if (col.gameObject.tag == "Interaction") {
+				pickup = null;
+				originalParent = null;
+			}
+		}
 	}
 }

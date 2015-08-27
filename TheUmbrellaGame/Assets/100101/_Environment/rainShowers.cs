@@ -18,8 +18,8 @@ namespace Environment
 		private Quaternion cloudRotation;
 		private GameObject newCloud;
 		private float _expire;
-		private float _whenShoulditRain;
-		private WhenShouldItRain theClouds;
+//		private float _whenShoulditRain;
+//		private WhenShouldItRain theClouds;
 	
 
 		//Needs to rain only for a little bit then slowly stop
@@ -28,19 +28,19 @@ namespace Environment
 		{
 			cloudColor = GetComponent<MeshRenderer> ().materials [0];
 			originalCloudSize = transform.localScale;
-			theClouds = GameObject.Find ("Clouds").GetComponent<WhenShouldItRain> ();
+//			theClouds = GameObject.Find ("Clouds").GetComponent<WhenShouldItRain> ();
 		}
 	
 		// Update is called once per frame
 		void Update ()
 		{  
-			_whenShoulditRain = theClouds.WhenToRain;
-			if (_whenShoulditRain < 60) {
-			
-			}
-			if (_whenShoulditRain >= 60) {
-				ChangeColour ();
-			}
+//			_whenShoulditRain = theClouds.WhenToRain;
+//			if (_whenShoulditRain < 60) {
+//			
+//			}
+//			if (_whenShoulditRain >= 60) {
+//				ChangeColour ();
+//			}
 		}
 
 //--------------------------------------------------- Darkens the clouds ------------------------------------------
@@ -95,7 +95,7 @@ namespace Environment
 				} 
 				if (transform.localScale.x < originalCloudSize.x) {
 					_timer = 0;
-					_whenShoulditRain = 0;
+//					_whenShoulditRain = 0;
 					raining = false;
 				}
 			}

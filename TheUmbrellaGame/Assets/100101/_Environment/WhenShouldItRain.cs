@@ -16,13 +16,13 @@ namespace Environment
 		public GameObject nightTimeSaunter; //nighttime sound
 
 		// private functions shhhhhh ------------//
-		private float whenToRain;
-
-		public float WhenToRain {
-			get {
-				return whenToRain;
-			}
-		}
+//		private float whenToRain;
+//
+//		public float WhenToRain {
+//			get {
+//				return whenToRain;
+//			}
+//		}
 
 		void Update ()
 		{
