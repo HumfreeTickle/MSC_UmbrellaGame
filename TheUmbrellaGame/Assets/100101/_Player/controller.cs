@@ -32,7 +32,6 @@ namespace Player
 		private float handleMass;
 		public float forceAppliedToTilt; // used for tilting purposes
 		public float speed;
-		public float floating;
 		public float turningSpeed;
 		public float keyheld;
 

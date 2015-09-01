@@ -208,7 +208,7 @@ namespace Environment
 		{  
 			RenderSettings.ambientLight = fullDark;  
 			if (sun != null) {
-				sun.enabled = false;
+//				sun.enabled = false;
 			}  
 			currentPhase = DayPhase.Night;  
 			if (RenderSettings.skybox != night) {
@@ -247,16 +247,27 @@ namespace Environment
 		{  
 			if (currentPhase == DayPhase.Dawn) {  
 				float relativeTime = currentCycleTime - dawnTime;  
-				RenderSettings.fogColor = Color.Lerp (dawnDuskFog, dayFog, relativeTime / halfquarterDay);  
+//				RenderSettings.fogColor = Color.Lerp (dawnDuskFog, dayFog, relativeTime / halfquarterDay);  
+				sun.color = Color.Lerp (dawnDuskFog, dayFog, relativeTime / halfquarterDay);  
+
 			} else if (currentPhase == DayPhase.Day) {  
 				float relativeTime = currentCycleTime - dayTime;  
-				RenderSettings.fogColor = Color.Lerp (dayFog, dawnDuskFog, relativeTime / (quarterDay + halfquarterDay));  
+//				RenderSettings.fogColor = Color.Lerp (dayFog, dawnDuskFog, relativeTime / (quarterDay + halfquarterDay));  
+				sun.color = Color.Lerp (dayFog, dawnDuskFog, relativeTime / (quarterDay + halfquarterDay));  
+
+
 			} else if (currentPhase == DayPhase.Dusk) {  
 				float relativeTime = currentCycleTime - duskTime;  
-				RenderSettings.fogColor = Color.Lerp (dawnDuskFog, nightFog, relativeTime / halfquarterDay);  
+//				RenderSettings.fogColor = Color.Lerp (dawnDuskFog, nightFog, relativeTime / halfquarterDay);  
+				sun.color = Color.Lerp (dawnDuskFog, nightFog, relativeTime / halfquarterDay);  
+
+
 			} else if (currentPhase == DayPhase.Night) {  
 				float relativeTime = currentCycleTime - nightTime;  
-				RenderSettings.fogColor = Color.Lerp (nightFog, dawnDuskFog, relativeTime / (quarterDay + halfquarterDay));  
+//				RenderSettings.fogColor = Color.Lerp (nightFog, dawnDuskFog, relativeTime / (quarterDay + halfquarterDay)); 
+				sun.color = Color.Lerp (nightFog, dawnDuskFog, relativeTime / (quarterDay + halfquarterDay)); 
+
+
 			}  
 		}  
 	

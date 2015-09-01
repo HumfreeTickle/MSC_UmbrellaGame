@@ -5,8 +5,15 @@ using UnityEngine.UI;
 public class Tutuorial : MonoBehaviour
 {	
 	public GmaeManage GameManager;
+	public GameObject activate;
+	private GameObject activateNode;
+	//---------------- Positions of waypoints ------------//
+	public Transform movementTutorialPos;
+	public Transform upTutorialPos;
+	public Transform downTutorialPos;
+	public Transform NPCTutorial;
+	//----------------------------------------------------//
 	private Animator animator;
-	private int numberOfPresses;
 	private int x;
 
 	public int X {
@@ -18,16 +25,40 @@ public class Tutuorial : MonoBehaviour
 		}
 	}
 
-	public float _time = 0;
 	public Sprite frontPS3;
 	public Sprite backPS3;
 	private Image tutorialImage;
+	public bool movementDone;
 
-	void Start ()
+	void Awake ()
 	{
 		tutorialImage = GetComponent<Image> ();
 		tutorialImage.sprite = frontPS3;
 		animator = GetComponent<Animator> ();
+
+		//---------FailSafes----------//
+		if (!activate) {
+			return;
+		}
+		if (!movementTutorialPos) {
+			Debug.Log ("movementTutorialPos");
+			return;
+		} else if (!upTutorialPos) {
+			Debug.Log ("upTutorialPos");
+			return;
+		} else if (!downTutorialPos) {
+			Debug.Log ("downTutorialPos");
+			return;
+		} else if (!NPCTutorial) {
+			Debug.Log ("NPCTutorial");
+			return;
+		}
+		//----------------------------//
+
+		activateNode = Instantiate (activate, movementTutorialPos.position, Quaternion.identity) as GameObject;
+		activateNode.transform.parent = this.transform;
+		activateNode.GetComponent<Light> ().intensity = 0;
+		activateNode.GetComponent<Light> ().enabled = false;
 	}
 	
 	void Update ()
@@ -59,6 +90,10 @@ public class Tutuorial : MonoBehaviour
 			} else {
 				GetComponent<Image> ().enabled = true;
 			}
+
+			if (movementDone) {
+				activateNode.GetComponent<Light> ().intensity = Mathf.Lerp (activateNode.GetComponent<Light> ().intensity, 0, Time.deltaTime*10);
+			}
 		}
 	}
 
@@ -70,43 +105,31 @@ public class Tutuorial : MonoBehaviour
 
 		case 0: // Movement
 			tutorialImage.sprite = frontPS3;
-			animator.SetBool ("Controller", false);
-			if (Mathf.Abs (Input.GetAxis ("Vertical_L")) > 0.1f || Mathf.Abs (Input.GetAxis ("Horizontal_L")) > 0.1f) {
-				_time += Time.deltaTime;
-				if (_time > 5) {
-					x = 1;
-					_time = 0;
-					animator.SetBool ("Controller", true);
-				}
-			}
+			activateNode.transform.position = movementTutorialPos.position;
+			activateNode.GetComponent<Light> ().enabled = true;
+			activateNode.GetComponent<Light> ().intensity = Mathf.Lerp (activateNode.GetComponent<Light> ().intensity, 4, Time.deltaTime);
+
 			break;
 
 		case 1: //R2
+			activateNode.transform.position = upTutorialPos.position;
 			tutorialImage.sprite = backPS3;
 			animator.SetBool ("Controller", true);
-			if (Input.GetButtonDown ("CrateWind")) {
-				x = 2;
-			}
+
 			break;
 			
 		case 2: //L2
 			tutorialImage.sprite = backPS3;
 			animator.SetBool ("Controller", true);
-			if (Input.GetButtonUp ("DropFromSky")) {
+			activateNode.transform.position = downTutorialPos.position;
 
-				numberOfPresses += 1;
-
-				if (numberOfPresses >= 2) {
-					x = 5;
-				}
-			}
 			break;
 
 		case 3: //R1
 			tutorialImage.sprite = backPS3;
 			animator.SetBool ("Controller", true);
-
 			if (Input.GetButtonDown ("Interact")) {
+				movementDone = true;
 				x = 5;
 			}
 			break;
@@ -115,11 +138,15 @@ public class Tutuorial : MonoBehaviour
 			tutorialImage.sprite = backPS3;
 			animator.SetBool ("Controller", true);
 			if (Input.GetButtonDown ("Talk")) {
+				movementDone = true;
 				x = 5;
 			}
 			break;
 
 		case 5: //Default blank state
+			if (!movementDone) {
+				activateNode.transform.position = NPCTutorial.position;
+			}
 			break;
 		default: //Fail safe
 			break;

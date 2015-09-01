@@ -5,7 +5,7 @@ namespace Player
 {
 	public class grabbing : MonoBehaviour
 	{
-		public GameState gamemanager;
+		private GameState gamemanager; //only for demo purposes
 		private GameObject pickupObject;
 		private Transform originalParent;
 		public float z;
@@ -39,6 +39,7 @@ namespace Player
 			} else if (pickupObject.GetComponent<SphereCollider> ()) {
 				pickupObject.GetComponent<SphereCollider> ().enabled = false;
 			}
+
 			pickupObject.transform.parent = transform;
 			pickupObject.transform.localPosition = Vector3.zero - new Vector3 (0, 0, z);
 			if (pickupObject.GetComponent<Rigidbody> ()) {
@@ -61,6 +62,7 @@ namespace Player
 			} else if (pickupObject.GetComponent<SphereCollider> ()) {
 				pickupObject.GetComponent<SphereCollider> ().enabled = true;
 			}
+	
 			transform.DetachChildren ();
 			pickupObject.transform.parent = originalParent;
 			pickupObject.AddComponent<Rigidbody> ();
