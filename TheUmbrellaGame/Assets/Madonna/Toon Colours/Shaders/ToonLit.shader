@@ -2,17 +2,19 @@ Shader "Toon/Lit" {
 	Properties {
 		_Color ("Main Color", Color) = (0.5,0.5,0.5,1)
 		_MainTex ("Base (RGB)", 2D) = "white" {}
+		_NormalMap ("Normalmap", 2D) = "bump" {}
 		_Ramp ("Toon Ramp (RGB)", 2D) = "gray" {} 
 	}
 
 	SubShader {
 		Tags { "RenderType"="Opaque" }
-		LOD 200
+		LOD 300
 		
 CGPROGRAM
 #pragma surface surf ToonRamp
 
 sampler2D _Ramp;
+sampler2D _NormalMap;
 
 // custom lighting function that uses a texture ramp based
 // on angle between light direction and normal
@@ -32,7 +34,6 @@ inline half4 LightingToonRamp (SurfaceOutput s, half3 lightDir, half atten)
 	return c;
 }
 
-
 sampler2D _MainTex;
 float4 _Color;
 
@@ -42,7 +43,10 @@ struct Input {
 
 void surf (Input IN, inout SurfaceOutput o) {
 	half4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
+	
 	o.Albedo = c.rgb;
+    o.Normal = UnpackNormal(tex2D(_NormalMap, IN.uv_MainTex));
+//	o.Normal = tex2D(_NormalTex, IN.uv_MainTex).xyz;
 	o.Alpha = c.a;
 }
 ENDCG

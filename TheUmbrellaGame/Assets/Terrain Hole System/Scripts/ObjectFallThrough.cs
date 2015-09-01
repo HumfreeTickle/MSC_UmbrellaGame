@@ -33,6 +33,7 @@ public class ObjectFallThrough : MonoBehaviour
 		if (m_autoAddTerrainObjects && col.collider is TerrainCollider && col.transform.GetComponent<TerrainTransparency>() && !m_terrainObjectList.Contains(col.collider.gameObject))
 			AddTerrainObjectToList(col.collider.gameObject);
 	}
+
 	void OnCollisionEnter(Collision col) // if using a regular collider
 	{		
 		if (m_autoAddTerrainObjects && col.GetComponent<Collider>() is TerrainCollider && col.transform.GetComponent<TerrainTransparency>() && !m_terrainObjectList.Contains(col.GetComponent<Collider>().gameObject))
