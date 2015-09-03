@@ -15,7 +15,7 @@ namespace Player.PhysicsStuff
 		private float charge;
 		public float progression;
 		public float maxTerrainDistance = 1.0f;
-		private Material umbrellaColour;
+		public Material umbrellaColour;
 		private Vector3 baseUmbrella = new Vector3 (0f, -5f, 0f);
 		private GameObject umbrella;
 		private Rigidbody umbrellaRb;
@@ -24,7 +24,7 @@ namespace Player.PhysicsStuff
 
 		public RaycastHit RaycastingInfo {
 			get {
-					return hit;
+				return hit;
 			}
 		}
 
@@ -34,8 +34,6 @@ namespace Player.PhysicsStuff
 			gameState = GameManager.gameState;
 			umbrella = GameObject.Find ("Umbrella");
 			umbrellaRb = this.gameObject.GetComponent<Rigidbody> ();
-
-			umbrellaColour = umbrella.transform.GetChild (0).GetComponent<Renderer> ().material;
 			charge = GameManager.UmbrellaCharge;
 		}
 
@@ -44,7 +42,7 @@ namespace Player.PhysicsStuff
 			charge = GameManager.UmbrellaCharge;
 			progression = GameManager.Progression;
 
-			bounceBack = Mathf.Clamp (bounceBack, Mathf.NegativeInfinity, 0);
+			bounceBack = Mathf.Clamp (bounceBack, 0, Mathf.Infinity);
 			gameState = GameManager.gameState;
 
 			if (gameState != GameState.Pause || gameState != GameState.GameOver) {
@@ -59,10 +57,7 @@ namespace Player.PhysicsStuff
 				} 
 
 //---------------------------- COLOUR CHANGING ------------------------------------------------------------------------
-
-				Color newUmbrellaColour = Vector4.Lerp (umbrellaColour.color, new Vector4 (charge / 100, charge / 100, charge / 100, 1), Time.deltaTime * (charge + 1)); 
-
-				umbrellaColour.SetColor ("_Color", newUmbrellaColour);
+//				ChangeColours(umbrella.transform);
 
 
 //---------------------------- RAYCASTING STUFF -----------------------------------------------------------------------
@@ -72,15 +67,16 @@ namespace Player.PhysicsStuff
 				if (Physics.Raycast (transform.position + baseUmbrella, downRayDown, out hit, Mathf.Infinity)) {
 
 					//------------- DEBUGGING -----------------------------
-					Debug.DrawRay (transform.position + baseUmbrella, downRayDown, Color.green, Mathf.Infinity, false);
+					Debug.DrawRay (transform.position + baseUmbrella, downRayDown, Color.green, 10, false);
 
 					//------------- CONDITIONS ----------------------------
 					if (hit.collider.tag == "Terrain" && hit.distance < maxTerrainDistance) {
-						GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 2, 100);
+						GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 0, 100);
 					} 
 				} else {
-					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime/ progression);
-					umbrellaRb.AddForce (transform.TransformDirection (this.gameObject.transform.forward) * bounceBack);
+					print ("stop");
+					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime / progression);// progress :)
+					umbrellaRb.AddForce (/*transform.TransformDirection (this.gameObject.transform.forward) */ (-bounceBack) * umbrellaRb.velocity);
 					//not really working. Need to try something else
 				}
 			}
@@ -88,7 +84,22 @@ namespace Player.PhysicsStuff
 
 
 //----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
-	
+		void ChangeColours (Transform obj)
+		{
+			for (int child = 0; child< obj.childCount; child++) { //goes through each child object one at a time
+				if (obj.GetChild (child).transform.childCount > 0) {
+					ChangeColours (obj.GetChild (child));
+				} else {
+					if (obj.GetChild (child).GetComponent<MeshRenderer> ()) { // checks to see if there is a mesh renderer attached to child
+						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
+//						Color childColor = umbrellaChild.material.color;
+//						umbrellaColour = new Color(childColor[0]/charge *255, childColor[1]/charge *255, childColor[2]/charge *255, childColor[3]/charge *255);
+//						Color chargeColour = Color.Lerp(umbrellaChild.material.color, umbrellaColour, Time.deltaTime);
+						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime);
+					}
+				}
+			}
+		}
 
 		void SummonWind ()
 		{

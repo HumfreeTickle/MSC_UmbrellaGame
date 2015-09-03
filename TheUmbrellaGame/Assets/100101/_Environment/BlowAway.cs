@@ -7,7 +7,6 @@ namespace Environment
 	{
 
 		public float blow;
-		public Vector3 way;
 
 		//-------------------------------------- Spins the windmill blade ---------------------------------------------
 
@@ -23,7 +22,7 @@ namespace Environment
 		{
 
 			if (other.gameObject.tag == "Player") {
-				other.GetComponent<Rigidbody> ().AddForce (blow * way);//blow back the umbrella
+				other.GetComponent<Rigidbody> ().AddForce (blow * other.GetComponent<Rigidbody> ().velocity);//blow back the umbrella
 			}
 		}
 	}
