@@ -5,6 +5,8 @@ namespace NPC
 {
 	public class TheFollower : MonoBehaviour
 	{
+		//--- no idea what this is for ??????? ---//
+
 
 		Transform THEtarget;
 		public float maxRange;

@@ -13,6 +13,16 @@ namespace CameraScripts
 		//----------------- UmbrellaStuff ---------------//
 		public GameObject umbrella;
 		private Transform umbrellaTr;
+		public Transform UmbrellaTransform{
+			get{
+				return umbrellaTr;
+			}
+
+			set{
+				umbrellaTr = value;
+			}
+		}
+
 		private Rigidbody umbrellaRb;
 		//-----------------------------------------------//
 
@@ -115,7 +125,7 @@ namespace CameraScripts
 					umbrellaTr = umbrella.transform;
 
 					Quaternion rotation = Quaternion.LookRotation(umbrellaTr.position - transform.position);
-					transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * (speed/2));
+					transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * (speed/10));
 				}
 			}
 				//-------------------------------------------- Camera Changes on Death -------------------------------------------------------//

@@ -34,7 +34,7 @@ namespace Player
 		public float speed;
 		public float turningSpeed;
 		public float keyheld;
-
+		public float slowDownSpeed = 1.2f;
 //	------------------------------------
 		private string controllerTypeVertical;
 		private string controllerTypeHorizontal;
@@ -99,6 +99,11 @@ namespace Player
 			if (Mathf.Abs (Input.GetAxis (controllerTypeHorizontal)) > 0) { //This shoould rotate the player rather than move sideways
 				rb.AddTorque (transform.up * Input.GetAxis (controllerTypeHorizontal) * turningSpeed, rotationForce);
 
+			}
+
+			if (!Input.anyKeyDown) {
+				rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * slowDownSpeed);
+				rb.angularVelocity = Vector3.Lerp (rb.angularVelocity, Vector3.zero, Time.fixedDeltaTime * 10);
 			}
 		}
 		

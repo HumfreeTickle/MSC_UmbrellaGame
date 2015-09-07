@@ -5,7 +5,7 @@ namespace Player
 {
 	public class grabbing : MonoBehaviour
 	{
-		private GameState gamemanager; //only for demo purposes
+//		private GameState gamemanager; //only for demo purposes
 		private GameObject pickupObject;
 		private Transform originalParent;
 		public float z;
@@ -86,7 +86,7 @@ namespace Player
 
 		void DEMO ()
 		{
-			gamemanager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>().gameState = GameState.GameOver;
+			GameObject.Find("Follow Camera").GetComponent<GmaeManage>().gameState = GameState.GameOver;
 		}
 	}
 }

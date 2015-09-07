@@ -5,6 +5,9 @@ namespace NPC
 {
 	public class NPC_Movements : MonoBehaviour
 	{
+		//There is some function that solves the whole "not being able to fully reach their destination"
+		//I can probably add the wandering script to this as well and mishmash it up
+
 //		[RequireComponent (typeof (NavMeshAgent))]
 		private NavMeshAgent npcNavMeshAgent;
 		public Transform waypoint1;

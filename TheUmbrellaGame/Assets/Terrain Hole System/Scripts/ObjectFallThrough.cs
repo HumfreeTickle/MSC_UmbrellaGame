@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public enum FallThroughColliders
 {	
@@ -21,7 +22,16 @@ public class ObjectFallThrough : MonoBehaviour
 	List<GameObject> m_terrainObjectList = new List<GameObject>();
 	List<TerrainData> m_terrainDataList = new List<TerrainData>();
 	List<bool> m_fallenThroughList = new List<bool>();
-	
+
+//	private bool CheckForError(){
+//		try{
+//
+//		}
+//		catch(Exception e){
+//
+//		}
+//	}
+
 	void Start()
 	{
 		foreach(GameObject terrainObject in m_terrainObjects)

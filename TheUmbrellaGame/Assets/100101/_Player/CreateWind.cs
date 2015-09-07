@@ -47,7 +47,9 @@ namespace Player.PhysicsStuff
 
 			if (gameState != GameState.Pause || gameState != GameState.GameOver) {
 				if (Input.GetButtonDown ("CrateWind") && charge >= 1) {
-					SummonWind ();
+					if (this.transform.childCount < 1) {
+						SummonWind ();
+					}
 					GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (GameManager.UmbrellaCharge, 0, Time.fixedDeltaTime * 10), 2, 100);
 				}
 
@@ -76,7 +78,7 @@ namespace Player.PhysicsStuff
 				} else {
 					print ("stop");
 					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime / progression);// progress :)
-					umbrellaRb.AddForce (/*transform.TransformDirection (this.gameObject.transform.forward) */ (-bounceBack) * umbrellaRb.velocity);
+					umbrellaRb.AddForce (/*transform.TransformDirection (this.gameObject.transform.forward) */(-bounceBack) * umbrellaRb.velocity);
 					//not really working. Need to try something else
 				}
 			}

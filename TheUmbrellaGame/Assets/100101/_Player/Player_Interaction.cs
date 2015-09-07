@@ -16,7 +16,7 @@ namespace Player
 			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
 		}
 	
-		void OnTriggerStay (Collider col)
+		void OnTriggerEnter (Collider col)
 		{
 			if (helloTutorial) {
 				if (col.gameObject.tag == "NPC") {

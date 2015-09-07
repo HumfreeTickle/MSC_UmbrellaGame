@@ -2,7 +2,7 @@
 using System.Collections;
 
 //---------------------------- Needs to be only when the Player leaves the island rather then a Trigger Event --------------------------------------------------
-
+//---------------------------- This has been moved to I think the player controller script so I can get rid of it --------------------------------
 
 namespace Environment
 {

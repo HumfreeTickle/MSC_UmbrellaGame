@@ -20,7 +20,6 @@ namespace Player
 		void Update ()
 		{
 			transform.LookAt (GameObject.Find ("main_Sphere").transform);
-			umbrellaFalls ();
 			destroyObject.DestroyOnTimer(this.gameObject, 5f);
 		}
 
