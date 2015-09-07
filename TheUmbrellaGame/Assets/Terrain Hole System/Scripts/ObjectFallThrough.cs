@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System;
 
 public enum FallThroughColliders
 {	
@@ -21,7 +22,16 @@ public class ObjectFallThrough : MonoBehaviour
 	List<GameObject> m_terrainObjectList = new List<GameObject>();
 	List<TerrainData> m_terrainDataList = new List<TerrainData>();
 	List<bool> m_fallenThroughList = new List<bool>();
-	
+
+//	private bool CheckForError(){
+//		try{
+//
+//		}
+//		catch(Exception e){
+//
+//		}
+//	}
+
 	void Start()
 	{
 		foreach(GameObject terrainObject in m_terrainObjects)
@@ -33,10 +43,11 @@ public class ObjectFallThrough : MonoBehaviour
 		if (m_autoAddTerrainObjects && col.collider is TerrainCollider && col.transform.GetComponent<TerrainTransparency>() && !m_terrainObjectList.Contains(col.collider.gameObject))
 			AddTerrainObjectToList(col.collider.gameObject);
 	}
+
 	void OnCollisionEnter(Collision col) // if using a regular collider
 	{		
-		if (m_autoAddTerrainObjects && col.collider is TerrainCollider && col.transform.GetComponent<TerrainTransparency>() && !m_terrainObjectList.Contains(col.collider.gameObject))
-			AddTerrainObjectToList(col.collider.gameObject);
+		if (m_autoAddTerrainObjects && col.GetComponent<Collider>() is TerrainCollider && col.transform.GetComponent<TerrainTransparency>() && !m_terrainObjectList.Contains(col.GetComponent<Collider>().gameObject))
+			AddTerrainObjectToList(col.GetComponent<Collider>().gameObject);
 	}
 	
 	void AddTerrainObjectToList(GameObject terObj)

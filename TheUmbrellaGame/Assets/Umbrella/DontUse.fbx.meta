@@ -110,6 +110,14 @@ ModelImporter:
     100204: TopSheet.099
     100206: TopSheet.100
     100208: TopSheet.101
+    100210: Blue_01
+    100212: Blue_02
+    100214: Green_01
+    100216: Green_02
+    100218: Red_01
+    100220: Red_02
+    100222: Yellow_01
+    100224: Yellow_02
     400000: Bar
     400002: //RootNode
     400004: Handle
@@ -215,6 +223,14 @@ ModelImporter:
     400204: TopSheet.099
     400206: TopSheet.100
     400208: TopSheet.101
+    400210: Blue_01
+    400212: Blue_02
+    400214: Green_01
+    400216: Green_02
+    400218: Red_01
+    400220: Red_02
+    400222: Yellow_01
+    400224: Yellow_02
     2300000: Bar
     2300002: Handle
     2300004: TopSheet
@@ -319,6 +335,14 @@ ModelImporter:
     2300202: TopSheet.099
     2300204: TopSheet.100
     2300206: TopSheet.101
+    2300208: Blue_01
+    2300210: Blue_02
+    2300212: Green_01
+    2300214: Green_02
+    2300216: Red_01
+    2300218: Red_02
+    2300220: Yellow_01
+    2300222: Yellow_02
     3300000: Bar
     3300002: Handle
     3300004: TopSheet
@@ -423,6 +447,14 @@ ModelImporter:
     3300202: TopSheet.099
     3300204: TopSheet.100
     3300206: TopSheet.101
+    3300208: Blue_01
+    3300210: Blue_02
+    3300212: Green_01
+    3300214: Green_02
+    3300216: Red_01
+    3300218: Red_02
+    3300220: Yellow_01
+    3300222: Yellow_02
     4300000: TopSheet.101
     4300002: TopSheet.100
     4300004: TopSheet.099
@@ -527,6 +559,14 @@ ModelImporter:
     4300202: TopSheet.067
     4300204: TopSheet.068
     4300206: TopSheet.069
+    4300208: Blue_02
+    4300210: Green_02
+    4300212: Yellow_02
+    4300214: Red_02
+    4300216: Blue_01
+    4300218: Green_01
+    4300220: Yellow_01
+    4300222: Red_01
   materials:
     importMaterials: 1
     materialName: 0

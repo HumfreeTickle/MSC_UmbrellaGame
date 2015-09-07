@@ -23,7 +23,7 @@ namespace Inheritence
 
 //-------------------------------------- Destroys GameObject On Button Press -------------------------------------------------------
 
-		public void DestroyOnButton ()
+		public void DestroyOnButton (GameObject objectToDestroy)
 		{
 
 		}//end
@@ -31,7 +31,7 @@ namespace Inheritence
 //-------------------------------------- Destroys GameObject On Trigger -------------------------------------------------------
 
 
-		public void DestroyOnTrigger ()
+		public void DestroyOnTrigger (Collider col, GameObject objectToDestroy)
 		{
 
 		}//end

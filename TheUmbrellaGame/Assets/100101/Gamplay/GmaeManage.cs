@@ -85,6 +85,7 @@ public class GmaeManage : MonoBehaviour
 	public float _gameOverTimer; // 
 	public float _charge; // the umbrella's energy charge
 	public float progression = 1;
+	private Camera cameraClipFar;
 
 	//Start script Stuff
 	private bool nextLevel; // has the transtion to Level-1 been activated
@@ -195,6 +196,9 @@ public class GmaeManage : MonoBehaviour
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
 			WhiteScreen.color = Color.white;
 
+			cameraClipFar = GetComponent<Camera>();
+			cameraClipFar.farClipPlane = 800;
+
 			backgroundMusic = GameObject.Find ("Music").GetComponent<AudioSource> ();
 			npcManager = this.GetComponent<NPCManage>();
 
@@ -213,7 +217,7 @@ public class GmaeManage : MonoBehaviour
 			StartGame ();
 
 		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
-			progression = Mathf.Clamp(progression + npcManager.MissionsComplete, 1, Mathf.Infinity);
+			progression = Mathf.Clamp(progression, 1, Mathf.Infinity);
 
 			RestartGame ();
 
@@ -263,6 +267,7 @@ public class GmaeManage : MonoBehaviour
 				gameState = GameState.Game;
 			}
 			WhiteScreenTransisitions ();
+			cameraClipFar.farClipPlane = Mathf.Lerp(cameraClipFar.farClipPlane, 500, Time.deltaTime);
 		}
 	}
 
@@ -312,6 +317,7 @@ public class GmaeManage : MonoBehaviour
 
 			_gameOverTimer += Time.deltaTime;
 			WhiteScreenTransisitions ();
+			cameraClipFar.farClipPlane = Mathf.Lerp(cameraClipFar.farClipPlane, 2000, Time.deltaTime);
 		}
 	}
 

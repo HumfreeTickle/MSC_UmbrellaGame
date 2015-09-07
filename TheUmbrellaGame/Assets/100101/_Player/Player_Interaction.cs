@@ -16,7 +16,7 @@ namespace Player
 			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
 		}
 	
-		void OnTriggerStay (Collider col)
+		void OnTriggerEnter (Collider col)
 		{
 			if (helloTutorial) {
 				if (col.gameObject.tag == "NPC") {
@@ -30,7 +30,7 @@ namespace Player
 			}
 
 			if (interactTutorial) {
-				if (col.gameObject.tag == "Interaction") {
+				if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "Pickup") {
 					if (tutorial.X == 5) {
 						tutorial.X = 3;
 					}

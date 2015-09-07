@@ -26,7 +26,6 @@ namespace NPC
 	
 		void OnTriggerEnter (Collider col)
 		{
-//			Debug.Log(npc_class.coroutineRunning);
 			talktime = Random.Range (3, 5);
 			if (col.gameObject.tag == "Player") {
 				if (!npc_class.coroutineRunning) {
@@ -35,6 +34,8 @@ namespace NPC
 				}
 			}
 			if (col.gameObject.tag == "NPC") {
+				// still not sure if this works or not.
+
 				StartCoroutine (npc_class.Talk (talktime, npcAudioSource, c_AudioClip, e_AudioClip, g_AudioClip, b_AudioClip));
 				// stop whatever they're doing
 			}
@@ -53,7 +54,6 @@ namespace NPC
 
 		void OnTriggerExit ()
 		{
-//			Debug.Log(npc_class.coroutineRunning);
 			npc_class.coroutineRunning = false;
 		}
 	}

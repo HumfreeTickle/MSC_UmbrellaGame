@@ -32,10 +32,9 @@ namespace Player
 		private float handleMass;
 		public float forceAppliedToTilt; // used for tilting purposes
 		public float speed;
-		public float floating;
 		public float turningSpeed;
 		public float keyheld;
-
+		public float slowDownSpeed = 1.2f;
 //	------------------------------------
 		private string controllerTypeVertical;
 		private string controllerTypeHorizontal;
@@ -85,8 +84,8 @@ namespace Player
 		{
 
 			// need to set up a check as to whether the controller is active when a game state change occurs
-			umbrellaAnim.SetFloat ("Input_Vertical", Input.GetAxis (controllerTypeVertical));
-			umbrellaAnim.SetFloat ("Input_Horizontal", Input.GetAxis (controllerTypeHorizontal));
+//			umbrellaAnim.SetFloat ("Input_Vertical", Input.GetAxis (controllerTypeVertical));
+//			umbrellaAnim.SetFloat ("Input_Horizontal", Input.GetAxis (controllerTypeHorizontal));
 
 			if (Input.GetAxis (controllerTypeVertical) > 0.1f) { // Probably should only use forward for this and have back be a kind of breaking system
 				rb.AddForce (transform.TransformDirection (Vector3.forward) * Input.GetAxis (controllerTypeVertical) * speed, movementForce); //Add force in the direction it is facing
@@ -100,6 +99,11 @@ namespace Player
 			if (Mathf.Abs (Input.GetAxis (controllerTypeHorizontal)) > 0) { //This shoould rotate the player rather than move sideways
 				rb.AddTorque (transform.up * Input.GetAxis (controllerTypeHorizontal) * turningSpeed, rotationForce);
 
+			}
+
+			if (!Input.anyKeyDown) {
+				rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * slowDownSpeed);
+				rb.angularVelocity = Vector3.Lerp (rb.angularVelocity, Vector3.zero, Time.fixedDeltaTime * 10);
 			}
 		}
 		
