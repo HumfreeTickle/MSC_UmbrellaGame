@@ -65,7 +65,7 @@ namespace NPC
 					yield return null;
 				}
 
-				if(transform.position.y <= 100){
+				if(transform.position.y <= -100){
 					transform.position = startinglocation;
 					yield return null;
 				}
