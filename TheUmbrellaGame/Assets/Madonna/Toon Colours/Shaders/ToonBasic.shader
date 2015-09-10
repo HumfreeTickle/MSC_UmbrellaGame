@@ -3,7 +3,6 @@ Shader "Toon/Basic" {
 		_Color ("Main Color", Color) = (.5,.5,.5,1)
 		_MainTex ("Base (RGB)", 2D) = "white" {}
 		_ToonShade ("ToonShader Cubemap(RGB)", CUBE) = "" { }
-		//_NormalTex() = {}
 		
 	}
 
