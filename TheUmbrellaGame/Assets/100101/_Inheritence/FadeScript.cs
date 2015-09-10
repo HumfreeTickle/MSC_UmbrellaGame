@@ -6,6 +6,7 @@ namespace Inheritence
 {
 	public class FadeScript
 	{
+//		private Color transparent = new Vector4 (1, 1, 1, 0);
 		private bool fadeIn = true; 
 //---------------------------- Image Fades -----------------------------------------------------------------------
 
