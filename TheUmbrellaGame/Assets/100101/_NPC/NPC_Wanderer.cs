@@ -23,16 +23,18 @@ namespace NPC
 		Vector3 targetRotation;
 		private IEnumerator movementCoroutine;
 		private IEnumerator hitCoroutine;
+		private Vector3 startinglocation;
 
 		void Awake ()
 		{
+			startinglocation = transform.position;
 			controller = GetComponent<CharacterController> ();
 			// Set random initial rotation
 			heading = Random.Range (0, 360);
 			transform.eulerAngles = new Vector3 (0, heading, 0);
 			movementCoroutine = NewHeading();
 			hitCoroutine = HitAThing();
-			StartCoroutine (movementCoroutine);
+			StartCoroutine (NewHeading());
 		}
 
 		/// <summary>
@@ -63,6 +65,10 @@ namespace NPC
 					yield return null;
 				}
 
+				if(transform.position.y <= 100){
+					transform.position = startinglocation;
+					yield return null;
+				}
 				yield return null;
 			}
 		}

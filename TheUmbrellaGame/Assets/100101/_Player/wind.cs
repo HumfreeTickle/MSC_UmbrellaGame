@@ -20,19 +20,11 @@ namespace Player
 		void Update ()
 		{
 			transform.LookAt (GameObject.Find ("main_Sphere").transform);
-			destroyObject.DestroyOnTimer(this.gameObject, 5f);
+			destroyObject.DestroyOnTimer(this.gameObject, 2f);
 		}
 
 		//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
 
-		void umbrellaFalls ()
-		{ //this was to make it a once off thing
-			if (umbrellaObject.position.y <= 20) {
-				GetComponent<ParticleSystem> ().enableEmission = true;
-			} else if (GetComponent<ParticleSystem> () != null) {
-				GetComponent<ParticleSystem> ().enableEmission = false;
-			}
-		}
 
 		void OnParticleCollision (GameObject umbrella)
 		{

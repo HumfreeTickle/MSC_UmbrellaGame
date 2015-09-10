@@ -28,7 +28,7 @@ public class ObjectFallThrough : MonoBehaviour
 //
 //		}
 //		catch(Exception e){
-//
+//			Debug.LogException(e, this);
 //		}
 //	}
 
@@ -48,6 +48,9 @@ public class ObjectFallThrough : MonoBehaviour
 	{		
 		if (m_autoAddTerrainObjects && col.GetComponent<Collider>() is TerrainCollider && col.transform.GetComponent<TerrainTransparency>() && !m_terrainObjectList.Contains(col.GetComponent<Collider>().gameObject))
 			AddTerrainObjectToList(col.GetComponent<Collider>().gameObject);
+//		else{
+//			throw
+//		}
 	}
 	
 	void AddTerrainObjectToList(GameObject terObj)

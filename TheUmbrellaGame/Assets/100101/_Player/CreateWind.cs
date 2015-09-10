@@ -7,6 +7,10 @@ namespace Player.PhysicsStuff
 	// should wind creation be an inheritence class that is called ???
 	public class CreateWind : MonoBehaviour
 	{
+		/// <summary>
+		/// Turns on/off the barrriers around the islands
+		/// </summary>
+		public bool barriers;
 		private GmaeManage GameManager;
 		private GameState gameState;
 		public GameObject windSystem;
@@ -48,7 +52,9 @@ namespace Player.PhysicsStuff
 			if (gameState != GameState.Pause || gameState != GameState.GameOver) {
 				if (Input.GetButtonDown ("CrateWind") && charge >= 1) {
 					if (this.transform.childCount < 1) {
-						SummonWind ();
+						if (!IsInvoking ("SummonWind")) {
+							Invoke ("SummonWind", 0.1f);
+						}
 					}
 					GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (GameManager.UmbrellaCharge, 0, Time.fixedDeltaTime * 10), 2, 100);
 				}
@@ -76,10 +82,12 @@ namespace Player.PhysicsStuff
 						GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 0, 100);
 					} 
 				} else {
-					print ("stop");
 					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime / progression);// progress :)
-					umbrellaRb.AddForce (/*transform.TransformDirection (this.gameObject.transform.forward) */(-bounceBack) * umbrellaRb.velocity);
-					//not really working. Need to try something else
+
+					if (barriers) {
+						umbrellaRb.AddForce ((-bounceBack) * umbrellaRb.velocity);
+						//not really working. Need to try something else
+					}
 				}
 			}
 		}

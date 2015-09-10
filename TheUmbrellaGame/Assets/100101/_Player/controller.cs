@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using Player.PhysicsStuff;
 using Inheritence;
@@ -66,14 +66,13 @@ namespace Player
 				Movement ();
 				HorizontalMass ();
 				VerticalMass ();
-//				if (GetComponent<CreateWind> ().RaycastingInfo != null) {
 				hit = GetComponent<CreateWind> ().RaycastingInfo;
 				if (hit.collider != null) {
 					TheDescent ();
 				}
 			} else if (gameManager.gameState == GameState.GameOver) {
 				GetComponent<upwardForce> ().enabled = false;
-			} else if(gameManager.gameState == GameState.Talking){
+			} else if(gameManager.gameState == GameState.Event){
 				Stabilize ();
 			}
 		}

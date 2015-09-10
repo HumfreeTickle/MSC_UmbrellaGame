@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace CameraScripts
@@ -11,26 +11,26 @@ namespace CameraScripts
 		private float newCameraFOV;
 
 		//----------------- UmbrellaStuff ---------------//
-		public GameObject umbrella;
-		private Transform umbrellaTr;
-		public Transform UmbrellaTransform{
+		public GameObject lookAt;
+		private Transform lookAtTr;
+		public Transform lookAtTransform{
 			get{
-				return umbrellaTr;
+				return lookAtTr;
 			}
 
 			set{
-				umbrellaTr = value;
+				lookAtTr = value;
 			}
 		}
 
-		private Rigidbody umbrellaRb;
+		private Rigidbody lookAtRb;
 		//-----------------------------------------------//
 
 		public float speed;
 		public float rotateSpeed;
-		public float xAway;
-		public float yAway;
-		public float zAway;
+		private float xAway = -10;
+		private float yAway = 20;
+		private float zAway = -3;
 		private GameObject whatAmIHitting;
 
 		// The distance in the x-z plane to the target
@@ -38,6 +38,7 @@ namespace CameraScripts
 		public float side = 2f;
 		// the height we want the camera to be above the target
 		public float height = 5.0f;
+
 		// How much we want to damp the movement
 		public float heightDamping = 2.0f;
 		public float rotationDamping = 3.0f;
@@ -50,8 +51,8 @@ namespace CameraScripts
 			gameState = GameManager.gameState;
 			camrea = GetComponent<Camera> ();
 
-			umbrellaTr = umbrella.transform;
-			umbrellaRb = umbrella.GetComponent<Rigidbody> ();
+			lookAtTr = lookAt.transform;
+			lookAtRb = lookAt.GetComponent<Rigidbody> ();
 		}
 		
 		void Update ()
@@ -66,15 +67,15 @@ namespace CameraScripts
 				}
 			}
 
-			if (gameState == GameState.Talking) {
-				umbrellaTr = umbrella.transform;
+			if (gameState == GameState.Event) {
+				lookAtTr = lookAt.transform;
 			}
 		}
 		//-------------------------------------------- Other Function Calls -------------------------------------------------------//
 		
 		void FixedUpdate ()
 		{
-			if (!umbrella) {
+			if (!lookAt) {
 				return;
 			}
 
@@ -82,17 +83,18 @@ namespace CameraScripts
 			if (gameState != GameState.GameOver) {
 
 
-				if (gameState == GameState.Game || gameState == GameState.Intro) {
 
 					// Calculate gameState == GameState.Pausethe current rotation angles (only need quaternion for movement)
-					float wantedRotationAngle = umbrellaTr.eulerAngles.y;
+					float wantedRotationAngle = lookAtTr.eulerAngles.y;
 					
-					float wantedHeight = umbrellaTr.position.y + height;
+					float wantedHeight = lookAtTr.position.y + height;
 					
 					float currentRotationAngle = transform.eulerAngles.y;
 					
 					float currentHeight = transform.position.y;
-					
+
+				if (gameState == GameState.Game || gameState == GameState.Intro) {
+
 					// Damp the rotation around the y-axis
 					currentRotationAngle = Mathf.LerpAngle (currentRotationAngle, wantedRotationAngle, rotationDamping * Time.fixedDeltaTime);
 					
@@ -104,27 +106,33 @@ namespace CameraScripts
 					
 					// Set the position of the camera on the x-z plane behind the target
 					
-					if (umbrellaRb.velocity.magnitude > 10) {
-						newCameraFOV = camrea.fieldOfView + (umbrellaRb.velocity.magnitude * Time.fixedDeltaTime);
+					if (lookAtRb.velocity.magnitude > 10) {
+						newCameraFOV = camrea.fieldOfView + (lookAtRb.velocity.magnitude * Time.fixedDeltaTime);
 						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, Mathf.Clamp (newCameraFOV, 60, 90), Time.fixedDeltaTime * speed);
 					} else {
 						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, 60, Time.fixedDeltaTime);
 					}
 					
-					transform.position = Vector3.Lerp (transform.position, umbrellaTr.position, Time.fixedDeltaTime * speed);
+					transform.position = Vector3.Lerp (transform.position, lookAtTr.position, Time.fixedDeltaTime * speed);
 					transform.position -= currentRotation * Vector3.forward * distance;
 					
 					// Set the height of the camera
 					transform.position = new Vector3 (transform.position.x, currentHeight, transform.position.z);
 					
 					// Set the LookAt property to remain fixed on the target
-					transform.LookAt (umbrellaTr);
+					transform.LookAt (lookAtTr);
 
 
-				} else if (gameState == GameState.Talking) {
-					umbrellaTr = umbrella.transform;
+				} else if (gameState == GameState.Event) {
+					// Damp the height
+					currentHeight = Mathf.Lerp (currentHeight, wantedHeight, Time.fixedDeltaTime);
 
-					Quaternion rotation = Quaternion.LookRotation(umbrellaTr.position - transform.position);
+					// Set the height of the camera
+					transform.position = new Vector3 (transform.position.x, currentHeight, transform.position.z);
+
+					lookAtTr = lookAt.transform;
+
+					Quaternion rotation = Quaternion.LookRotation(lookAtTr.position - transform.position);
 					transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * (speed/10));
 				}
 			}
@@ -134,9 +142,9 @@ namespace CameraScripts
 
 				if (GameManager.Timer > 2) {
 					transform.position = transform.position + new Vector3 (xAway, yAway, zAway);
-					transform.LookAt (umbrellaTr);
+					transform.LookAt (lookAtTr);
 				} else {
-					transform.LookAt (umbrellaTr);
+					transform.LookAt (lookAtTr);
 				}
 
 			}
@@ -147,31 +155,36 @@ namespace CameraScripts
 		void RotateYaw ()
 		{
 			if (Mathf.Abs (Input.GetAxis ("Horizontal_R")) > 0) {
-				transform.RotateAround (umbrellaTr.position, Vector3.up, Input.GetAxis ("Horizontal_R") * rotateSpeed); 
+				transform.RotateAround (lookAtTr.position, Vector3.up, Input.GetAxis ("Horizontal_R") * rotateSpeed); 
 			}
 		}
 		
 		void RotatePitch ()
 		{
 			if (Mathf.Abs (Input.GetAxis ("Vertical_R")) > 0) {
-				transform.RotateAround (umbrellaTr.position, transform.TransformDirection (Vector3.right), -1 * Input.GetAxis ("Vertical_R") * rotateSpeed); 
+				transform.RotateAround (lookAtTr.position, transform.TransformDirection (Vector3.right), -1 * Input.GetAxis ("Vertical_R") * rotateSpeed); 
 			}
 		}
 		
 		
 		//-------------------------------------------- Stops Blocked View -------------------------------------------------------//
 
+		/// <summary>
+		/// When the camera goes behind an object this replaces the material with a transparent version
+		/// Doesn't really work. Especially since alot of stuff is broken up into tiny pieces
+		/// :(
+		/// </summary>
 		void RayCastView ()
 		{
 			RaycastHit hit;
-			Vector3 screenPos = camrea.WorldToScreenPoint (umbrellaTr.position);
+			Vector3 screenPos = camrea.WorldToScreenPoint (lookAtTr.position);
 			Ray cameraRay = camrea.ScreenPointToRay (screenPos);
 			Vector3 cameraDir = cameraRay.direction * 100;
 			Debug.DrawRay (cameraRay.origin, cameraDir, Color.blue);
 
 			if (Physics.Raycast (cameraRay, out hit)) {
 
-				if (gameState != GameState.Talking) {
+				if (gameState != GameState.Event) {
 					if (hit.collider.tag != "Player") {//hits anything other then the player
 
 						if (hit.collider.gameObject.GetComponent<MeshRenderer> ()) {// checks to see if it has a mesh renderer

@@ -3,6 +3,13 @@ using System.Collections;
 
 public class Collision : MonoBehaviour
 {
+	private Tutuorial tutorialCanvas;
+
+	void Awake(){
+
+		tutorialCanvas = GameObject.Find("Tutorial").GetComponent<Tutuorial>();
+	}
+
 	void OnTriggerEnter (Collider col)
 	{
 		if (col.gameObject.tag == "Player") {
@@ -14,10 +21,6 @@ public class Collision : MonoBehaviour
 
 	void InvokeX ()
 	{
-		if (transform.parent.GetComponent<Tutuorial> ().X <= 2) {
-			transform.parent.GetComponent<Tutuorial> ().X += 1;
-		}else{
-			transform.parent.GetComponent<Tutuorial> ().X = 5;
-		}
+		tutorialCanvas.goXgo = true;
 	}
 }

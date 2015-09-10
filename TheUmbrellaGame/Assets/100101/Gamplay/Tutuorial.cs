@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using CameraScripts;
@@ -9,20 +9,22 @@ public class Tutuorial : MonoBehaviour
 	public GmaeManage GameManager;
 	public GameObject activate;
 	private GameObject activateNode;
-	private GameObject cameraSet;
+	private Light activateNodeLight;
 	private GameObject cmaera;
-	private GameObject umbrella;
+	public GameObject umbrella;
 	private GameState gameState;
-
+	private bool started;
+	public bool goXgo;
 	//---------------- Positions of waypoints ------------//
 	public Transform movementTutorialPos;
 	public Transform upTutorialPos;
 	public Transform downTutorialPos;
 	public Transform NPCTutorial;
+	private Transform tutorialInfo;
 	//----------------------------------------------------//
 	private Animator animator;
 	private int t;
-	public int x;
+	private int x;
 
 	public int X {
 		get {
@@ -45,6 +47,7 @@ public class Tutuorial : MonoBehaviour
 		animator = GetComponent<Animator> ();
 		cmaera = GameObject.Find ("Follow Camera");
 		umbrella = GameObject.Find ("main_Sphere");
+		tutorialInfo = GameObject.Find ("Tutorial_Info").transform;
 		//---------FailSafes----------//
 		if (!activate) {
 			return;
@@ -65,9 +68,10 @@ public class Tutuorial : MonoBehaviour
 		//----------------------------//
 
 		activateNode = Instantiate (activate, movementTutorialPos.position, Quaternion.identity) as GameObject;
-		activateNode.transform.parent = this.transform;
-//		activateNode.GetComponent<Light> ().intensity = 0;
-		activateNode.GetComponent<Light> ().enabled = false;
+		activateNode.transform.parent = tutorialInfo;
+		activateNodeLight = activateNode.GetComponent<Light> ();
+		activateNodeLight.enabled = false;
+//		Debug.Log ("Change me back plz");
 	}
 	
 	void Update ()
@@ -86,7 +90,9 @@ public class Tutuorial : MonoBehaviour
 				tutorialImage.sprite = frontPS3;
 
 			} else if (GameManager.gameState == GameState.Game) {
-				StartCoroutine (WalkThroughConditions ());
+				if (!started) {
+					StartCoroutine (WalkThroughConditions ());
+				}
 				animator.SetInteger ("State", X);
 				animator.SetBool ("GameState", true);
 			} else {
@@ -94,14 +100,10 @@ public class Tutuorial : MonoBehaviour
 			}
 
 			//------------- Removes tutorial if game is paused or character is dead ---------------------//
-			if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver || GameManager.gameState == GameState.Talking) {
+			if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver || GameManager.gameState == GameState.Event) {
 				GetComponent<Image> ().enabled = false;
 			} else {
 				GetComponent<Image> ().enabled = true;
-			}
-
-			if (movementDone) {
-				activateNode.GetComponent<Light> ().intensity = Mathf.Lerp (activateNode.GetComponent<Light> ().intensity, 0, Time.deltaTime * 10);
 			}
 		}
 	}
@@ -110,100 +112,147 @@ public class Tutuorial : MonoBehaviour
 
 	IEnumerator WalkThroughConditions ()
 	{
-		/// Glitch - if you activate the talk/interact cases then the activationnode glitches out (light disappears but the flare still stays. You can't activate it)
-
-
-		//needs to raise and lower the light.intensity between each switch case
-		//a camera lock for a second at the beinging of each 
-		switch (x) {
-
-		case 0: // Movement
-
-			while (t < 1) { 
-				activateNode.transform.position = movementTutorialPos.position;
-				activateNode.GetComponent<Light> ().enabled = true;
-				activateNode.GetComponent<Light> ().intensity = Mathf.Lerp (activateNode.GetComponent<Light> ().intensity, 4, Time.deltaTime*10);
-				GameManager.gameState = GameState.Talking;
-				cameraSet = activateNode;
-				cmaera.GetComponent<Controller> ().umbrella = cameraSet;
-				yield return new WaitForSeconds (1);
-				t = 1; 
+		while (true) {
+			if (goXgo) {
+				if (X <= 2) {
+					X += 1;
+				} else {
+					X = 5;
+				}
+				while (activateNodeLight.intensity >= 0.1f) {
+					activateNodeLight.enabled = true;
+					activateNodeLight.intensity = Mathf.Lerp (activateNodeLight.intensity, 0, Time.deltaTime);
+					yield return null;
+				}
+				goXgo = false;
 			}
+		
+			started = true;
+			/// Glitch - if you activate the talk/interact cases then the activationnode glitches out (light disappears but the flare still stays. You can't activate it)
 
-			cmaera.GetComponent<Controller> ().umbrella = umbrella;
-			yield return new WaitForSeconds (2);
 
-			GameManager.gameState = GameState.Game;
+			//needs to raise and lower the light.intensity between each switch case
+			//a camera lock for a second at the beinging of each 
+			switch (x) {
 
-			tutorialImage.sprite = frontPS3;
-			break;
+			case 0: // Movement
+				while (t < 1) { 
+					activateNode.transform.position = movementTutorialPos.position;
 
-		case 1: //R2
-			while (t < 2) { 
-				activateNode.transform.position = upTutorialPos.position;
-				GameManager.gameState = GameState.Talking;
-				cameraSet = activateNode;
-				cmaera.GetComponent<Controller> ().umbrella = cameraSet;
-				yield return new WaitForSeconds (1);
-				t = 2; 
-			}
-			cmaera.GetComponent<Controller> ().umbrella = umbrella;
-			yield return new WaitForSeconds (1);
 
-			GameManager.gameState = GameState.Game;
-			tutorialImage.sprite = backPS3;
-			animator.SetBool ("Controller", true);
+					cmaera.GetComponent<Controller> ().height = 20;
+					GameManager.gameState = GameState.Event;
+					cmaera.GetComponent<Controller> ().lookAt = activateNode;
 
-			yield return null;
-			break;
+					yield return new WaitForSeconds (1);
+					while (activateNodeLight.intensity <= 3.9f) {
+						activateNodeLight.enabled = true;
+						activateNodeLight.intensity = Mathf.Lerp (activateNodeLight.intensity, 4, Time.deltaTime);
+						yield return null;
+					}
+					t = 1; 
+				}
+
+
+				cmaera.GetComponent<Controller> ().height = 5;
+				yield return null;
+				cmaera.GetComponent<Controller> ().lookAt = umbrella;
+				yield return new WaitForSeconds (3);
+
+				GameManager.gameState = GameState.Game;
+
+				tutorialImage.sprite = frontPS3;
+				break;
+
+			case 1: //R2
+				while (t < 2) { 
+					GameManager.gameState = GameState.Event;
+					yield return new WaitForSeconds (2);
+
+					activateNode.transform.position = upTutorialPos.position;
+					activateNodeLight.intensity = Mathf.Lerp (activateNodeLight.intensity, 4, Time.deltaTime * 10);
+
+					cmaera.GetComponent<Controller> ().height = 20;
+					cmaera.GetComponent<Controller> ().lookAt = activateNode;
+
+					yield return new WaitForSeconds (1);
+					while (activateNodeLight.intensity <= 3.9f) {
+						activateNodeLight.enabled = true;
+						activateNodeLight.intensity = Mathf.Lerp (activateNodeLight.intensity, 4, Time.deltaTime);
+						yield return null;
+					}
+					t = 2; 
+				}
+				cmaera.GetComponent<Controller> ().height = 5;
+				yield return null;
+				cmaera.GetComponent<Controller> ().lookAt = umbrella;
+				yield return new WaitForSeconds (3);
+
+				GameManager.gameState = GameState.Game;
+				tutorialImage.sprite = backPS3;
+				animator.SetBool ("Controller", true);
+
+				yield return null;
+				break;
 			
-		case 2: //L2
-			while (t < 3) { 
-				activateNode.transform.position = downTutorialPos.position;
-				GameManager.gameState = GameState.Talking;
-				cameraSet = activateNode;
-				cmaera.GetComponent<Controller> ().umbrella = cameraSet;
-				yield return new WaitForSeconds (1);
-				t = 3;
-			}
+			case 2: //L2
+				while (t < 3) { 
+					GameManager.gameState = GameState.Event;
 
-			cmaera.GetComponent<Controller> ().umbrella = umbrella;
-			yield return new WaitForSeconds (1);
-			GameManager.gameState = GameState.Game;
+					activateNode.transform.position = downTutorialPos.position;
 
-			tutorialImage.sprite = backPS3;
-			animator.SetBool ("Controller", true);
-
-			yield return null;
-
-			break;
-
-		case 3: //R1
-			tutorialImage.sprite = backPS3;
-			animator.SetBool ("Controller", true);
-			if (Input.GetButtonDown ("Interact")) {
-				movementDone = true;
-				x = 5;
-			}
-			break;
+					cmaera.GetComponent<Controller> ().height = 20;
+					cmaera.GetComponent<Controller> ().lookAt = activateNode;
 				
-		case 4: //L1
-			tutorialImage.sprite = backPS3;
-			animator.SetBool ("Controller", true);
-			if (Input.GetButtonDown ("Talk")) {
-				movementDone = true;
-				x = 5;
-			}
-			break;
+					yield return new WaitForSeconds (1);
+					while (activateNodeLight.intensity <= 3.9f) {
+						activateNodeLight.enabled = true;
+						activateNodeLight.intensity = Mathf.Lerp (activateNodeLight.intensity, 4, Time.deltaTime);
+						yield return null;
+					}
+					t = 3;
+				}
+				cmaera.GetComponent<Controller> ().height = 5;
+				yield return null;
+				cmaera.GetComponent<Controller> ().lookAt = umbrella;
+				yield return new WaitForSeconds (3);
 
-		case 5: //Default blank state
-			if (!movementDone) {
-				activateNode.transform.position = NPCTutorial.position;
+				GameManager.gameState = GameState.Game;
+
+				tutorialImage.sprite = backPS3;
+				animator.SetBool ("Controller", true);
+
+				yield return null;
+
+				break;
+
+			case 3: //R1
+				tutorialImage.sprite = backPS3;
+				animator.SetBool ("Controller", true);
+				if (Input.GetButtonDown ("Interact")) {
+					movementDone = true;
+					x = 5;
+				}
+				break;
+				
+			case 4: //L1
+				tutorialImage.sprite = backPS3;
+				animator.SetBool ("Controller", true);
+				if (Input.GetButtonDown ("Talk")) {
+					movementDone = true;
+					x = 5;
+				}
+				break;
+
+			case 5: //Default blank state
+				if (movementDone) {
+					activateNode.transform.position = NPCTutorial.position;
+				}
+				break;
+			default: //Fail safe
+				break;
 			}
-			break;
-		default: //Fail safe
-			break;
+			yield return null;
 		}
-		yield return null;
 	}
 }

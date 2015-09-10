@@ -13,10 +13,25 @@ using UnityEditor;
 public enum GameState // sets what game state is currently being viewed
 {
 	NullState,
+	/// <summary>
+	/// The beginning state of each scene. Player cannont move. 
+	/// </summary>
 	Intro,
+	/// <summary>
+	/// Time = 0. Screen is overlayed with pause image. Camera can be freely moved about
+	/// </summary>
 	Pause,
-	Talking,
+	/// <summary>
+	/// The player cannot move and the camera can change look at target
+	/// </summary>
+	Event,
+	/// <summary>
+	/// Main state of the game. Allows for full controller over the umbrella
+	/// </summary>
 	Game,
+	/// <summary>
+	/// Game Over :(
+	/// </summary>
 	GameOver
 }
 
@@ -256,7 +271,7 @@ public class GmaeManage : MonoBehaviour
 
 				harpIntroSource.volume = Mathf.Lerp (harpIntroSource.volume, 0, Time.deltaTime / 5);
 				if (harpIntroSource.volume < 0.2f) {
-					fading.FadeIN (WhiteScreen, 0.7f);
+					fading.FadeIN (WhiteScreen, 1);
 					Invoke ("whichLevel", harpIntroClip.length / 2);
 				}
 			}
@@ -340,7 +355,7 @@ public class GmaeManage : MonoBehaviour
 
 	void FlyUmbrellaFly ()
 	{
-		umbrellaRb.AddForce (2, 5, 0);
+		umbrellaRb.AddForce (1, 2.5f, 0);
 	}
 
 
