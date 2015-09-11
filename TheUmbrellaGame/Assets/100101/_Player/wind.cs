@@ -20,15 +20,11 @@ namespace Player
 		void Update ()
 		{
 			transform.LookAt (GameObject.Find ("main_Sphere").transform);
-<<<<<<< Updated upstream
-<<<<<<< HEAD
+
 			destroyObject.DestroyOnTimer(this.gameObject, 2f);
-=======
-			umbrellaFalls ();
-=======
->>>>>>> Stashed changes
-			destroyObject.DestroyOnTimer(this.gameObject, 5f);
->>>>>>> origin/master
+
+
+
 		}
 
 		//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
