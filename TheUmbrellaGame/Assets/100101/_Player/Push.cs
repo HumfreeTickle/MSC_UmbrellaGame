@@ -19,11 +19,11 @@ namespace Player
 	
 		}
 
-		void OnCollisionStay (Collision collision)
-		{
-			if (collision.rigidbody)
-				collision.rigidbody.AddForce (Vector3.right * 50);
-		
-		}
+//		void OnCollisionStay (Collision collision)
+//		{
+////			if (collision.rigidbody)
+////				collision.rigidbody.AddForce (Vector3.right * 50);
+//		
+//		}
 	}
 }

@@ -49,11 +49,13 @@ namespace NPC
 		private Image npc_TalkingBox;
 		private NPC_Interaction npc_Interact;
 
+		//------------------------------------------------------------------------------//
 		// Would be awesome if I could workout a way to have this seperate by paragraphs
 		// Create a list that fills up when ever there is an enter break "\n"
 		// split string
 		public List<string> npc_Message_Array = new List<string>();
-		public string npc_Message = "Can you please help me restart the windmill? \n\n Yes";
+		public string npc_Message = "Can you please help me restart the windmill? \n Yes";
+		//------------------------------------------------------------------------------//
 		public int x = 0;
 		public int X{
 			set{
@@ -81,14 +83,7 @@ namespace NPC
 			npc_Interact.misssionDelegate = StartMission;
 
 			//doesn't quite work
-			npc_Message.Split(new[] { "\r\n" }, StringSplitOptions.None);
-			npc_Message_Array.Add(npc_Message);
-
-			// should print out each part of the array
-			for(int i =0; i < npc_Message_Array.Count; i++){
-				print (npc_Message[i]);
-			}
-			
+			npc_Message.Split(new[] { "\n" }, StringSplitOptions.None);
 		}
 	
 		void Update ()

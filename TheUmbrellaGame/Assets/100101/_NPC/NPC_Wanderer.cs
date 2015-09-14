@@ -24,7 +24,7 @@ namespace NPC
 		private IEnumerator movementCoroutine;
 		private IEnumerator hitCoroutine;
 		private Vector3 startinglocation;
-
+		/*
 		void Awake ()
 		{
 			startinglocation = transform.position;
@@ -101,6 +101,6 @@ namespace NPC
 				StopCoroutine (movementCoroutine);
 				StartCoroutine (HitAThing ());
 			}
-		}
+		}*/
 	}
 }

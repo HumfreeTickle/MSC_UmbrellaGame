@@ -51,7 +51,7 @@ namespace Player.PhysicsStuff
 
 			if (gameState != GameState.Pause || gameState != GameState.GameOver) {
 				if (Input.GetButtonDown ("CrateWind") && charge >= 1) {
-					if (this.transform.childCount < 1) {
+					if (this.transform.childCount < 2) {
 						if (!IsInvoking ("SummonWind")) {
 							Invoke ("SummonWind", 0.1f);
 						}

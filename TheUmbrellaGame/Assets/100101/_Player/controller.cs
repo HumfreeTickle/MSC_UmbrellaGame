@@ -15,7 +15,7 @@ namespace Player
 		public Rigidbody leftsphere;
 		public Rigidbody rightsphere;
 		public Rigidbody handle;
-
+		public float maxRotation;
 //	------------------------------------
 		public Animator umbrellaAnim;
 		public ForceMode movementForce;
@@ -42,6 +42,8 @@ namespace Player
 //  ------------------------------------
 		private RaycastHit hit;
 		private upwardForce upForce;
+
+		bool rotate;
 
 		void Start ()
 		{
@@ -76,6 +78,12 @@ namespace Player
 				Stabilize ();
 			}
 		}
+
+		void LateUpdate(){
+
+			transform.localRotation =  Quaternion.Euler(new Vector3(Mathf.Clamp(transform.rotation.x, -maxRotation, maxRotation), transform.rotation.y, Mathf.Clamp(transform.rotation.z, -maxRotation, maxRotation)));
+
+		}
 		
 		//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
 		
@@ -84,10 +92,15 @@ namespace Player
 
 			// need to set up a check as to whether the controller is active when a game state change occurs
 //			umbrellaAnim.SetFloat ("Input_Vertical", Input.GetAxis (controllerTypeVertical));
-//			umbrellaAnim.SetFloat ("Input_Horizontal", Input.GetAxis (controllerTypeHorizontal));
+
+			umbrellaAnim.SetBool ("Input_V", rotate);
 
 			if (Input.GetAxis (controllerTypeVertical) > 0.1f) { // Probably should only use forward for this and have back be a kind of breaking system
 				rb.AddForce (transform.TransformDirection (Vector3.forward) * Input.GetAxis (controllerTypeVertical) * speed, movementForce); //Add force in the direction it is facing
+				rotate=true;
+
+			}else {
+				rotate = false;
 			}
 			
 			if (Input.GetAxis (controllerTypeVertical) < 0.1f) { // Probably should only use forward for this and have back be a kind of breaking system
@@ -97,7 +110,6 @@ namespace Player
 				
 			if (Mathf.Abs (Input.GetAxis (controllerTypeHorizontal)) > 0) { //This shoould rotate the player rather than move sideways
 				rb.AddTorque (transform.up * Input.GetAxis (controllerTypeHorizontal) * turningSpeed, rotationForce);
-
 			}
 
 			if (!Input.anyKeyDown) {

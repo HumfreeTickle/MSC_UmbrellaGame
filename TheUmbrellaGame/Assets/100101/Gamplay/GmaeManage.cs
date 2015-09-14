@@ -81,7 +81,7 @@ public class GmaeManage : MonoBehaviour
 	private AudioSource harpIntroSource;
 	public AudioMixerSnapshot start;
 	private AudioClip mainThemeMusic;
-	private AudioSource backgroundMusic;
+	private GameObject backgroundMusic;
 	public AudioMixerSnapshot PausedSnapShot;
 	public AudioMixerSnapshot InGameSnapShot;
 
@@ -130,7 +130,7 @@ public class GmaeManage : MonoBehaviour
 		}
 	}
 
-	public float Progression{
+	public float Progression {
 		get {
 			return progression;
 		}
@@ -211,11 +211,11 @@ public class GmaeManage : MonoBehaviour
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
 			WhiteScreen.color = Color.white;
 
-			cameraClipFar = GetComponent<Camera>();
-			cameraClipFar.farClipPlane = 800;
+			cameraClipFar = GetComponent<Camera> ();
+//			cameraClipFar.farClipPlane = 800;
 
-			backgroundMusic = GameObject.Find ("Music").GetComponent<AudioSource> ();
-			npcManager = this.GetComponent<NPCManage>();
+			backgroundMusic = GameObject.Find ("Music");
+			npcManager = this.GetComponent<NPCManage> ();
 
 			if (!PauseScreen || !WhiteScreen) {
 				return;
@@ -232,7 +232,7 @@ public class GmaeManage : MonoBehaviour
 			StartGame ();
 
 		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
-			progression = Mathf.Clamp(progression, 1, Mathf.Infinity);
+			progression = Mathf.Clamp (progression, 1, Mathf.Infinity);
 
 			RestartGame ();
 
@@ -282,7 +282,7 @@ public class GmaeManage : MonoBehaviour
 				gameState = GameState.Game;
 			}
 			WhiteScreenTransisitions ();
-			cameraClipFar.farClipPlane = Mathf.Lerp(cameraClipFar.farClipPlane, 500, Time.deltaTime);
+//			cameraClipFar.farClipPlane = Mathf.Lerp (cameraClipFar.farClipPlane, 500, Time.deltaTime);
 		}
 	}
 
@@ -332,7 +332,7 @@ public class GmaeManage : MonoBehaviour
 
 			_gameOverTimer += Time.deltaTime;
 			WhiteScreenTransisitions ();
-			cameraClipFar.farClipPlane = Mathf.Lerp(cameraClipFar.farClipPlane, 2000, Time.deltaTime);
+			cameraClipFar.farClipPlane = Mathf.Lerp (cameraClipFar.farClipPlane, 2000, Time.deltaTime);
 		}
 	}
 
@@ -371,8 +371,14 @@ public class GmaeManage : MonoBehaviour
 		Time.timeScale = 0; //game paused
 
 		fading.FadeIN (PauseScreen, transitionSpeed);
-		backgroundMusic.pitch = -1;
 
+		if (backgroundMusic.transform.childCount > 0) {
+			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
+				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = -1;
+			}
+		}else{
+			backgroundMusic.GetComponent<AudioSource>().pitch = -1;
+		}
 	}
 	
 	void NotPaused ()
@@ -381,7 +387,14 @@ public class GmaeManage : MonoBehaviour
 		
 		Time.timeScale = 1f; //runs at regular time
 		fading.FadeOUT (PauseScreen, transitionSpeed);
-		backgroundMusic.pitch = 1;
+		if (backgroundMusic.transform.childCount > 0) {
+			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
+				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = 1;
+			}
+		}else{
+			backgroundMusic.GetComponent<AudioSource>().pitch = 1;
+		}
+//		backgroundMusic.pitch = 1;
 	}
 	
 	void FixedPause ()
