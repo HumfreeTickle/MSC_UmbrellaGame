@@ -20,7 +20,15 @@ namespace Player
 		void Update ()
 		{
 			transform.LookAt (GameObject.Find ("main_Sphere").transform);
+<<<<<<< HEAD
 			destroyObject.DestroyOnTimer(this.gameObject, 2f);
+=======
+
+			destroyObject.DestroyOnTimer(this.gameObject, 2f);
+
+
+
+>>>>>>> origin/master
 		}
 
 		//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
