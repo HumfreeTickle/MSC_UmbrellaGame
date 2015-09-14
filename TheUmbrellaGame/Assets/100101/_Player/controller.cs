@@ -75,6 +75,7 @@ namespace Player
 				if (hit.collider != null) {
 					TheDescent ();
 				}
+
 			} else if (gameManager.gameState == GameState.GameOver) {
 				GetComponent<upwardForce> ().enabled = false;
 			} else if(gameManager.gameState == GameState.Event){
@@ -144,7 +145,7 @@ namespace Player
 		void TheDescent () //allow the umbrella to go down
 		{
 			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) { // prevents the palyer from getting caught in the ground
-				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 55, Time.deltaTime*5);
+				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce * 1.25f, Time.deltaTime*5);
 				upForce.enabled = true;
 
 			} else {
@@ -172,8 +173,12 @@ namespace Player
 			}
 
 			if(!upForce.isActiveAndEnabled){
+				Physics.gravity = new Vector3(0, -50.0f, 0);
+				rb.mass = 10000;
 				umbrellaAnim.SetBool("Falling", true);
 			}else{
+				Physics.gravity = new Vector3(0, -18.36f, 0);
+				rb.mass = 1;
 				umbrellaAnim.SetBool("Falling", false);
 
 			}

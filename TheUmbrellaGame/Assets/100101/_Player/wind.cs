@@ -22,10 +22,7 @@ namespace Player
 		void Update ()
 		{
 			transform.LookAt (GameObject.Find ("main_Sphere").transform);
-
 			destroyObject.DestroyOnTimer (this.gameObject, 3f);
-			print(goGoAnimation);
-
 		}
 
 		//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
@@ -43,15 +40,10 @@ namespace Player
 
 		IEnumerator AnimationControl(){
 			goGoAnimation = true;
-//			umbrellaModel.speed = 1;
 			umbrellaModel.SetBool ("Hit", true);
 			yield return new WaitForSeconds(0.5f);
 			umbrellaModel.SetBool ("Hit", false);
-//			umbrellaModel.speed = -1;
 			goGoAnimation = false;
-
-//			StopCoroutine("AnimationControl");
-
 		}
 	}
 }
