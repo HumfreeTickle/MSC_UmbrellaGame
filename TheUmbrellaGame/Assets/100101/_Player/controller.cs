@@ -17,7 +17,7 @@ namespace Player
 		public Rigidbody handle;
 		public float maxRotation;
 //	------------------------------------
-		public Animator umbrellaAnim;
+		private Animator umbrellaAnim;
 		public ForceMode movementForce;
 		public ForceMode backwardForce;
 		public ForceMode rotationForce;
@@ -35,6 +35,7 @@ namespace Player
 		public float turningSpeed;
 		public float keyheld;
 		public float slowDownSpeed = 1.2f;
+		private float defaultUpForce;
 //	------------------------------------
 		private string controllerTypeVertical;
 		private string controllerTypeHorizontal;
@@ -56,6 +57,8 @@ namespace Player
 			upForce = GetComponent<upwardForce> ();
 			controllerTypeVertical = gameManager.ControllerTypeVertical;
 			controllerTypeHorizontal = gameManager.ControllerTypesHorizontal;
+			umbrellaAnim = GameObject.Find("Umbrella").GetComponent<Animator>();
+			defaultUpForce = upForce.upwardsforce;
 		}
 		
 		void FixedUpdate ()
@@ -77,12 +80,6 @@ namespace Player
 			} else if(gameManager.gameState == GameState.Event){
 				Stabilize ();
 			}
-		}
-
-		void LateUpdate(){
-
-			transform.localRotation =  Quaternion.Euler(new Vector3(Mathf.Clamp(transform.rotation.x, -maxRotation, maxRotation), transform.rotation.y, Mathf.Clamp(transform.rotation.z, -maxRotation, maxRotation)));
-
 		}
 		
 		//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
@@ -147,14 +144,14 @@ namespace Player
 		void TheDescent () //allow the umbrella to go down
 		{
 			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) { // prevents the palyer from getting caught in the ground
-				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 44, Time.deltaTime);
+				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 55, Time.deltaTime*5);
 				upForce.enabled = true;
 
 			} else {
 				// ------------ Standard on/off for the descent ---------------
 				if (Input.GetButtonUp("DropFromSky") && keyheld < 0.1f) {
 
-				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 34, Time.deltaTime);
+					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
 				}
 				
 				if (Input.GetButtonDown ("DropFromSky")) {
@@ -168,9 +165,16 @@ namespace Player
 
 				// ------------ brings the umbrella back to equilibrium ---------------
 				else{
-					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 34, Time.deltaTime);
+					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
 					keyheld = 0;
 				}
+
+			}
+
+			if(!upForce.isActiveAndEnabled){
+				umbrellaAnim.SetBool("Falling", true);
+			}else{
+				umbrellaAnim.SetBool("Falling", false);
 
 			}
 		}

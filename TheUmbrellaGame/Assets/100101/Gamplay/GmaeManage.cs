@@ -372,13 +372,13 @@ public class GmaeManage : MonoBehaviour
 
 		fading.FadeIN (PauseScreen, transitionSpeed);
 
-		if (backgroundMusic.transform.childCount > 0) {
-			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
-				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = -1;
-			}
-		}else{
-			backgroundMusic.GetComponent<AudioSource>().pitch = -1;
-		}
+//		if (backgroundMusic.transform.childCount > 0) {
+//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
+//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = -1;
+//			}
+//		}else{
+//			backgroundMusic.GetComponent<AudioSource>().pitch = -1;
+//		}
 	}
 	
 	void NotPaused ()
@@ -387,13 +387,13 @@ public class GmaeManage : MonoBehaviour
 		
 		Time.timeScale = 1f; //runs at regular time
 		fading.FadeOUT (PauseScreen, transitionSpeed);
-		if (backgroundMusic.transform.childCount > 0) {
-			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
-				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = 1;
-			}
-		}else{
-			backgroundMusic.GetComponent<AudioSource>().pitch = 1;
-		}
+//		if (backgroundMusic.transform.childCount > 0) {
+//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
+//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = 1;
+//			}
+//		}else{
+//			backgroundMusic.GetComponent<AudioSource>().pitch = 1;
+//		}
 //		backgroundMusic.pitch = 1;
 	}
 	
