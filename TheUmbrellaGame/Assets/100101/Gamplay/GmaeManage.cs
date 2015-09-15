@@ -277,12 +277,15 @@ public class GmaeManage : MonoBehaviour
 			}
 
 		} else if (Application.loadedLevel == 1) { //Main game screen
-
+			Physics.gravity = new Vector3 (0, -18.36f, 0);
+			//----------------------------------//
 			if (Time.timeSinceLevelLoad > 4) {
 				gameState = GameState.Game;
 			}
+			//----------------------------------//
+
 			WhiteScreenTransisitions ();
-//			cameraClipFar.farClipPlane = Mathf.Lerp (cameraClipFar.farClipPlane, 500, Time.deltaTime);
+
 		}
 	}
 
@@ -329,6 +332,7 @@ public class GmaeManage : MonoBehaviour
 		}
 
 		if (gameState == GameState.GameOver) {
+
 
 			_gameOverTimer += Time.deltaTime;
 			WhiteScreenTransisitions ();

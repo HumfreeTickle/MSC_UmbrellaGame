@@ -43,6 +43,8 @@ namespace NPC
 		private GameObject umbrella;
 		private GameObject cmaera;
 		private GameObject cameraSet;
+		public Material umbrellaColour;
+		public Transform Blue;
 
 		//-------------- Talking Stuff ---------------//
 		private Text npc_Talking;
@@ -168,7 +170,7 @@ namespace NPC
 					npc_Message = "Wow. Thank you so much";
 					npc_Talking.text = (npc_Message.Substring (0, i));
 					i += 1;
-					
+					ChangeColours(Blue);
 					while (i >= npc_Message.Length + 1) {
 						yield return new WaitForSeconds (textSpeed);
 						
@@ -234,5 +236,20 @@ namespace NPC
 
 			yield return null;
 		}
-	}
+
+		void ChangeColours (Transform obj)
+		{
+			for (int child = 0; child< obj.childCount; child++) { //goes through each child object one at a time
+				if (obj.GetChild (child).transform.childCount > 0) {
+					ChangeColours (obj.GetChild (child));
+				} else {
+					if (obj.GetChild (child).GetComponent<MeshRenderer> ()) { // checks to see if there is a mesh renderer attached to child
+						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
+						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime/2);
+					}
+				}
+			}
+		}
+
+	}//end
 }
