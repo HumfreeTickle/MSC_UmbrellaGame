@@ -277,12 +277,15 @@ public class GmaeManage : MonoBehaviour
 			}
 
 		} else if (Application.loadedLevel == 1) { //Main game screen
-
+			Physics.gravity = new Vector3 (0, -18.36f, 0);
+			//----------------------------------//
 			if (Time.timeSinceLevelLoad > 4) {
 				gameState = GameState.Game;
 			}
+			//----------------------------------//
+
 			WhiteScreenTransisitions ();
-//			cameraClipFar.farClipPlane = Mathf.Lerp (cameraClipFar.farClipPlane, 500, Time.deltaTime);
+
 		}
 	}
 
@@ -330,6 +333,7 @@ public class GmaeManage : MonoBehaviour
 
 		if (gameState == GameState.GameOver) {
 
+
 			_gameOverTimer += Time.deltaTime;
 			WhiteScreenTransisitions ();
 			cameraClipFar.farClipPlane = Mathf.Lerp (cameraClipFar.farClipPlane, 2000, Time.deltaTime);
@@ -372,13 +376,13 @@ public class GmaeManage : MonoBehaviour
 
 		fading.FadeIN (PauseScreen, transitionSpeed);
 
-		if (backgroundMusic.transform.childCount > 0) {
-			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
-				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = -1;
-			}
-		}else{
-			backgroundMusic.GetComponent<AudioSource>().pitch = -1;
-		}
+//		if (backgroundMusic.transform.childCount > 0) {
+//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
+//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = -1;
+//			}
+//		}else{
+//			backgroundMusic.GetComponent<AudioSource>().pitch = -1;
+//		}
 	}
 	
 	void NotPaused ()
@@ -387,13 +391,13 @@ public class GmaeManage : MonoBehaviour
 		
 		Time.timeScale = 1f; //runs at regular time
 		fading.FadeOUT (PauseScreen, transitionSpeed);
-		if (backgroundMusic.transform.childCount > 0) {
-			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
-				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = 1;
-			}
-		}else{
-			backgroundMusic.GetComponent<AudioSource>().pitch = 1;
-		}
+//		if (backgroundMusic.transform.childCount > 0) {
+//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
+//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = 1;
+//			}
+//		}else{
+//			backgroundMusic.GetComponent<AudioSource>().pitch = 1;
+//		}
 //		backgroundMusic.pitch = 1;
 	}
 	

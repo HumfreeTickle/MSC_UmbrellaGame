@@ -62,10 +62,11 @@ namespace Player.PhysicsStuff
 //---------------- TURN OFF UPWARDFORCE ---------------------
 				if (charge <= 10) {
 					GetComponent<upwardForce> ().enabled = false;
+					ChangeColours(umbrella.transform);
+
 				} 
 
 //---------------------------- COLOUR CHANGING ------------------------------------------------------------------------
-//				ChangeColours(umbrella.transform);
 
 
 //---------------------------- RAYCASTING STUFF -----------------------------------------------------------------------
@@ -102,9 +103,6 @@ namespace Player.PhysicsStuff
 				} else {
 					if (obj.GetChild (child).GetComponent<MeshRenderer> ()) { // checks to see if there is a mesh renderer attached to child
 						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
-//						Color childColor = umbrellaChild.material.color;
-//						umbrellaColour = new Color(childColor[0]/charge *255, childColor[1]/charge *255, childColor[2]/charge *255, childColor[3]/charge *255);
-//						Color chargeColour = Color.Lerp(umbrellaChild.material.color, umbrellaColour, Time.deltaTime);
 						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime);
 					}
 				}

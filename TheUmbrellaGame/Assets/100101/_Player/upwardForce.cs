@@ -30,14 +30,16 @@ namespace Player
 
 		void SineWave ()
 		{
-			if (sine >= (Mathf.Sin (Mathf.PI / 2))) {
-				sine = 0;
-			} else {
-				sine += Time.time;
-			}
+			if (Time.timeScale != 0) {
+				if (sine >= (Mathf.Sin (Mathf.PI / 2))) {
+					sine = 0;
+				} else {
+					sine += Time.time;
+				}
 
-			sw = Mathf.Sin (sine);
-			upwardsforce = upwardsforce + sw / conterBalance;
+				sw = Mathf.Sin (sine);
+				upwardsforce = upwardsforce + sw / conterBalance;
+			}
 		}
 	}
 }
