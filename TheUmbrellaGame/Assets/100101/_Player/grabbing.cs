@@ -48,9 +48,9 @@ namespace Player
 			if (pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled) {
 				pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled = false;
 			}
-			if (!IsInvoking ("DEMO")) {
-				Invoke ("DEMO", 10);
-			}
+//			if (!IsInvoking ("DEMO")) {
+//				Invoke ("DEMO", 10);
+//			}
 		}
 
 		void Detachment ()

@@ -34,8 +34,6 @@ namespace NPC
 				}
 			}
 			if (col.gameObject.tag == "NPC") {
-				// still not sure if this works or not.
-
 				StartCoroutine (npc_class.Talk (talktime, npcAudioSource, c_AudioClip, e_AudioClip, g_AudioClip, b_AudioClip));
 				// stop whatever they're doing
 			}

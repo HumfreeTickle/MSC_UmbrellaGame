@@ -71,6 +71,7 @@ public class Tutuorial : MonoBehaviour
 		activateNode.transform.parent = tutorialInfo;
 		activateNodeLight = activateNode.GetComponent<Light> ();
 		activateNodeLight.enabled = false;
+
 //		Debug.Log ("Change me back plz");
 	}
 	
