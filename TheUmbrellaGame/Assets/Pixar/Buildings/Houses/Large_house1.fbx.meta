@@ -29,18 +29,21 @@ ModelImporter:
     2300006: Base-2Floor_D.003
     2300008: Base-2Floor_D.004
     2300010: Base-2Floor_D.005
+    2300012: //RootNode
     3300000: Base-2Floor_D
     3300002: Base-2Floor_D.001
     3300004: Base-2Floor_D.002
     3300006: Base-2Floor_D.003
     3300008: Base-2Floor_D.004
     3300010: Base-2Floor_D.005
+    3300012: //RootNode
     4300000: Base-2Floor_D.005
     4300002: Base-2Floor_D.004
     4300004: Base-2Floor_D.003
     4300006: Base-2Floor_D.002
     4300008: Base-2Floor_D.001
     4300010: Base-2Floor_D
+    4300012: Base-1Floor_A
   materials:
     importMaterials: 1
     materialName: 0
