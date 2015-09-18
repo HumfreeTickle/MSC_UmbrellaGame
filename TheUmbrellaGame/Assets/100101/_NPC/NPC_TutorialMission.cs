@@ -47,6 +47,12 @@ namespace NPC
 		private GameObject cameraSet;
 		public Material umbrellaColour;
 		public Transform Blue;
+		private bool missionFinished;
+		public bool MisssionFinished{
+			set{
+				missionFinished = value;
+			}
+		}
 
 		//-------------- Talking Stuff ---------------//
 		private Text npc_Talking;
@@ -184,8 +190,10 @@ namespace NPC
 					while (i >= npc_Message.Length + 1) {
 						yield return new WaitForSeconds (textSpeed);
 						cmaera.GetComponent<GmaeManage>().Progression = 2 ;
-						i = 0;
-						x += 1;
+						if(missionFinished){
+							i = 0;
+							x += 1;
+						}
 						//change missionDelegate to catmissionStart
 //						npc_Interact.misssionDelegate()
 					}

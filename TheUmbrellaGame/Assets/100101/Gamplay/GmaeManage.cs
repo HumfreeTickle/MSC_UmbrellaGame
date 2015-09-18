@@ -136,6 +136,9 @@ public class GmaeManage : MonoBehaviour
 	private Image npc_TalkingBox;
 	private NPC_Interaction npc_Interact;
 
+	//Missions
+	private NPC_TutorialMission tutorialMission;
+
 
 //------------------------------------ Getters and Setters ------------------------------------------------------------
 
@@ -239,6 +242,10 @@ public class GmaeManage : MonoBehaviour
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
 			npc_Talking.fontSize = 25;
 
+
+			//----------------- Missions Complete Stuff --------------------//
+			tutorialMission = GameObject.Find("NPC_Tutorial").GetComponent<NPC_TutorialMission>();
+
 			if (!PauseScreen || !WhiteScreen) {
 				return;
 			}
@@ -263,7 +270,6 @@ public class GmaeManage : MonoBehaviour
 			StartGame ();
 
 		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
-//			progression = Mathf.Clamp (progression, 1, Mathf.Infinity);
 
 			RestartGame ();
 
@@ -496,6 +502,7 @@ public class GmaeManage : MonoBehaviour
 
 					if (Vector4.Distance(umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector){ // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
 						currentProgress = progression;
+						tutorialMission.MisssionFinished = true;
 					}
 				}
 			}
