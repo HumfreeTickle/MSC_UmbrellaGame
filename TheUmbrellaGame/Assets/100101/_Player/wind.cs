@@ -11,10 +11,10 @@ namespace Player
 		public Transform umbrellaObject;
 		private Animator umbrellaModel;
 		private static bool goGoAnimation;
+		public GameState gameState;
 
 		void Awake ()
 		{
-
 			umbrellaObject = GameObject.Find ("Umbrella").transform;
 			umbrellaModel = umbrellaObject.GetComponent<Animator> ();
 		}
@@ -31,7 +31,11 @@ namespace Player
 		void OnParticleCollision (GameObject umbrella)
 		{
 			if (umbrella.name == "main_Sphere") {
-				umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * windForce);
+				if(gameState == GameState.Game){
+					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * windForce * 10);
+				}else if(gameState == GameState.Intro){
+					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * 300);
+				}
 				if(!goGoAnimation){
 					StartCoroutine(AnimationControl());
 				}
@@ -41,6 +45,10 @@ namespace Player
 		IEnumerator AnimationControl(){
 			goGoAnimation = true;
 			umbrellaModel.SetBool ("Hit", true);
+			if(gameState == GameState.Intro){
+				umbrellaModel.SetBool("GameStart", true);
+				GameObject.Find ("Follow Camera").GetComponent<GmaeManage>().gameState = GameState.Game;
+			}
 			yield return new WaitForSeconds(0.5f);
 			umbrellaModel.SetBool ("Hit", false);
 			goGoAnimation = false;

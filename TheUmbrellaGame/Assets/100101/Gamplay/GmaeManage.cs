@@ -116,6 +116,18 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	public int currentProgress = 1;
+
+	//-----------------------------------------------//
+	public Vector3 lastKnownPosition;
+
+	public Vector3 LAstKnownPosition {
+		set {
+			lastKnownPosition = value;
+		}
+	}
+
+	public Vector3 startingPos;
+	//-----------------------------------------------//
 	private Camera cameraClipFar;
 	public List<Material> allTheColoursOfTheUmbrella;
 	public List<Transform> canopyColours;
@@ -189,6 +201,8 @@ public class GmaeManage : MonoBehaviour
 
 	void Awake ()
 	{
+		DontDestroyOnLoad (transform.gameObject);
+
 		//-------------------- For the different controllers ---------------------------------
 		if (Input.GetJoystickNames ().Length > 0) {// checks to see if a controller is connected
 			controllerType = ControllerType.ConsoleContoller;
@@ -237,6 +251,16 @@ public class GmaeManage : MonoBehaviour
 			cameraClipFar = GetComponent<Camera> ();
 //			cameraClipFar.farClipPlane = 800;
 
+
+			umbrella = GameObject.Find ("main_Sphere");
+			umbrellaRb = umbrella.GetComponent<Rigidbody> ();
+			if (PlayerPrefs.GetFloat ("PlayerX") != 0 || PlayerPrefs.GetFloat ("PlayerY") != 0 || PlayerPrefs.GetFloat ("PlayerZ") != 0) {
+				startingPos = new Vector3 (PlayerPrefs.GetFloat ("PlayerX"), PlayerPrefs.GetFloat ("PlayerY"), PlayerPrefs.GetFloat ("PlayerZ"));
+			}else{
+				startingPos = umbrella.transform.localPosition;
+			}
+			umbrella.transform.localPosition = startingPos;
+
 			backgroundMusic = GameObject.Find ("Music");
 			npcManager = this.GetComponent<NPCManage> ();
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
@@ -244,7 +268,7 @@ public class GmaeManage : MonoBehaviour
 
 
 			//----------------- Missions Complete Stuff --------------------//
-			tutorialMission = GameObject.Find("NPC_Tutorial").GetComponent<NPC_TutorialMission>();
+			tutorialMission = GameObject.Find ("NPC_Tutorial").GetComponent<NPC_TutorialMission> ();
 
 			if (!PauseScreen || !WhiteScreen) {
 				return;
@@ -256,6 +280,8 @@ public class GmaeManage : MonoBehaviour
 
 	void Update ()
 	{
+
+
 		if (Input.GetButtonDown ("Undefined")) {
 			if (progression == currentProgress) {
 				progression += 1;
@@ -315,11 +341,6 @@ public class GmaeManage : MonoBehaviour
 
 		} else if (Application.loadedLevel == 1) { //Main game screen
 			Physics.gravity = new Vector3 (0, -18.36f, 0);
-			//----------------------------------//
-			if (Time.timeSinceLevelLoad > 4) {
-				gameState = GameState.Game;
-			}
-			//----------------------------------//
 
 			WhiteScreenTransisitions ();
 
@@ -347,10 +368,12 @@ public class GmaeManage : MonoBehaviour
 
 			} else if (gameState == GameState.Pause) {
 				gameState = GameState.Game;
+				autoPauseTimer = 0;
 				NotPaused ();
 				InGameSnapShot.TransitionTo (0);
 			}
 		}
+
 		if (gameState == GameState.Pause) {
 			Paused ();
 		} else if (gameState == GameState.Game) {
@@ -440,16 +463,16 @@ public class GmaeManage : MonoBehaviour
 	
 	void FixedPause ()
 	{
-		if (!Input.anyKey) {
-			if (Mathf.Abs (Input.GetAxisRaw ("Vertical_L")) > 0 || Mathf.Abs (Input.GetAxisRaw ("Horizontal_L")) == 0) {
+		if (umbrellaRb.velocity.magnitude <= 2) {
+			{
 				autoPauseTimer += Time.deltaTime;
 			}
 			
-			if (autoPauseTimer >= 60) {
+			if (autoPauseTimer >= 45) {
 				gameState = GameState.Pause;//when the timer reaches 0 then the pause screen will activate
 			}
 			
-		} else if (Input.anyKey || Mathf.Abs (Input.GetAxis ("Horizontal_L")) > 0 || Mathf.Abs (Input.GetAxis ("Vertical_L")) > 0) {
+		} else if (umbrellaRb.velocity.magnitude > 2) {
 			autoPauseTimer = 0;//once a key is pressed the timer should revert back to 0
 		}
 	}
@@ -470,7 +493,10 @@ public class GmaeManage : MonoBehaviour
 					if (Application.loadedLevel == 0) {
 						Application.LoadLevel ("Boucing");
 					} else if (Application.loadedLevel == 1) {
-						Application.LoadLevel ("Start_Screen");
+						PlayerPrefs.SetFloat ("PlayerX", lastKnownPosition.x);
+						PlayerPrefs.SetFloat ("PlayerY", lastKnownPosition.y);
+						PlayerPrefs.SetFloat ("PlayerZ", lastKnownPosition.z);
+						Application.LoadLevel ("Boucing");
 					}
 				}
 			}
@@ -500,13 +526,18 @@ public class GmaeManage : MonoBehaviour
 					MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
 					umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime);
 
-					if (Vector4.Distance(umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector){ // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
+					if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
 						currentProgress = progression;
 						tutorialMission.MisssionFinished = true;
 					}
 				}
 			}
 		}
+	}
+
+	void OnApplicationQuit ()
+	{
+		PlayerPrefs.DeleteAll ();
 	}
 	
 }//End of Class

@@ -19,10 +19,12 @@ namespace Player
 	
 		void FixedUpdate ()
 		{
-			if (gameManager.gameState != GameState.Pause) {
+			if (gameManager.gameState != GameState.Pause){
+				if(gameManager.gameState != GameState.Intro) {
 				SineWave ();
 				Vector3 force = Vector3.up * upwardsforce;
 				rb.AddForce (force);
+				}
 			}
 		}
 

@@ -10,10 +10,7 @@ namespace Player
 		public DestroyObject destroyStuff = new Inheritence.DestroyObject ();
 		public GmaeManage gameManager;
 //	------------------------------------
-		public Rigidbody frontsphere;
-		public Rigidbody backsphere;
-		public Rigidbody leftsphere;
-		public Rigidbody rightsphere;
+
 		public Rigidbody handle;
 		public float maxRotation;
 //	------------------------------------
@@ -49,11 +46,7 @@ namespace Player
 		void Start ()
 		{
 			rb = GetComponent<Rigidbody> ();
-//			lsphereMass = leftsphere.mass;
-//			rsphereMass = rightsphere.mass;
-//			fsphereMass = frontsphere.mass;
-//			bsphereMass = backsphere.mass;
-//			handleMass = handle.mass;
+
 			upForce = GetComponent<upwardForce> ();
 			controllerTypeVertical = gameManager.ControllerTypeVertical;
 			controllerTypeHorizontal = gameManager.ControllerTypesHorizontal;
@@ -70,14 +63,11 @@ namespace Player
 		
 		void FixedUpdate ()
 		{
-			if (gameManager.gameState != GameState.Game) {
-				Input.ResetInputAxes (); // stops the player from making an input before the game begins
-			}
 
 			if (gameManager.gameState == GameState.Game) {
+				handle.GetComponent<CapsuleCollider>().enabled = true;
+				rb.useGravity = true;
 				Movement ();
-//				HorizontalMass ();
-//				VerticalMass ();
 				hit = GetComponent<CreateWind> ().RaycastingInfo;
 				if (hit.collider != null) {
 					TheDescent ();
@@ -99,10 +89,6 @@ namespace Player
 		
 		void Movement ()
 		{
-
-			// need to set up a check as to whether the controller is active when a game state change occurs
-//			umbrellaAnim.SetFloat ("Input_Vertical", Input.GetAxis (controllerTypeVertical));
-
 			rotationAnim.SetBool ("Input_V", rotate);
 
 			if (Input.GetAxis (controllerTypeVertical) > 0.1f) { // Probably should only use forward for this and have back be a kind of breaking system
@@ -129,32 +115,6 @@ namespace Player
 			}
 		}
 		
-//		void HorizontalMass ()
-//		{
-//			if (Input.GetAxisRaw (controllerTypeHorizontal) < 0) {
-//				leftsphere.mass = lsphereMass + forceAppliedToTilt;
-//			} else if (Input.GetAxisRaw (controllerTypeHorizontal) > 0) {
-//				rightsphere.mass = rsphereMass + forceAppliedToTilt;
-//			} else if (Input.GetAxisRaw (controllerTypeHorizontal) == 0) {
-//				leftsphere.mass = lsphereMass;
-//				rightsphere.mass = rsphereMass;
-//			}
-//		}
-//		
-//		void VerticalMass ()
-//		{
-//			if (Input.GetAxisRaw (controllerTypeVertical) > 0) {
-//				frontsphere.mass = fsphereMass + forceAppliedToTilt;
-//				handle.mass = handleMass + forceAppliedToTilt / 2;
-//			} else if (Input.GetAxisRaw (controllerTypeVertical) < 0) {
-//				backsphere.mass = bsphereMass + forceAppliedToTilt * 2;
-//			} else if (Input.GetAxisRaw (controllerTypeVertical) == 0) {
-//				frontsphere.mass = fsphereMass;
-//				backsphere.mass = bsphereMass;
-//				handle.mass = handleMass;
-//			}
-//		}
-		
 		void TheDescent () //allow the umbrella to go down
 		{
 			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) { // prevents the palyer from getting caught in the ground
@@ -163,24 +123,16 @@ namespace Player
 
 			} else {
 				// ------------ Standard on/off for the descent ---------------
-				if (Input.GetButtonUp ("DropFromSky") && keyheld < 0.1f) {
-
-					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
+				if (Input.GetAxis ("Vertical_R") <= -0.9f) {
+					upForce.enabled = false;
+				}else if(Input.GetAxis ("Vertical_R") <= -0.01f){
+					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 0, Time.deltaTime);
 				}
-				
-				if (Input.GetButtonDown ("DropFromSky")) {
-					upForce.enabled = !upForce.enabled;
-
-					// ------------ Slow descent ---------------
-				} else if (Input.GetButton ("DropFromSky")) {
-					keyheld += Time.deltaTime;
-					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 0, Time.deltaTime / 10);
-				}
-
 				// ------------ brings the umbrella back to equilibrium ---------------
 				else {
+					upForce.enabled = true;
+
 					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
-					keyheld = 0;
 				}
 
 			}
