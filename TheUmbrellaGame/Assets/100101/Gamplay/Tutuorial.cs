@@ -71,6 +71,7 @@ public class Tutuorial : MonoBehaviour
 		activateNode.transform.parent = tutorialInfo;
 		activateNodeLight = activateNode.GetComponent<Light> ();
 		activateNodeLight.enabled = false;
+
 //		Debug.Log ("Change me back plz");
 	}
 	
@@ -247,9 +248,20 @@ public class Tutuorial : MonoBehaviour
 			case 5: //Default blank state
 				if (movementDone) {
 					activateNode.transform.position = NPCTutorial.position;
+					while (activateNodeLight.intensity <= 3.9f) {
+						activateNodeLight.enabled = true;
+						activateNodeLight.intensity = Mathf.Lerp (activateNodeLight.intensity, 4, Time.deltaTime);
+						yield return null;
+					}
 				}
 				break;
 			default: //Fail safe
+				activateNode.transform.position = NPCTutorial.position;
+				while (activateNodeLight.intensity <= 3.9f) {
+					activateNodeLight.enabled = true;
+					activateNodeLight.intensity = Mathf.Lerp (activateNodeLight.intensity, 4, Time.deltaTime);
+					yield return null;
+				}
 				break;
 			}
 			yield return null;

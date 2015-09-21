@@ -15,23 +15,25 @@ namespace NPC
 
 		//------------- Talking variables -----------------//
 		public float talkingSpeed;
+
 		public float TalkingSpeed {
 
 			get {
 				return talkingSpeed / 10;
 			}
 		}
+
 		public float textSpeed;
 
 		//-------------- Tutorial Conditions ---------------//
 		private bool tutorialMission;
-
 		private bool tutorialRunning;
-		public bool TutorialRunning{
-			get{
+
+		public bool TutorialRunning {
+			get {
 				return tutorialRunning;
 			}
-			set{
+			set {
 				tutorialRunning = value;
 			}
 		}
@@ -45,22 +47,34 @@ namespace NPC
 		private GameObject cameraSet;
 		public Material umbrellaColour;
 		public Transform Blue;
+<<<<<<< HEAD
+=======
+		private bool missionFinished;
+		public bool MisssionFinished{
+			set{
+				missionFinished = value;
+			}
+		}
+>>>>>>> origin/master
 
 		//-------------- Talking Stuff ---------------//
 		private Text npc_Talking;
 		private Image npc_TalkingBox;
 		private NPC_Interaction npc_Interact;
-
+		private float _oldHeight;
+		private float _oldWidth;
+		public float Ratio = 20;
 		//------------------------------------------------------------------------------//
 		// Would be awesome if I could workout a way to have this seperate by paragraphs
 		// Create a list that fills up when ever there is an enter break "\n"
 		// split string
-		public List<string> npc_Message_Array = new List<string>();
-		public string npc_Message = "Can you please help me restart the windmill? \n Yes";
+		public List<string> npc_Message_Array = new List<string> ();
+		public string npc_Message = "Can you please help me restart the windmill? /n Yes";
 		//------------------------------------------------------------------------------//
 		public int x = 0;
-		public int X{
-			set{
+
+		public int X {
+			set {
 				x = value;
 			}
 		}
@@ -70,26 +84,31 @@ namespace NPC
 		void Start ()
 		{
 			windmill = GameObject.Find ("Cylinder"); //windmill part to look at
-			cat = GameObject.Find("kitten"); //kitten to look at
+			cat = GameObject.Find ("kitten"); //kitten to look at
 			cmaera = GameObject.Find ("Follow Camera"); 
 			umbrella = cmaera.GetComponent<Controller> ().lookAt; //let's the camera look at different things
 
 			//This can probably be moved into the new inheritence class(NPC_Class)
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
-			npc_Talking.fontSize = 30;
 			npc_TalkingBox = GameObject.Find ("NPC_TalkBox").GetComponent<Image> ();
 
 
 			cameraSet = cmaera.GetComponent<Controller> ().lookAt;
-			npc_Interact = this.GetComponent<NPC_Interaction>();
-			npc_Interact.misssionDelegate = StartMission;
+			npc_Interact = this.GetComponent<NPC_Interaction> ();
+			npc_Interact.misssionDelegate = StartTutorialMission;
 
 			//doesn't quite work
-			npc_Message.Split(new[] { "\n" }, StringSplitOptions.None);
+			npc_Message.Split (new[] { "/n" }, StringSplitOptions.None);
 		}
 	
 		void Update ()
 		{	
+			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
+				_oldWidth = Screen.width;
+				_oldHeight = Screen.height;
+				npc_Talking.fontSize = Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / Ratio);
+			}
+
 			if (tutorialMission) {
 				npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
 				if (!tutorialRunning) {
@@ -100,7 +119,8 @@ namespace NPC
 			}
 		}
 
-		void StartMission(){
+		void StartTutorialMission ()
+		{
 			tutorialMission = true;
 		}
 
@@ -125,10 +145,10 @@ namespace NPC
 				//-------------------------------- all this stuff --------------------------------//
 					while (i >= npc_Message.Length + 1) {
 						yield return new WaitForSeconds (textSpeed);
-
 						i = 0;
 						x += 1;
 					}
+
 					break;
 
 				case 1:
@@ -170,20 +190,34 @@ namespace NPC
 					npc_Message = "Wow. Thank you so much";
 					npc_Talking.text = (npc_Message.Substring (0, i));
 					i += 1;
-					ChangeColours(Blue);
+<<<<<<< HEAD
+
+
 					while (i >= npc_Message.Length + 1) {
 						yield return new WaitForSeconds (textSpeed);
-						
+						cmaera.GetComponent<GmaeManage>().Progression = 2 ;
 						i = 0;
 						x += 1;
+=======
+					while (i >= npc_Message.Length + 1) {
+						yield return new WaitForSeconds (textSpeed);
+						cmaera.GetComponent<GmaeManage>().Progression = 2 ;
+						if(missionFinished){
+							i = 0;
+							x += 1;
+						}
+>>>>>>> origin/master
+						//change missionDelegate to catmissionStart
+//						npc_Interact.misssionDelegate()
 					}
 					break;
-					
+
+//------------------------------------new script for the cat mission-----------------------------------------//
 				case 4:
 					npc_Message = "Can I ask you for one more favour. My friends cat is stuck in a tree";
 					npc_Talking.text = (npc_Message.Substring (0, i));
 					cameraSet = cat;
-					cat.transform.Find("Activate").GetComponent<Light>().enabled = true;
+					cat.transform.Find ("Activate").GetComponent<Light> ().enabled = true;
 					cat.tag = "Pickup";
 					
 					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
@@ -214,7 +248,7 @@ namespace NPC
 						x += 1;
 					}
 					break;
-
+//--------------------------------------------------------------------------------------------------------------------//
 				default:
 					Debug.Log ("Default");
 					
@@ -228,7 +262,7 @@ namespace NPC
 			// This should only be changed when the mission is fully done
 			// So after the return from the windmill
 			tutorialMission = false; 
-			yield return new WaitForSeconds(1);
+			yield return new WaitForSeconds (1);
 
 			cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
 
@@ -237,19 +271,10 @@ namespace NPC
 			yield return null;
 		}
 
-		void ChangeColours (Transform obj)
-		{
-			for (int child = 0; child< obj.childCount; child++) { //goes through each child object one at a time
-				if (obj.GetChild (child).transform.childCount > 0) {
-					ChangeColours (obj.GetChild (child));
-				} else {
-					if (obj.GetChild (child).GetComponent<MeshRenderer> ()) { // checks to see if there is a mesh renderer attached to child
-						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
-						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime/2);
-					}
-				}
-			}
-		}
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/master
 	}//end
 }

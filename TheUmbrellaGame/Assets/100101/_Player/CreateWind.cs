@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using CameraScripts;
 
 namespace Player.PhysicsStuff
@@ -10,19 +11,27 @@ namespace Player.PhysicsStuff
 		/// <summary>
 		/// Turns on/off the barrriers around the islands
 		/// </summary>
-		public bool barriers;
 		private GmaeManage GameManager;
 		private GameState gameState;
 		public GameObject windSystem;
 		private GameObject instatiatedWind;
 		private Vector3 spawnDistance;
+		//-----------------------------------//
 		private float charge;
 		public float progression;
 		public float maxTerrainDistance = 1.0f;
+		//-----------------------------------//
 		public Material umbrellaColour;
+		public Color blackTint = Color.black;
+		public List<Color> originalColours;
+		private bool gameStart;
+		//-----------------------------------//
 		private Vector3 baseUmbrella = new Vector3 (0f, -5f, 0f);
 		private GameObject umbrella;
+		private GameObject canopyColours;
 		private Rigidbody umbrellaRb;
+		//-----------------------------------//
+		public bool barriers;
 		public float bounceBack;
 		private RaycastHit hit;
 
@@ -39,6 +48,8 @@ namespace Player.PhysicsStuff
 			umbrella = GameObject.Find ("Umbrella");
 			umbrellaRb = this.gameObject.GetComponent<Rigidbody> ();
 			charge = GameManager.UmbrellaCharge;
+			canopyColours = umbrella.transform.FindChild ("Canopy_Colours").gameObject;
+			ChangeColours (canopyColours.transform);
 		}
 
 		void Update ()
@@ -62,11 +73,18 @@ namespace Player.PhysicsStuff
 //---------------- TURN OFF UPWARDFORCE ---------------------
 				if (charge <= 10) {
 					GetComponent<upwardForce> ().enabled = false;
-					ChangeColours(umbrella.transform);
 
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> origin/master
 				} 
+				//------------------------- COLOUR CHANGING ---------------------------//
 
-//---------------------------- COLOUR CHANGING ------------------------------------------------------------------------
+//				ChangeColours (canopyColours.transform);
+
+
 
 
 //---------------------------- RAYCASTING STUFF -----------------------------------------------------------------------
@@ -76,14 +94,14 @@ namespace Player.PhysicsStuff
 				if (Physics.Raycast (transform.position + baseUmbrella, downRayDown, out hit, Mathf.Infinity)) {
 
 					//------------- DEBUGGING -----------------------------
-					Debug.DrawRay (transform.position + baseUmbrella, downRayDown, Color.green, 10, false);
+//					Debug.DrawRay (transform.position + baseUmbrella, downRayDown, Color.green, 10, false);
 
 					//------------- CONDITIONS ----------------------------
 					if (hit.collider.tag == "Terrain" && hit.distance < maxTerrainDistance) {
 						GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 0, 100);
 					} 
 				} else {
-					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime / progression);// progress :)
+					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime / (progression*2));// progress :)
 
 					if (barriers) {
 						umbrellaRb.AddForce ((-bounceBack) * umbrellaRb.velocity);
@@ -103,7 +121,27 @@ namespace Player.PhysicsStuff
 				} else {
 					if (obj.GetChild (child).GetComponent<MeshRenderer> ()) { // checks to see if there is a mesh renderer attached to child
 						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
-						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime);
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/master
+						//Needs to only do this once
+						if (originalColours.Count < 16) {
+							originalColours.Add (umbrellaChild.material.color);
+						} else {
+							gameStart = true;
+						}
+						if (gameStart && charge <= 10) {
+							umbrellaChild.material.color = Color.Lerp (umbrellaChild.material.color, blackTint, Time.deltaTime);
+						}
+//						else if(gameStart && charge > 10){
+//							//NEEDS A WAY TO DIFFERENTIATE EACH SECTION
+//						umbrellaChild.material.color = Color.Lerp (umbrellaChild.material.color, originalColours [child], Time.deltaTime);
+//						}
+<<<<<<< HEAD
+
+=======
+>>>>>>> origin/master
 					}
 				}
 			}

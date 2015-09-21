@@ -27,7 +27,7 @@ namespace Environment
 		public Transform rotation;  
 	
 		/// current day phase  
-		private DayPhase currentPhase; 
+		public DayPhase currentPhase; 
 		public DayPhase CurrentPhase{
 			get{
 				return currentPhase;

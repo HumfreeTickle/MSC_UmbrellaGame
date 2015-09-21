@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Audio;
 using UnityStandardAssets.ImageEffects;
 using Inheritence;
 using CameraScripts;
+using NPC;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -99,9 +101,26 @@ public class GmaeManage : MonoBehaviour
 	public float transitionSpeed; // speed of transitions
 	public float _gameOverTimer; // 
 	public float _charge; // the umbrella's energy charge
-	public float progression = 1;
-	private Camera cameraClipFar;
 
+	//---------------- Progression ------------------//
+
+	public int progression = 1;
+
+	public int Progression {
+		get {
+			return progression;
+		}
+		set {
+			progression = value;
+		}
+	}
+
+	public int currentProgress = 1;
+	private Camera cameraClipFar;
+	public List<Material> allTheColoursOfTheUmbrella;
+	public List<Transform> canopyColours;
+	private Material umbrellaColour;
+	public float thresholdVector;
 	//Start script Stuff
 	private bool nextLevel; // has the transtion to Level-1 been activated
 	public bool timeStart;
@@ -110,6 +129,19 @@ public class GmaeManage : MonoBehaviour
 	// Eventually these should be made into a dynamic list that is moved in and out depending on the type of controls needed
 	private string controllerTypeVertical;
 	private string controllerTypeHorizontal; 
+
+
+	//-----------------------
+	private Text npc_Talking;
+	private Image npc_TalkingBox;
+	private NPC_Interaction npc_Interact;
+
+<<<<<<< HEAD
+=======
+	//Missions
+	private NPC_TutorialMission tutorialMission;
+
+>>>>>>> origin/master
 
 //------------------------------------ Getters and Setters ------------------------------------------------------------
 
@@ -127,12 +159,6 @@ public class GmaeManage : MonoBehaviour
 		}
 		set {
 			_charge = value;
-		}
-	}
-
-	public float Progression {
-		get {
-			return progression;
 		}
 	}
 
@@ -216,6 +242,15 @@ public class GmaeManage : MonoBehaviour
 
 			backgroundMusic = GameObject.Find ("Music");
 			npcManager = this.GetComponent<NPCManage> ();
+			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
+			npc_Talking.fontSize = 25;
+<<<<<<< HEAD
+=======
+
+
+			//----------------- Missions Complete Stuff --------------------//
+			tutorialMission = GameObject.Find("NPC_Tutorial").GetComponent<NPC_TutorialMission>();
+>>>>>>> origin/master
 
 			if (!PauseScreen || !WhiteScreen) {
 				return;
@@ -227,12 +262,24 @@ public class GmaeManage : MonoBehaviour
 
 	void Update ()
 	{
+		if (Input.GetButtonDown ("Undefined")) {
+			if (progression == currentProgress) {
+				progression += 1;
+			}
+		}
+
+		if (progression > currentProgress) {
+			Progress ();
+		}
 
 		if (gameState == GameState.Intro) {
 			StartGame ();
 
 		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
-			progression = Mathf.Clamp (progression, 1, Mathf.Infinity);
+<<<<<<< HEAD
+//			progression = Mathf.Clamp (progression, 1, Mathf.Infinity);
+=======
+>>>>>>> origin/master
 
 			RestartGame ();
 
@@ -445,6 +492,35 @@ public class GmaeManage : MonoBehaviour
 		Application.LoadLevel (1); //Changes to the next scene
 	}
 
+	void Progress ()
+	{
+		if (progression < 6) {
+			umbrellaColour = allTheColoursOfTheUmbrella [progression - 2];
+			ChangeColours (canopyColours [progression - 2]);
+		}
+	}
 
+	void ChangeColours (Transform obj)
+	{
+		for (int child = 0; child< obj.childCount; child++) { //goes through each child object one at a time
+			if (obj.GetChild (child).transform.childCount > 0) {
+				ChangeColours (obj.GetChild (child));
+			} else {
+				if (obj.GetChild (child).GetComponent<MeshRenderer> ()) { // checks to see if there is a mesh renderer attached to child
+					MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
+					umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime);
+
+					if (Vector4.Distance(umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector){ // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
+						currentProgress = progression;
+<<<<<<< HEAD
+=======
+						tutorialMission.MisssionFinished = true;
+>>>>>>> origin/master
+					}
+				}
+			}
+		}
+	}
+	
 }//End of Class
 

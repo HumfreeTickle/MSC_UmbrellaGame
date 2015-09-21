@@ -60,7 +60,17 @@ namespace Player
 			umbrellaAnim = GameObject.Find ("Umbrella").GetComponent<Animator> ();
 			rotationAnim = GameObject.Find ("Rotation_Sphere").GetComponent<Animator> ();
 			defaultUpForce = upForce.upwardsforce;
+<<<<<<< HEAD
 
+			GetComponent<CapsuleCollider>().radius = 0.5f;
+
+
+
+=======
+			GetComponent<CapsuleCollider>().radius = 0.5f;
+
+
+>>>>>>> origin/master
 			if (!upForce.isActiveAndEnabled) {
 				upForce.enabled = true;
 			}
@@ -187,12 +197,30 @@ namespace Player
 				Physics.gravity = new Vector3 (0, -50.0f, 0);
 				rb.mass = 10000;
 				umbrellaAnim.SetBool ("Falling", true);
+<<<<<<< HEAD
 
+				GetComponent<CapsuleCollider>().radius = 0.25f;
+
+
+=======
+				GetComponent<CapsuleCollider>().radius = 0.25f;
+
+>>>>>>> origin/master
 			} else {
 				Physics.gravity = new Vector3 (0, -18.36f, 0);
 				rb.mass = 1;
 				umbrellaAnim.SetBool ("Falling", false);
+<<<<<<< HEAD
 
+				GetComponent<CapsuleCollider>().radius = 0.5f;
+
+
+
+=======
+				GetComponent<CapsuleCollider>().radius = 0.5f;
+
+
+>>>>>>> origin/master
 			}
 		}
 
