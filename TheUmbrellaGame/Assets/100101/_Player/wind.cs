@@ -44,7 +44,7 @@ namespace Player
 				}else if(gameState == GameState.Intro){
 					gameTutorial.AnimatorYeah.SetBool("Wind",false);
 					gameTutorial.AnimatorYeah.SetInteger ("State", 5);
-					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * 500);
+					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * 1000);
 
 				}
 				if(!goGoAnimation){

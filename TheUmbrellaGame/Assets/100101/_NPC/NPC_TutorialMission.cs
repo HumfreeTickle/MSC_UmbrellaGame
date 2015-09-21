@@ -9,9 +9,12 @@ namespace NPC
 {
 	/// <summary>
 	/// need to move the talking parts into an inheritnce class so all NPC's can access it
+	/// set up proper gamestate variable
 	/// </summary>
 	public class NPC_TutorialMission : MonoBehaviour
 	{
+
+		private GameState gameState;
 
 		//------------- Talking variables -----------------//
 		public float talkingSpeed;
@@ -44,10 +47,8 @@ namespace NPC
 		private GameObject cat;
 		private GameObject umbrella;
 		private GameObject cmaera;
-		private GameObject cameraSet;
-		public Material umbrellaColour;
-		public Transform Blue;
-		private bool missionFinished;
+		public GameObject cameraSet;
+		private bool missionFinished = false;
 
 		public bool MisssionFinished {
 			set {
@@ -59,9 +60,10 @@ namespace NPC
 		private Text npc_Talking;
 		private Image npc_TalkingBox;
 		private NPC_Interaction npc_Interact;
+		private bool proceed;
 		private float _oldHeight;
 		private float _oldWidth;
-		public float Ratio = 20;
+		public float Ratio = 30;
 		//------------------------------------------------------------------------------//
 		// Would be awesome if I could workout a way to have this seperate by paragraphs
 		// Create a list that fills up when ever there is an enter break "\n"
@@ -107,6 +109,12 @@ namespace NPC
 				npc_Talking.fontSize = Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / Ratio);
 			}
 
+			if (cmaera.GetComponent<GmaeManage> ().gameState == GameState.Event) {
+				if (Input.GetButtonDown ("Talk")) {
+					proceed = true;
+				}
+			}
+
 			if (tutorialMission) {
 				npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
 				if (!tutorialRunning) {
@@ -137,14 +145,18 @@ namespace NPC
 				case 0:
 					//npc_Message[x] //grabs the part of the list the text is attributed to
 					npc_Message = "Can you please help me restart the windmill?";
-					npc_Talking.text = (/*npc_Message_Array[x]*/npc_Message.Substring (0, i));
+					npc_Talking.text = (npc_Message.Substring (0, i));
 					i += 1;
 
 				//-------------------------------- all this stuff --------------------------------//
 					while (i >= npc_Message.Length + 1) {
 						yield return new WaitForSeconds (textSpeed);
-						i = 0;
-						x += 1;
+
+						if (proceed) {
+							i = 0;
+							x += 1;
+							proceed = false;
+						}
 					}
 
 					break;
@@ -158,23 +170,25 @@ namespace NPC
 					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
 					i += 1;
 
-					if (i >= npc_Message.Length + 1) {
-
+					while (i >= npc_Message.Length) {
 						yield return new WaitForSeconds (textSpeed);
-						npc_Message = "";
-						npc_TalkingBox.enabled = false;
-						npc_Talking.text = npc_Message;
-						i = 0;
-						x += 1;
+
+						if (proceed) {
+							npc_Message = "";
+							npc_TalkingBox.enabled = false;
+							npc_Talking.text = npc_Message;
+							i = 0;
+							x = 2;
+							proceed = false;
+						}
 					}
 					break;
 				
 				default:
 					Debug.Log ("Default");
-
 					break;
 				}
-				yield return new WaitForSeconds (TalkingSpeed);
+				yield return null;
 			}
 
 			while (x > 2 && x < 6) {
@@ -189,24 +203,17 @@ namespace NPC
 					npc_Talking.text = (npc_Message.Substring (0, i));
 					i += 1;
 					while (i >= npc_Message.Length + 1) {
-						yield return new WaitForSeconds (textSpeed);
 						cmaera.GetComponent<GmaeManage> ().Progression = 2;
-						i = 0;
-						x += 1;
-						while (i >= npc_Message.Length + 1) {
-							yield return new WaitForSeconds (textSpeed);
-							cmaera.GetComponent<GmaeManage> ().Progression = 2;
+						yield return new WaitForSeconds (textSpeed);
 
-							while (i >= npc_Message.Length + 1) {
-								yield return new WaitForSeconds (textSpeed);
-								cmaera.GetComponent<GmaeManage> ().Progression = 2;
-								if (missionFinished) {
-									i = 0;
-									x += 1;
-								}
-								//change missionDelegate to catmissionStart
-//						npc_Interact.misssionDelegate()
+						if (missionFinished) {
+							if (proceed) {
+								i = 0;
+								x += 1;
+								proceed = false;
 							}
+							//change missionDelegate to catmissionStart
+//						npc_Interact.misssionDelegate()
 						}
 					}
 					break;
@@ -225,8 +232,11 @@ namespace NPC
 					if (i >= npc_Message.Length + 1) {
 						
 						yield return new WaitForSeconds (textSpeed);
-						i = 0;
-						x += 1;
+						if (proceed) {
+							i = 0;
+							x += 1;
+							proceed = false;
+						}
 					}
 					break;
 
@@ -238,13 +248,15 @@ namespace NPC
 					i += 1;
 					
 					if (i >= npc_Message.Length + 1) {
-						
 						yield return new WaitForSeconds (textSpeed);
-						npc_Message = "";
-						npc_TalkingBox.enabled = false;
-						npc_Talking.text = npc_Message;
-						i = 0;
-						x += 1;
+						if (proceed) {
+							npc_Message = "";
+							npc_TalkingBox.enabled = false;
+							npc_Talking.text = npc_Message;
+							i = 0;
+							x = 2;
+							proceed = false;
+						}
 					}
 					break;
 //--------------------------------------------------------------------------------------------------------------------//
@@ -256,20 +268,19 @@ namespace NPC
 				yield return new WaitForSeconds (TalkingSpeed);
 			}
 
-			cameraSet = umbrella;
-			cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+				cameraSet = umbrella;
+				cmaera.GetComponent<Controller> ().lookAt = cameraSet;
 			// This should only be changed when the mission is fully done
 			// So after the return from the windmill
-			tutorialMission = false; 
-			yield return new WaitForSeconds (1);
+				tutorialMission = false; 
+				yield return new WaitForSeconds (1);
 
-			cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+				cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
 
-			StopCoroutine (Tutotial_Mission ());
+				StopCoroutine (Tutotial_Mission ());
 
-			yield return null;
+				yield return null;
 		}
-
 
 	}//end
 }

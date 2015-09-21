@@ -262,7 +262,6 @@ public class GmaeManage : MonoBehaviour
 			backgroundMusic = GameObject.Find ("Music");
 			npcManager = this.GetComponent<NPCManage> ();
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
-			npc_Talking.fontSize = 25;
 
 			//----------------- Missions Complete Stuff --------------------//
 			tutorialMission = GameObject.Find ("NPC_Tutorial").GetComponent<NPC_TutorialMission> ();
@@ -531,14 +530,9 @@ public class GmaeManage : MonoBehaviour
 						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
 						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime);
 
-						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
+						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) >= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
 							currentProgress = progression;
 							tutorialMission.MisssionFinished = true;
-
-							if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
-								currentProgress = progression;
-								tutorialMission.MisssionFinished = true;
-							}
 						}
 					}
 				}
