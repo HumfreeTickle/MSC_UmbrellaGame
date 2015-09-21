@@ -12,6 +12,7 @@ public class Tutuorial : MonoBehaviour
 	private Light activateNodeLight;
 	private GameObject cmaera;
 	public GameObject umbrella;
+	public float secondsToStart = 5;
 	private GameState gameState;
 	private bool started;
 	public bool goXgo;
@@ -23,6 +24,12 @@ public class Tutuorial : MonoBehaviour
 	private Transform tutorialInfo;
 	//----------------------------------------------------//
 	private Animator animator;
+	public Animator AnimatorYeah{
+		get{
+			return animator;
+		}
+
+	}
 	private int t;
 	private int x;
 
@@ -35,15 +42,12 @@ public class Tutuorial : MonoBehaviour
 		}
 	}
 
-	public Sprite frontPS3;
-	public Sprite backPS3;
 	private Image tutorialImage;
 	public bool movementDone;
 
 	void Awake ()
 	{
 		tutorialImage = GetComponent<Image> ();
-		tutorialImage.sprite = frontPS3;
 		animator = GetComponent<Animator> ();
 		cmaera = GameObject.Find ("Follow Camera");
 		umbrella = GameObject.Find ("main_Sphere");
@@ -71,8 +75,7 @@ public class Tutuorial : MonoBehaviour
 		activateNode.transform.parent = tutorialInfo;
 		activateNodeLight = activateNode.GetComponent<Light> ();
 		activateNodeLight.enabled = false;
-
-//		Debug.Log ("Change me back plz");
+		animator.SetBool ("GameState", false);
 	}
 	
 	void Update ()
@@ -87,15 +90,15 @@ public class Tutuorial : MonoBehaviour
 
 			//----------------- Changes the tutorial animation ----------------//
 			if (GameManager.gameState == GameState.Intro) {
-				animator.SetBool ("GameState", false);
-				tutorialImage.sprite = frontPS3;
-
-			} else if (GameManager.gameState == GameState.Game) {
-				if (!started) {
-					StartCoroutine (WalkThroughConditions ());
+				if(!IsInvoking("StartingPositions")){
+					Invoke("StartingPositions", secondsToStart);
 				}
-				animator.SetInteger ("State", X);
-				animator.SetBool ("GameState", true);
+//			} else if (GameManager.gameState == GameState.Game) {
+////				if (!started) {
+////					StartCoroutine (WalkThroughConditions ());
+////				}
+//				animator.SetInteger ("State", X);
+//				animator.SetBool ("GameState", true);
 			} else {
 				animator.SetBool ("GameState", false);
 			}
@@ -107,6 +110,12 @@ public class Tutuorial : MonoBehaviour
 				GetComponent<Image> ().enabled = true;
 			}
 		}
+	}
+
+	void StartingPositions(){
+		animator.SetBool ("GameState", true);
+		animator.SetBool ("Wind", true);
+
 	}
 
 //-------------------------------------- Switch statement for all the various Tutorial states --------------------------------------
@@ -162,7 +171,6 @@ public class Tutuorial : MonoBehaviour
 
 				GameManager.gameState = GameState.Game;
 
-				tutorialImage.sprite = frontPS3;
 				break;
 
 			case 1: //R2
@@ -190,7 +198,6 @@ public class Tutuorial : MonoBehaviour
 				yield return new WaitForSeconds (3);
 
 				GameManager.gameState = GameState.Game;
-				tutorialImage.sprite = backPS3;
 				animator.SetBool ("Controller", true);
 
 				yield return null;
@@ -220,7 +227,6 @@ public class Tutuorial : MonoBehaviour
 
 				GameManager.gameState = GameState.Game;
 
-				tutorialImage.sprite = backPS3;
 				animator.SetBool ("Controller", true);
 
 				yield return null;
@@ -228,7 +234,6 @@ public class Tutuorial : MonoBehaviour
 				break;
 
 			case 3: //R1
-				tutorialImage.sprite = backPS3;
 				animator.SetBool ("Controller", true);
 				if (Input.GetButtonDown ("Interact")) {
 					movementDone = true;
@@ -237,7 +242,6 @@ public class Tutuorial : MonoBehaviour
 				break;
 				
 			case 4: //L1
-				tutorialImage.sprite = backPS3;
 				animator.SetBool ("Controller", true);
 				if (Input.GetButtonDown ("Talk")) {
 					movementDone = true;

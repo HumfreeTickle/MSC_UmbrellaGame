@@ -380,6 +380,7 @@ public class GmaeManage : MonoBehaviour
 		} else if (Application.loadedLevel == 1) { //Main game screen
 			Physics.gravity = new Vector3 (0, -18.36f, 0);
 <<<<<<< HEAD
+<<<<<<< HEAD
 			//----------------------------------//
 			if (Time.timeSinceLevelLoad > 4) {
 				gameState = GameState.Game;
@@ -388,6 +389,8 @@ public class GmaeManage : MonoBehaviour
 =======
 >>>>>>> origin/master
 
+=======
+>>>>>>> origin/master
 			WhiteScreenTransisitions ();
 
 		}

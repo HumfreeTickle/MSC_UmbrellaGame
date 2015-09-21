@@ -12,26 +12,15 @@ namespace Player
 //	------------------------------------
 
 		public Rigidbody handle;
-		public float maxRotation;
 //	------------------------------------
 		private Animator umbrellaAnim;
 		private Animator rotationAnim;
-		public ForceMode movementForce;
-		public ForceMode backwardForce;
-		public ForceMode rotationForce;
+
 //	------------------------------------
 		private Rigidbody rb;
-//		private float lsphereMass;
-//		private float rsphereMass;
-//		private float fsphereMass;
-//		private float bsphereMass;
 //	------------------------------------
-		//	private float rbMass;
-//		private float handleMass;
-		public float forceAppliedToTilt; // used for tilting purposes
 		public float speed;
 		public float turningSpeed;
-		public float keyheld;
 		public float slowDownSpeed = 1.2f;
 		private float defaultUpForce;
 //	------------------------------------
@@ -41,7 +30,7 @@ namespace Player
 //  ------------------------------------
 		private RaycastHit hit;
 		private upwardForce upForce;
-		bool rotate;
+		private bool rotate;
 
 		void Start ()
 		{
@@ -98,6 +87,11 @@ namespace Player
 				hit = GetComponent<CreateWind> ().RaycastingInfo;
 				if (hit.collider != null) {
 					TheDescent ();
+				} else {
+					Physics.gravity = new Vector3 (0, -18.36f, 0);
+					rb.mass = 1;
+					umbrellaAnim.SetBool ("Falling", false);
+					GetComponent<CapsuleCollider>().radius = 0.5f;	
 				}
 
 			} else if (gameManager.gameState == GameState.GameOver) {
@@ -126,7 +120,7 @@ namespace Player
 			rotationAnim.SetBool ("Input_V", rotate);
 
 			if (Input.GetAxis (controllerTypeVertical) > 0.1f) { // Probably should only use forward for this and have back be a kind of breaking system
-				rb.AddForce (transform.TransformDirection (Vector3.forward) * Input.GetAxis (controllerTypeVertical) * speed, movementForce); //Add force in the direction it is facing
+				rb.AddForce (transform.TransformDirection (Vector3.forward) * Input.GetAxis (controllerTypeVertical) * speed); //Add force in the direction it is facing
 				rotate = true;
 
 			} else {
@@ -140,7 +134,7 @@ namespace Player
 			}
 				
 			if (Mathf.Abs (Input.GetAxis (controllerTypeHorizontal)) > 0) { //This shoould rotate the player rather than move sideways
-				rb.AddTorque (transform.up * Input.GetAxis (controllerTypeHorizontal) * turningSpeed, rotationForce);
+				rb.AddTorque (transform.up * Input.GetAxis (controllerTypeHorizontal) * turningSpeed);
 			}
 
 			if (!Input.anyKeyDown) {
@@ -180,7 +174,7 @@ namespace Player
 >>>>>>> origin/master
 		void TheDescent () //allow the umbrella to go down
 		{
-			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 5) { // prevents the palyer from getting caught in the ground
+			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 3) { // prevents the palyer from getting caught in the ground
 				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce * 1.25f, Time.deltaTime * 5);
 				upForce.enabled = true;
 
@@ -230,6 +224,7 @@ namespace Player
 				rb.mass = 1;
 				umbrellaAnim.SetBool ("Falling", false);
 				GetComponent<CapsuleCollider>().radius = 0.5f;
+<<<<<<< HEAD
 
 >>>>>>> origin/master
 
@@ -263,6 +258,8 @@ namespace Player
 
 
 >>>>>>> origin/master
+=======
+>>>>>>> origin/master
 			}
 		}
 
@@ -270,7 +267,7 @@ namespace Player
 		void Stabilize ()
 		{
 			rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * 10);
-			upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 34, Time.deltaTime);
+			upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
 			upForce.enabled = true;
 		}
 	}

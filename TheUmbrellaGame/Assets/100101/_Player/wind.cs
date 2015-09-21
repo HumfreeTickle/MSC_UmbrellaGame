@@ -14,6 +14,10 @@ namespace Player
 <<<<<<< HEAD
 =======
 		public GameState gameState;
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
+		private Tutuorial gameTutorial;
 >>>>>>> origin/master
 
 		void Awake ()
@@ -21,6 +25,7 @@ namespace Player
 
 			umbrellaObject = GameObject.Find ("Umbrella").transform;
 			umbrellaModel = umbrellaObject.GetComponent<Animator> ();
+			gameTutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial>();
 		}
 
 		void Update ()
@@ -44,7 +49,10 @@ namespace Player
 				if(gameState == GameState.Game){
 					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * windForce * 10);
 				}else if(gameState == GameState.Intro){
-					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * 300);
+					gameTutorial.AnimatorYeah.SetBool("Wind",false);
+					gameTutorial.AnimatorYeah.SetInteger ("State", 5);
+					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * 500);
+
 				}
 				if(!goGoAnimation){
 					StartCoroutine(AnimationControl());
