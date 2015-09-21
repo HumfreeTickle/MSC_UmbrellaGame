@@ -3,6 +3,8 @@ using System.Collections;
 
 namespace Environment
 {
+	[RequireComponent (typeof (CapsuleCollider))]
+
 	public class TurnOnLight : MonoBehaviour
 	{
 		public bool LitUp = false;
@@ -11,6 +13,8 @@ namespace Environment
 
 		void Awake ()
 		{
+			GetComponent<CapsuleCollider>().radius = 1.5f;
+			GetComponent<CapsuleCollider>().height = 0.25f;
 			sun = GameObject.Find ("Sun").GetComponent<_CycleDayNight> ();
 		}
 
