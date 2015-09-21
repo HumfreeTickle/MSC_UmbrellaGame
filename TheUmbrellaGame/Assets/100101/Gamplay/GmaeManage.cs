@@ -341,7 +341,6 @@ public class GmaeManage : MonoBehaviour
 
 		} else if (Application.loadedLevel == 1) { //Main game screen
 			Physics.gravity = new Vector3 (0, -18.36f, 0);
-
 			WhiteScreenTransisitions ();
 
 		}
