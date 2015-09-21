@@ -47,21 +47,13 @@ namespace NPC
 		private GameObject cameraSet;
 		public Material umbrellaColour;
 		public Transform Blue;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> origin/master
 		private bool missionFinished;
-		public bool MisssionFinished{
-			set{
+
+		public bool MisssionFinished {
+			set {
 				missionFinished = value;
 			}
 		}
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
->>>>>>> origin/master
 
 		//-------------- Talking Stuff ---------------//
 		private Text npc_Talking;
@@ -196,37 +188,29 @@ namespace NPC
 					npc_Message = "Wow. Thank you so much";
 					npc_Talking.text = (npc_Message.Substring (0, i));
 					i += 1;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-
 					while (i >= npc_Message.Length + 1) {
 						yield return new WaitForSeconds (textSpeed);
-						cmaera.GetComponent<GmaeManage>().Progression = 2 ;
+						cmaera.GetComponent<GmaeManage> ().Progression = 2;
 						i = 0;
 						x += 1;
-=======
-					while (i >= npc_Message.Length + 1) {
-						yield return new WaitForSeconds (textSpeed);
-						cmaera.GetComponent<GmaeManage>().Progression = 2 ;
-=======
-					while (i >= npc_Message.Length + 1) {
-						yield return new WaitForSeconds (textSpeed);
-						cmaera.GetComponent<GmaeManage>().Progression = 2 ;
->>>>>>> origin/master
-						if(missionFinished){
-							i = 0;
-							x += 1;
-						}
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
->>>>>>> origin/master
-						//change missionDelegate to catmissionStart
+						while (i >= npc_Message.Length + 1) {
+							yield return new WaitForSeconds (textSpeed);
+							cmaera.GetComponent<GmaeManage> ().Progression = 2;
+
+							while (i >= npc_Message.Length + 1) {
+								yield return new WaitForSeconds (textSpeed);
+								cmaera.GetComponent<GmaeManage> ().Progression = 2;
+								if (missionFinished) {
+									i = 0;
+									x += 1;
+								}
+								//change missionDelegate to catmissionStart
 //						npc_Interact.misssionDelegate()
+							}
+						}
 					}
 					break;
-
+						
 //------------------------------------new script for the cat mission-----------------------------------------//
 				case 4:
 					npc_Message = "Can I ask you for one more favour. My friends cat is stuck in a tree";
@@ -287,12 +271,5 @@ namespace NPC
 		}
 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
-=======
->>>>>>> origin/master
 	}//end
 }

@@ -25,20 +25,16 @@ namespace Player.PhysicsStuff
 		public Color blackTint = Color.black;
 		public List<Color> originalColours;
 		private bool gameStart;
-<<<<<<< HEAD
-=======
+
 		private Animator umbrellaAnim;
 
->>>>>>> origin/master
 		//-----------------------------------//
 		private Vector3 baseUmbrella = new Vector3 (0f, -5f, 0f);
 		private GameObject umbrella;
 		private GameObject canopyColours;
 		private Rigidbody umbrellaRb;
-<<<<<<< HEAD
-=======
+
 		public float verticalInput;
->>>>>>> origin/master
 		//-----------------------------------//
 		public bool barriers;
 		public float bounceBack;
@@ -88,15 +84,6 @@ namespace Player.PhysicsStuff
 //---------------- TURN OFF UPWARDFORCE ---------------------
 				if (charge <= 10) {
 					GetComponent<upwardForce> ().enabled = false;
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-
-=======
->>>>>>> origin/master
-=======
->>>>>>> origin/master
 				} 
 				//------------------------- COLOUR CHANGING ---------------------------//
 
@@ -141,13 +128,6 @@ namespace Player.PhysicsStuff
 				} else {
 					if (obj.GetChild (child).GetComponent<MeshRenderer> ()) { // checks to see if there is a mesh renderer attached to child
 						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
-=======
->>>>>>> origin/master
 						//Needs to only do this once
 						if (originalColours.Count < 16) {
 							originalColours.Add (umbrellaChild.material.color);
@@ -161,13 +141,7 @@ namespace Player.PhysicsStuff
 //							//NEEDS A WAY TO DIFFERENTIATE EACH SECTION
 //						umbrellaChild.material.color = Color.Lerp (umbrellaChild.material.color, originalColours [child], Time.deltaTime);
 //						}
-<<<<<<< HEAD
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
-=======
->>>>>>> origin/master
 					}
 				}
 			}

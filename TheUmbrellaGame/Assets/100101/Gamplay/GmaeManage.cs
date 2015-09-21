@@ -116,9 +116,6 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	public int currentProgress = 1;
-<<<<<<< HEAD
-=======
-
 	//-----------------------------------------------//
 	public Vector3 lastKnownPosition;
 
@@ -130,10 +127,9 @@ public class GmaeManage : MonoBehaviour
 
 	public Vector3 startingPos;
 	//-----------------------------------------------//
->>>>>>> origin/master
-	private Camera cameraClipFar;
 	public List<Material> allTheColoursOfTheUmbrella;
 	public List<Transform> canopyColours;
+	public Transform canopyColour;
 	private Material umbrellaColour;
 	public float thresholdVector;
 	//Start script Stuff
@@ -150,20 +146,10 @@ public class GmaeManage : MonoBehaviour
 	private Text npc_Talking;
 	private Image npc_TalkingBox;
 	private NPC_Interaction npc_Interact;
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
+	
 	//Missions
 	private NPC_TutorialMission tutorialMission;
-
->>>>>>> origin/master
-=======
-	//Missions
-	private NPC_TutorialMission tutorialMission;
-
->>>>>>> origin/master
-
+	
 //------------------------------------ Getters and Setters ------------------------------------------------------------
 
 	//Needs to be renamed to gameOverTimer
@@ -260,7 +246,7 @@ public class GmaeManage : MonoBehaviour
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
 			WhiteScreen.color = Color.white;
 
-			cameraClipFar = GetComponent<Camera> ();
+//			cameraClipFar = GetComponent<Camera> ();
 //			cameraClipFar.farClipPlane = 800;
 
 
@@ -268,7 +254,7 @@ public class GmaeManage : MonoBehaviour
 			umbrellaRb = umbrella.GetComponent<Rigidbody> ();
 			if (PlayerPrefs.GetFloat ("PlayerX") != 0 || PlayerPrefs.GetFloat ("PlayerY") != 0 || PlayerPrefs.GetFloat ("PlayerZ") != 0) {
 				startingPos = new Vector3 (PlayerPrefs.GetFloat ("PlayerX"), PlayerPrefs.GetFloat ("PlayerY"), PlayerPrefs.GetFloat ("PlayerZ"));
-			}else{
+			} else {
 				startingPos = umbrella.transform.localPosition;
 			}
 			umbrella.transform.localPosition = startingPos;
@@ -277,21 +263,10 @@ public class GmaeManage : MonoBehaviour
 			npcManager = this.GetComponent<NPCManage> ();
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
 			npc_Talking.fontSize = 25;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
-
-			//----------------- Missions Complete Stuff --------------------//
-			tutorialMission = GameObject.Find("NPC_Tutorial").GetComponent<NPC_TutorialMission>();
->>>>>>> origin/master
-=======
-
 
 			//----------------- Missions Complete Stuff --------------------//
 			tutorialMission = GameObject.Find ("NPC_Tutorial").GetComponent<NPC_TutorialMission> ();
->>>>>>> origin/master
-
+			canopyColour = GameObject.Find("Canopy_Colours").transform;
 			if (!PauseScreen || !WhiteScreen) {
 				return;
 			}
@@ -327,13 +302,6 @@ public class GmaeManage : MonoBehaviour
 			StartGame ();
 
 		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-//			progression = Mathf.Clamp (progression, 1, Mathf.Infinity);
-=======
->>>>>>> origin/master
-=======
->>>>>>> origin/master
 
 			RestartGame ();
 
@@ -379,18 +347,6 @@ public class GmaeManage : MonoBehaviour
 
 		} else if (Application.loadedLevel == 1) { //Main game screen
 			Physics.gravity = new Vector3 (0, -18.36f, 0);
-<<<<<<< HEAD
-<<<<<<< HEAD
-			//----------------------------------//
-			if (Time.timeSinceLevelLoad > 4) {
-				gameState = GameState.Game;
-			}
-			//----------------------------------//
-=======
->>>>>>> origin/master
-
-=======
->>>>>>> origin/master
 			WhiteScreenTransisitions ();
 
 		}
@@ -445,7 +401,6 @@ public class GmaeManage : MonoBehaviour
 
 			_gameOverTimer += Time.deltaTime;
 			WhiteScreenTransisitions ();
-			cameraClipFar.farClipPlane = Mathf.Lerp (cameraClipFar.farClipPlane, 2000, Time.deltaTime);
 		}
 	}
 
@@ -561,7 +516,7 @@ public class GmaeManage : MonoBehaviour
 	{
 		if (progression < 6) {
 			umbrellaColour = allTheColoursOfTheUmbrella [progression - 2];
-			ChangeColours (canopyColours [progression - 2]);
+			ChangeColours (canopyColour);
 		}
 	}
 
@@ -571,35 +526,30 @@ public class GmaeManage : MonoBehaviour
 			if (obj.GetChild (child).transform.childCount > 0) {
 				ChangeColours (obj.GetChild (child));
 			} else {
-				if (obj.GetChild (child).GetComponent<MeshRenderer> ()) { // checks to see if there is a mesh renderer attached to child
-					MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
-					umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime);
+				if (obj.GetChild (child).GetComponent<MeshRenderer> ()) {
+					if (obj.GetChild (child).tag == umbrellaColour.name) {// checks to see if there is a mesh renderer attached to child
+						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
+						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime);
 
-<<<<<<< HEAD
-					if (Vector4.Distance(umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector){ // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
-						currentProgress = progression;
-<<<<<<< HEAD
-=======
-						tutorialMission.MisssionFinished = true;
->>>>>>> origin/master
-=======
-					if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
-						currentProgress = progression;
-						tutorialMission.MisssionFinished = true;
->>>>>>> origin/master
+						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
+							currentProgress = progression;
+							tutorialMission.MisssionFinished = true;
+
+							if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
+								currentProgress = progression;
+								tutorialMission.MisssionFinished = true;
+							}
+						}
 					}
 				}
 			}
 		}
 	}
-<<<<<<< HEAD
-=======
 
 	void OnApplicationQuit ()
 	{
 		PlayerPrefs.DeleteAll ();
 	}
->>>>>>> origin/master
 	
 }//End of Class
 
