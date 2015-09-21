@@ -81,10 +81,6 @@ namespace CameraScripts
 
 
 			if (gameState != GameState.GameOver) {
-
-
-
-					// Calculate gameState == GameState.Pausethe current rotation angles (only need quaternion for movement)
 					float wantedRotationAngle = lookAtTr.eulerAngles.y;
 					
 					float wantedHeight = lookAtTr.position.y + height;

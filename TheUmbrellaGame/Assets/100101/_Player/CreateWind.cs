@@ -25,11 +25,20 @@ namespace Player.PhysicsStuff
 		public Color blackTint = Color.black;
 		public List<Color> originalColours;
 		private bool gameStart;
+<<<<<<< HEAD
+=======
+		private Animator umbrellaAnim;
+
+>>>>>>> origin/master
 		//-----------------------------------//
 		private Vector3 baseUmbrella = new Vector3 (0f, -5f, 0f);
 		private GameObject umbrella;
 		private GameObject canopyColours;
 		private Rigidbody umbrellaRb;
+<<<<<<< HEAD
+=======
+		public float verticalInput;
+>>>>>>> origin/master
 		//-----------------------------------//
 		public bool barriers;
 		public float bounceBack;
@@ -47,6 +56,8 @@ namespace Player.PhysicsStuff
 			gameState = GameManager.gameState;
 			umbrella = GameObject.Find ("Umbrella");
 			umbrellaRb = this.gameObject.GetComponent<Rigidbody> ();
+			umbrellaAnim = GameObject.Find ("Umbrella").GetComponent<Animator> ();
+
 			charge = GameManager.UmbrellaCharge;
 			canopyColours = umbrella.transform.FindChild ("Canopy_Colours").gameObject;
 			ChangeColours (canopyColours.transform);
@@ -56,12 +67,16 @@ namespace Player.PhysicsStuff
 		{
 			charge = GameManager.UmbrellaCharge;
 			progression = GameManager.Progression;
+			if(progression > 1){
+				barriers = false;
+			}
 
 			bounceBack = Mathf.Clamp (bounceBack, 0, Mathf.Infinity);
 			gameState = GameManager.gameState;
 
 			if (gameState != GameState.Pause || gameState != GameState.GameOver) {
-				if (Input.GetButtonDown ("CrateWind") && charge >= 1) {
+				if (Input.GetAxis("Vertical_R") >= 0.1f && charge >= 1) {
+					verticalInput = Input.GetAxis("Vertical_R");
 					if (this.transform.childCount < 2) {
 						if (!IsInvoking ("SummonWind")) {
 							Invoke ("SummonWind", 0.1f);
@@ -75,8 +90,11 @@ namespace Player.PhysicsStuff
 					GetComponent<upwardForce> ().enabled = false;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/master
 =======
 >>>>>>> origin/master
 				} 
@@ -92,18 +110,20 @@ namespace Player.PhysicsStuff
 				Vector3 downRayDown = (Vector3.down * 100);
 
 				if (Physics.Raycast (transform.position + baseUmbrella, downRayDown, out hit, Mathf.Infinity)) {
-
+					bounceBack = 25;
 					//------------- DEBUGGING -----------------------------
 //					Debug.DrawRay (transform.position + baseUmbrella, downRayDown, Color.green, 10, false);
 
 					//------------- CONDITIONS ----------------------------
 					if (hit.collider.tag == "Terrain" && hit.distance < maxTerrainDistance) {
 						GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 0, 100);
+						GameManager.LAstKnownPosition = new Vector3(transform.localPosition.x, hit.transform.position.y, transform.localPosition.z);
 					} 
 				} else {
 					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime / (progression*2));// progress :)
 
 					if (barriers) {
+						bounceBack = Mathf.Lerp(bounceBack, 200, Time.fixedDeltaTime);
 						umbrellaRb.AddForce ((-bounceBack) * umbrellaRb.velocity);
 						//not really working. Need to try something else
 					}
@@ -122,7 +142,10 @@ namespace Player.PhysicsStuff
 					if (obj.GetChild (child).GetComponent<MeshRenderer> ()) { // checks to see if there is a mesh renderer attached to child
 						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 =======
 >>>>>>> origin/master
 						//Needs to only do this once
@@ -139,7 +162,10 @@ namespace Player.PhysicsStuff
 //						umbrellaChild.material.color = Color.Lerp (umbrellaChild.material.color, originalColours [child], Time.deltaTime);
 //						}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 =======
 >>>>>>> origin/master
 					}
@@ -155,7 +181,8 @@ namespace Player.PhysicsStuff
 			instatiatedWind = Instantiate (windSystem, spawnDistance, Quaternion.Euler (Vector3.forward)) as GameObject;
 			instatiatedWind.transform.parent = this.transform; 
 			instatiatedWind.GetComponent<ParticleSystem> ().enableEmission = true;
-			instatiatedWind.GetComponent<wind> ().windForce = charge * 10;
+			instatiatedWind.GetComponent<wind>().gameState = gameState;
+			instatiatedWind.GetComponent<wind> ().windForce = charge * verticalInput;
 
 			//--------------------	TURNS OFF PARTICLES AFTER ONE CYCLE -----------------
 			if (Input.GetButtonUp ("CrateWind")) {

@@ -48,13 +48,19 @@ namespace NPC
 		public Material umbrellaColour;
 		public Transform Blue;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> origin/master
 		private bool missionFinished;
 		public bool MisssionFinished{
 			set{
 				missionFinished = value;
 			}
 		}
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 
 		//-------------- Talking Stuff ---------------//
@@ -191,6 +197,7 @@ namespace NPC
 					npc_Talking.text = (npc_Message.Substring (0, i));
 					i += 1;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 					while (i >= npc_Message.Length + 1) {
@@ -202,10 +209,18 @@ namespace NPC
 					while (i >= npc_Message.Length + 1) {
 						yield return new WaitForSeconds (textSpeed);
 						cmaera.GetComponent<GmaeManage>().Progression = 2 ;
+=======
+					while (i >= npc_Message.Length + 1) {
+						yield return new WaitForSeconds (textSpeed);
+						cmaera.GetComponent<GmaeManage>().Progression = 2 ;
+>>>>>>> origin/master
 						if(missionFinished){
 							i = 0;
 							x += 1;
 						}
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 						//change missionDelegate to catmissionStart
 //						npc_Interact.misssionDelegate()
@@ -273,7 +288,10 @@ namespace NPC
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 =======
 >>>>>>> origin/master
 	}//end
