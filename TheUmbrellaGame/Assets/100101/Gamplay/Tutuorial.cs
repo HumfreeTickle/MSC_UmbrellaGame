@@ -100,6 +100,11 @@ public class Tutuorial : MonoBehaviour
 				animator.SetBool ("Interact", true);
 				break;
 
+			case "NPC":
+				animator.SetBool ("Talk", true);
+				animator.SetBool ("Interact", false);
+				break;
+
 			default:
 				animator.SetBool ("Talk", false);
 				animator.SetBool ("Interact", false);

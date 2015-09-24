@@ -2,6 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
+//----------------------------------//
+//	Needs to be a coroutine rather 
+// 	Than a whole load of invokes
+//----------------------------------//
+
+
+
 namespace NPC
 {
 	public class NPC_Interaction : MonoBehaviour

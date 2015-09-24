@@ -9,8 +9,10 @@ namespace NPC
 {
 	public class NPC_CatMission : MonoBehaviour
 	{
+		private GmaeManage gameManager;
+
 		//------------- Talking variables -----------------//
-		public float talkingSpeed;
+		private float talkingSpeed;
 		private bool proceed = false;
 		private bool playTime; //used for a camera state change
 
@@ -82,7 +84,7 @@ namespace NPC
 //		public List<string> npc_Message_Array = new List<string> ();
 		public string npc_Message = "";
 		//------------------------------------------------------------------------------//
-		public int x = 0;
+		private int x = 0;
 		
 		public int Cat_X {
 			set {
@@ -109,6 +111,8 @@ namespace NPC
 
 		void Start ()
 		{
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage>();
+
 			cat = GameObject.Find ("kitten"); //kitten to look at
 			cmaera = GameObject.Find ("Follow Camera"); 
 			umbrella = cmaera.GetComponent<Controller> ().lookAt; //let's the camera look at different things
@@ -132,6 +136,8 @@ namespace NPC
 		void Update ()
 		{	
 			if (tutorialMissionStuff.TutorialMisssionFinished) {
+				talkingSpeed = gameManager.TextSpeed;
+
 				npc_Animator.SetBool ("Play", jumpAround);
 				overHereLight.enabled = jumpAround;
 				playTime = cmaera.GetComponent<Controller> ().PlayTime;

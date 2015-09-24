@@ -14,11 +14,11 @@ namespace NPC
 	public class NPC_TutorialMission : MonoBehaviour
 	{
 
-		private GameState gameState;
+		private GmaeManage gameManager;
 
 		//------------- Talking variables -----------------//
 
-		public float talkingSpeed;
+		private float talkingSpeed;
 
 		//-------------- Tutorial Conditions ---------------//
 		private bool tutorialMission;
@@ -46,7 +46,7 @@ namespace NPC
 		private GameObject npc_Tutorial;
 
 		//ends the mission
-		public bool tutorialMissionFinished = false;
+		private bool tutorialMissionFinished = false;
 		/// <summary>
 		/// Allows other scripts to know when the tutorial mission has been completed
 		/// </summary>
@@ -67,9 +67,9 @@ namespace NPC
 		private bool proceed = false; // used to prevent spamming of continue button. As well as allow continue button to work
 
 		//---------------- Stuff to keep the font size relative to the screen --------------//
-		private float _oldHeight;
-		private float _oldWidth;
-		public float Ratio = 30;
+//		private float _oldHeight;
+//		private float _oldWidth;
+//		public float Ratio = 30;
 		//------------------------------------------------------------------------------//
 		// Would be awesome if I could workout a way to have this seperate by paragraphs
 		// Create a list that fills up when ever there is an enter break "\n"
@@ -111,6 +111,7 @@ namespace NPC
 
 		void Start ()
 		{
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage>();
 			windmill = GameObject.Find ("Cylinder"); //windmill part to look at
 			cmaera = GameObject.Find ("Follow Camera"); 
 			umbrella = cmaera.GetComponent<Controller> ().lookAt; //let's the camera look at different things
@@ -139,15 +140,16 @@ namespace NPC
 			//--------------------------------------------------------------------------------------------------//
 			//Definitely needs to be in GameManager
 			//resizes font to screen size
-			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
-				_oldWidth = Screen.width;
-				_oldHeight = Screen.height;
-				npc_Talking.fontSize = Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / Ratio);
-			}
+//			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
+//				_oldWidth = Screen.width;
+//				_oldHeight = Screen.height;
+//				npc_Talking.fontSize = Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / Ratio);
+//			}
 			//--------------------------------------------------------------------------------------------------//
 			npc_Animator.SetBool ("PLay", jumpAround);
 			overHereLight.enabled = jumpAround;
 			playTime = cmaera.GetComponent<Controller> ().PlayTime;
+			talkingSpeed = gameManager.TextSpeed;
 
 			if (tutorialMission) {
 				npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);

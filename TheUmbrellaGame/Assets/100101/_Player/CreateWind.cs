@@ -45,6 +45,13 @@ namespace Player.PhysicsStuff
 			}
 		}
 
+		private bool hitTerrain;
+		public bool HitTerrain{
+			get{
+				return hitTerrain;
+			}
+		}
+
 		void Start ()
 		{
 			GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
@@ -76,7 +83,7 @@ namespace Player.PhysicsStuff
 							Invoke ("SummonWind", 0.1f);
 						}
 					}
-					GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (GameManager.UmbrellaCharge, 0, Time.fixedDeltaTime * 10), 2, 100);
+//					GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (GameManager.UmbrellaCharge, 0, Time.fixedDeltaTime * 10), 2, 100);
 				}
 
 //---------------- TURN OFF UPWARDFORCE ---------------------
@@ -101,11 +108,14 @@ namespace Player.PhysicsStuff
 
 					//------------- CONDITIONS ----------------------------
 					if (hit.collider.tag == "Terrain" && hit.distance < maxTerrainDistance) {
-						GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 0, 100);
+						hitTerrain = true;
+//						GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 0, 100);
 						GameManager.LAstKnownPosition = new Vector3(transform.localPosition.x, hit.transform.position.y, transform.localPosition.z);
 					} 
 				} else {
 //					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime / (progression*2));// progress :)
+
+					hitTerrain = false;
 
 					if (barriers) {
 						bounceBack = Mathf.Lerp(bounceBack, 200, Time.fixedDeltaTime);

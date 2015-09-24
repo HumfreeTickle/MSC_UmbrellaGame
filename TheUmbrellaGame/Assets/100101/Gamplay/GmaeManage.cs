@@ -145,8 +145,18 @@ public class GmaeManage : MonoBehaviour
 	//-----------------------
 
 	private NPC_Interaction npc_Interact;
-	
+	private float _oldHeight;
+	private float _oldWidth;
+	public float Ratio = 30;
+	private Text npc_Talking;
 	//Missions
+	public float textSpeed;
+	public float TextSpeed{
+		get{
+			return textSpeed;
+		}
+	}
+
 	private NPC_TutorialMission tutorialMission;
 	private NPC_CatMission catMission;
 	
@@ -245,6 +255,8 @@ public class GmaeManage : MonoBehaviour
 			PauseScreen = GameObject.Find ("Pause Screen").GetComponent<Image> ();
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
 			WhiteScreen.color = Color.white;
+			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
+
 
 //			cameraClipFar = GetComponent<Camera> ();
 //			cameraClipFar.farClipPlane = 800;
@@ -277,6 +289,17 @@ public class GmaeManage : MonoBehaviour
 
 	void Update ()
 	{
+		if (Application.loadedLevel == 1) {
+
+
+
+			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
+				_oldWidth = Screen.width;
+				_oldHeight = Screen.height;
+				npc_Talking.fontSize = Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / Ratio);
+			}
+		}
+
 		if (progression > currentProgress) {
 			Progress ();
 		}

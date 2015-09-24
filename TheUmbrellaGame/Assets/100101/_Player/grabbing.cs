@@ -1,30 +1,36 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Player.PhysicsStuff;
 
 namespace Player
 {
 	public class grabbing : MonoBehaviour
 	{
-//		private GameState gamemanager; //only for demo purposes
 		private GameObject pickupObject;
 		private Transform originalParent;
+		private bool terrainHit;
 		public float z;
+
 
 		void Update ()
 		{
-			if (pickupObject != null) {
-				if (Input.GetButtonDown ("Interact")) {
+			terrainHit = GameObject.Find("main_Sphere").GetComponent<CreateWind>().HitTerrain;
+
+			if (terrainHit) {
+				if (pickupObject != null) {
 					if (Input.GetButtonDown ("Interact")) {
-						if (!IsInvoking ("Pickup")) {
-							Invoke ("Pickup", 0);
+						if (Input.GetButtonDown ("Interact")) {
+							if (!IsInvoking ("Pickup")) {
+								Invoke ("Pickup", 0);
+							}
 						}
 					}
 				}
-			}
-			if (transform.childCount > 0) {
-				if (Input.GetButtonDown ("Interact")) {
-					if (!IsInvoking ("Detachment")) {
-						Invoke ("Detachment", 0);
+				if (transform.childCount > 0) {
+					if (Input.GetButtonDown ("Interact")) {
+						if (!IsInvoking ("Detachment")) {
+							Invoke ("Detachment", 0);
+						}
 					}
 				}
 			}
@@ -48,9 +54,6 @@ namespace Player
 			if (pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled) {
 				pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled = false;
 			}
-//			if (!IsInvoking ("DEMO")) {
-//				Invoke ("DEMO", 10);
-//			}
 		}
 
 		void Detachment ()
@@ -82,11 +85,6 @@ namespace Player
 				pickupObject = null;
 				originalParent = null;
 			}
-		}
-
-		void DEMO ()
-		{
-			GameObject.Find("Follow Camera").GetComponent<GmaeManage>().gameState = GameState.GameOver;
 		}
 	}
 }
