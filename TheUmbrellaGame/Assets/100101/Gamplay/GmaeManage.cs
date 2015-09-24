@@ -72,7 +72,7 @@ public class GmaeManage : MonoBehaviour
 //------------------------------------------- Inherited Classes ------------------------------------//
 
 	public FadeScript fading = new FadeScript ();
-	private NPCManage npcManager;
+//	private NPCManage npcManager;
 //--------------------------------------------------------------------------------------------------//
 
 
@@ -83,7 +83,7 @@ public class GmaeManage : MonoBehaviour
 	private AudioSource harpIntroSource;
 	public AudioMixerSnapshot start;
 	private AudioClip mainThemeMusic;
-	private GameObject backgroundMusic;
+//	private GameObject backgroundMusic;
 	public AudioMixerSnapshot PausedSnapShot;
 	public AudioMixerSnapshot InGameSnapShot;
 
@@ -143,12 +143,12 @@ public class GmaeManage : MonoBehaviour
 
 
 	//-----------------------
-	private Text npc_Talking;
-	private Image npc_TalkingBox;
+
 	private NPC_Interaction npc_Interact;
 	
 	//Missions
 	private NPC_TutorialMission tutorialMission;
+	private NPC_CatMission catMission;
 	
 //------------------------------------ Getters and Setters ------------------------------------------------------------
 
@@ -259,13 +259,14 @@ public class GmaeManage : MonoBehaviour
 			}
 			umbrella.transform.localPosition = startingPos;
 
-			backgroundMusic = GameObject.Find ("Music");
-			npcManager = this.GetComponent<NPCManage> ();
-			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
+//			backgroundMusic = GameObject.Find ("Music");
+//			npcManager = GetComponent<NPCManage> ();
 
 			//----------------- Missions Complete Stuff --------------------//
-			tutorialMission = GameObject.Find ("NPC_Tutorial").GetComponent<NPC_TutorialMission> ();
+			tutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
+			catMission = GameObject.Find ("Missions").GetComponent<NPC_CatMission> ();
 			canopyColour = GameObject.Find("Canopy_Colours").transform;
+
 			if (!PauseScreen || !WhiteScreen) {
 				return;
 			}
@@ -276,23 +277,6 @@ public class GmaeManage : MonoBehaviour
 
 	void Update ()
 	{
-		if (Input.GetButtonDown ("Undefined")) {
-			if (progression == currentProgress) {
-				progression += 1;
-			}
-		}
-
-		if (progression > currentProgress) {
-			Progress ();
-		}
-
-
-		if (Input.GetButtonDown ("Undefined")) {
-			if (progression == currentProgress) {
-				progression += 1;
-			}
-		}
-
 		if (progression > currentProgress) {
 			Progress ();
 		}
@@ -528,11 +512,21 @@ public class GmaeManage : MonoBehaviour
 				if (obj.GetChild (child).GetComponent<MeshRenderer> ()) {
 					if (obj.GetChild (child).tag == umbrellaColour.name) {// checks to see if there is a mesh renderer attached to child
 						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
-						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime);
+						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime/2);
 
-						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) >= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
+						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
 							currentProgress = progression;
-							tutorialMission.MisssionFinished = true;
+
+							switch(progression){
+							case 2:
+							tutorialMission.TutorialMisssionFinished = true;
+								break;
+							case 3:
+								catMission.CatMissionFinished = true;
+								break;
+							default:
+								break;
+							}
 						}
 					}
 				}

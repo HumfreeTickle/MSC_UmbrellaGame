@@ -13,16 +13,34 @@ namespace CameraScripts
 		//----------------- UmbrellaStuff ---------------//
 		public GameObject lookAt;
 		private Transform lookAtTr;
-		public Transform lookAtTransform{
-			get{
+
+		/// <summary>
+		/// The transform of what ever you want the camera to be pointed at
+		/// </summary>
+		/// <value>The look at transform.</value>
+		public Transform lookAtTransform {
+			get {
 				return lookAtTr;
 			}
 
-			set{
+			set {
 				lookAtTr = value;
 			}
 		}
 
+		public bool playTime;
+
+		/// <summary>
+		/// Used when you need to lerp between two camera points and need a state change when it has arrived
+		/// </summary>
+		/// <value><c>true</c> if play time; otherwise, <c>false</c>.</value>
+		public bool PlayTime {
+			get {
+				return playTime;
+			}
+		}
+
+		public float threshold;
 		private Rigidbody lookAtRb;
 		//-----------------------------------------------//
 
@@ -78,17 +96,23 @@ namespace CameraScripts
 			if (!lookAt) {
 				return;
 			}
+			if (gameState == GameState.Intro) {
+				if (Vector3.Distance (transform.position, lookAtTr.position) > 20) {
+					Input.ResetInputAxes ();
+				}
+			}
 
 
 			if (gameState != GameState.GameOver) {
-//					 Calculate gameState == GameState.Pausethe current rotation angles (only need quaternion for movement)
-					float wantedRotationAngle = lookAtTr.eulerAngles.y;
+
+				//					 Calculate gameState == GameState.Pausethe current rotation angles (only need quaternion for movement)
+				float wantedRotationAngle = lookAtTr.eulerAngles.y;
 					
-					float wantedHeight = lookAtTr.position.y + height;
+				float wantedHeight = lookAtTr.position.y + height;
 					
-					float currentRotationAngle = transform.eulerAngles.y;
+				float currentRotationAngle = transform.eulerAngles.y;
 					
-					float currentHeight = transform.position.y;
+				float currentHeight = transform.position.y;
 
 				if (gameState == GameState.Game || gameState == GameState.Intro) {
 
@@ -129,8 +153,15 @@ namespace CameraScripts
 
 					lookAtTr = lookAt.transform;
 
-					Quaternion rotation = Quaternion.LookRotation(lookAtTr.position - transform.position);
-					transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * (speed/10));
+					Quaternion rotation = Quaternion.LookRotation (lookAtTr.position - transform.position);
+					transform.rotation = Quaternion.Slerp (transform.rotation, rotation, Time.deltaTime * (speed / 10));
+
+					if (Quaternion.Angle (transform.rotation, rotation) < threshold) {
+						playTime = true;
+					} else {
+						playTime = false;
+					}
+
 				}
 			}
 				//-------------------------------------------- Camera Changes on Death -------------------------------------------------------//

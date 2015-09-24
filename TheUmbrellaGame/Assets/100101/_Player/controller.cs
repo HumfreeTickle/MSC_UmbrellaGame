@@ -51,10 +51,10 @@ namespace Player
 		
 		void FixedUpdate ()
 		{
-
 			if (gameManager.gameState == GameState.Game) {
 				handle.GetComponent<CapsuleCollider>().enabled = true;
 				rb.useGravity = true;
+				rb.angularDrag = 5;
 				Movement ();
 				hit = GetComponent<CreateWind> ().RaycastingInfo;
 				if (hit.collider != null) {
@@ -150,6 +150,8 @@ namespace Player
 		void Stabilize ()
 		{
 			rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * 10);
+			rb.angularDrag = Mathf.Lerp (rb.angularDrag, 100, Time.fixedDeltaTime * 10);
+
 			upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
 			upForce.enabled = true;
 		}

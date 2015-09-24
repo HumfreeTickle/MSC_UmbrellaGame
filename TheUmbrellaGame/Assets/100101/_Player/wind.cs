@@ -43,7 +43,6 @@ namespace Player
 					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * windForce * 10);
 				}else if(gameState == GameState.Intro){
 					gameTutorial.AnimatorYeah.SetBool("Wind",false);
-					gameTutorial.AnimatorYeah.SetInteger ("State", 5);
 					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * 1000);
 
 				}
