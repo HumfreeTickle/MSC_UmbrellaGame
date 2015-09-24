@@ -22,22 +22,22 @@ public class NavMeshMovement : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (Vector3.Distance(agent.transform.position, destination.position) <= 5f){
+		if (Vector3.Distance(agent.transform.position, destination.position) <= 2f){
 
 			agent.SetDestination(destination2.position);
 
 		}
-		if (Vector3.Distance(agent.transform.position, destination2.position) <= 5f){
+		if (Vector3.Distance(agent.transform.position, destination2.position) <= 2f){
 
 			agent.SetDestination(destination3.position);
 
 		}
-		if (Vector3.Distance(agent.transform.position, destination3.position) <= 5f){
+		if (Vector3.Distance(agent.transform.position, destination3.position) <= 2f){
 			
 			agent.SetDestination(destination4.position);
 			
 		}
-		if (Vector3.Distance(agent.transform.position, destination4.position) <= 5f){
+		if (Vector3.Distance(agent.transform.position, destination4.position) <= 2f){
 			
 			agent.SetDestination(destination.position);
 			
