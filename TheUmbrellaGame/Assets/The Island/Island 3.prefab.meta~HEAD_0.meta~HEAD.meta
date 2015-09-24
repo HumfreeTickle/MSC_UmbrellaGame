@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:TheUmbrellaGame/Assets/The Island/Island 3.prefab.meta~HEAD_0.meta~HEAD.meta
 guid: 9b02083ab441543c4ab9521f309894ec
 timeCreated: 1442839758
+=======
+guid: 3adb6d15912244ae3a29c87b4416c2ae
+timeCreated: 1443100199
+>>>>>>> origin/master:TheUmbrellaGame/Assets/The Island/Island 3.prefab.meta~HEAD_0.meta~HEAD.meta
 licenseType: Free
 DefaultImporter:
   userData: 

@@ -9,6 +9,10 @@ namespace NPC
 		private AudioClip talkyTalk;
 		private AudioSource npcAudioSource;
 		private List<AudioClip> musicalNotes = new List<AudioClip> ();
+
+		/// <summary>
+		/// Coroutine for talking
+		/// </summary>
 		public bool coroutineRunning = false;
 		/// <summary>
 		/// NPC inheritence for Talking

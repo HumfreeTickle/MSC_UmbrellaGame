@@ -23,10 +23,9 @@ namespace Player.PhysicsStuff
 		//-----------------------------------//
 		public Material umbrellaColour;
 		public Color blackTint = Color.black;
-		public List<Color> originalColours;
-		private bool gameStart;
 
-		private Animator umbrellaAnim;
+		public List<Color> originalColours; //holds what the colour was before it went black
+		private bool gameStart;
 
 		//-----------------------------------//
 		private Vector3 baseUmbrella = new Vector3 (0f, -5f, 0f);
@@ -46,13 +45,19 @@ namespace Player.PhysicsStuff
 			}
 		}
 
+		private bool hitTerrain;
+		public bool HitTerrain{
+			get{
+				return hitTerrain;
+			}
+		}
+
 		void Start ()
 		{
 			GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			gameState = GameManager.gameState;
 			umbrella = GameObject.Find ("Umbrella");
-			umbrellaRb = this.gameObject.GetComponent<Rigidbody> ();
-			umbrellaAnim = GameObject.Find ("Umbrella").GetComponent<Animator> ();
+			umbrellaRb = gameObject.GetComponent<Rigidbody> ();
 
 			charge = GameManager.UmbrellaCharge;
 			canopyColours = umbrella.transform.FindChild ("Canopy_Colours").gameObject;
@@ -78,7 +83,7 @@ namespace Player.PhysicsStuff
 							Invoke ("SummonWind", 0.1f);
 						}
 					}
-					GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (GameManager.UmbrellaCharge, 0, Time.fixedDeltaTime * 10), 2, 100);
+//					GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (GameManager.UmbrellaCharge, 0, Time.fixedDeltaTime * 10), 2, 100);
 				}
 
 //---------------- TURN OFF UPWARDFORCE ---------------------
@@ -103,11 +108,14 @@ namespace Player.PhysicsStuff
 
 					//------------- CONDITIONS ----------------------------
 					if (hit.collider.tag == "Terrain" && hit.distance < maxTerrainDistance) {
-						GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 0, 100);
+						hitTerrain = true;
+//						GameManager.UmbrellaCharge = Mathf.Clamp (Mathf.Lerp (charge, 100, Time.time / (hit.distance * 100)), 0, 100);
 						GameManager.LAstKnownPosition = new Vector3(transform.localPosition.x, hit.transform.position.y, transform.localPosition.z);
 					} 
 				} else {
-					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime / (progression*2));// progress :)
+//					GameManager.UmbrellaCharge = Mathf.Lerp (charge, 0, Time.deltaTime / (progression*2));// progress :)
+
+					hitTerrain = false;
 
 					if (barriers) {
 						bounceBack = Mathf.Lerp(bounceBack, 200, Time.fixedDeltaTime);
@@ -139,6 +147,7 @@ namespace Player.PhysicsStuff
 						}
 //						else if(gameStart && charge > 10){
 //							//NEEDS A WAY TO DIFFERENTIATE EACH SECTION
+						//The tag system I used for giving the umbrella colour might work
 //						umbrellaChild.material.color = Color.Lerp (umbrellaChild.material.color, originalColours [child], Time.deltaTime);
 //						}
 
@@ -159,9 +168,9 @@ namespace Player.PhysicsStuff
 			instatiatedWind.GetComponent<wind> ().windForce = charge * verticalInput;
 
 			//--------------------	TURNS OFF PARTICLES AFTER ONE CYCLE -----------------
-			if (Input.GetButtonUp ("CrateWind")) {
-				instatiatedWind.GetComponent<ParticleSystem> ().enableEmission = false;
-			}
+//			if (Input.GetAxis("Verical_R") < 0.1f) {
+//				instatiatedWind.GetComponent<ParticleSystem> ().enableEmission = false;
+//			}
 		}
 	}
 }

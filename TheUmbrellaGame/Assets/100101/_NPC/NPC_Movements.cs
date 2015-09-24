@@ -14,8 +14,6 @@ namespace NPC
 		public Transform waypoint2;
 		public Transform destination;
 		public GameObject lasthit;
-		private NPC_Class npc_class = new NPC_Class ();
-
 
 //--------------------------------------------------- Sets up all the relevent stuff ------------------------------------------
 
