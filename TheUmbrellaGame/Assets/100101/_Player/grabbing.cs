@@ -6,7 +6,7 @@ namespace Player
 {
 	public class grabbing : MonoBehaviour
 	{
-		private GameObject pickupObject;
+		public GameObject pickupObject;
 		private Transform originalParent;
 		private bool terrainHit;
 		public float z;
@@ -69,6 +69,8 @@ namespace Player
 			transform.DetachChildren ();
 			pickupObject.transform.parent = originalParent;
 			pickupObject.AddComponent<Rigidbody> ();
+			pickupObject = null;
+			originalParent = null;
 		}
 
 		void OnTriggerEnter (Collider col)

@@ -5,10 +5,6 @@ using CameraScripts;
 using UnityEngine.UI;
 using System;
 
-/// <summary>
-/// Create a separate GameObject to hold all the missions
-/// </summary>
-
 namespace NPC
 {
 	public class NPC_TutorialMission : MonoBehaviour
@@ -124,7 +120,6 @@ namespace NPC
 				npc_Animator.enabled = true;
 			}
 			overHereLight = npc_Tutorial.transform.FindChild ("Sphere").transform.FindChild ("Activate").GetComponent<Light> ();//where ever the light is on the NPC_Talk characters. 
-
 			cameraSet = cmaera.GetComponent<Controller> ().lookAt;
 			npc_Interact = npc_Tutorial.GetComponent<NPC_Interaction> (); // 
 			npc_Interact.MissionDelegate = StartTutorialMission; // changes the delegate so talking activates that mission.

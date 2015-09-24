@@ -19,12 +19,12 @@ namespace NPC
 		//-------------- Tutorial Conditions ---------------//
 		private bool catMissionFinished;
 
-		public bool CatMissionFinished{
-			get{
+		public bool CatMissionFinished {
+			get {
 				return catMissionFinished;
 			}
 
-			set{
+			set {
 				catMissionFinished = value;
 			}
 		}
@@ -65,11 +65,13 @@ namespace NPC
 		private GameObject cmaera;
 		private GameObject cameraSet;
 		private GameObject dropOff;
-		public GameObject DropOff{
-			get{
+
+		public GameObject DropOff {
+			get {
 				return dropOff;
 			}
 		}
+
 		private NPC_TutorialMission tutorialMissionStuff;
 		
 		//-------------- Talking Stuff ---------------//
@@ -111,7 +113,7 @@ namespace NPC
 
 		void Start ()
 		{
-			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage>();
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
 			cat = GameObject.Find ("kitten"); //kitten to look at
 			cmaera = GameObject.Find ("Follow Camera"); 
@@ -124,6 +126,7 @@ namespace NPC
 			dropOff = GameObject.Find ("NPC_Cat");
 			npc_Animator = dropOff.GetComponent<Animator> ();
 			overHereLight = dropOff.transform.FindChild ("Sphere").transform.FindChild ("Activate").GetComponent<Light> ();//where ever the light is on the NPC_Talk characters. I think it's a child of the 'head'.
+			overHereLight.enabled = false;
 
 			cameraSet = cmaera.GetComponent<Controller> ().lookAt;
 			npc_Interact = dropOff.GetComponent<NPC_Interaction> ();
@@ -168,7 +171,6 @@ namespace NPC
 		IEnumerator Cat_Mission ()
 		{
 			int i = 0;
-//			dropOff.tag = "NPC_talk";
 			catMissionRunning = true;
 
 			while (x < 6) {
@@ -263,7 +265,7 @@ namespace NPC
 							
 					}
 					while (i >= npc_Message.Length) {
-						if (catMissionFinished) {
+						if (!catMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
 								proceed = true;
 							}
@@ -285,12 +287,8 @@ namespace NPC
 					}
 					break; //end of case 4
 				case 4:
-					if (catMissionFinished) {
-						dropOff.tag = "NPC";
-						StopCoroutine (catCoroutine);
-					} else {
-						x = 3;
-					}
+					dropOff.tag = "NPC";
+					StopCoroutine (catCoroutine);
 					break;
 				default:
 					yield return null;

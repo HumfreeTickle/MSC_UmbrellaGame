@@ -25,11 +25,12 @@ namespace NPC
 
 		private MissionDelegation misssionDelegate;
 	
-		public MissionDelegation MissionDelegate{
-			set{
+		public MissionDelegation MissionDelegate {
+			set {
 				misssionDelegate = value;
 			}
 		}
+
 		private NPC_Class npc_class = new NPC_Class ();
 
 		void Start ()
@@ -59,10 +60,12 @@ namespace NPC
 					saidHello = true;
 				}
 
-				if(saidHello){
-					if (misssionDelegate != null) {
-						misssionDelegate ();
-						saidHello = false;
+				if (saidHello) {
+					if (this.gameObject.tag == "NPC_talk") {
+						if (misssionDelegate != null) {
+							misssionDelegate ();
+							saidHello = false;
+						}
 					}
 				}
 			}

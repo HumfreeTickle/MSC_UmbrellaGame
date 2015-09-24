@@ -13,7 +13,7 @@ public class Cat_DropOff : MonoBehaviour {
 	
 	void OnTriggerStay(Collider col) 
 	{
-		if(col.gameObject.name == "kitten" && col.gameObject.tag == "Pickup"){
+		if(col.gameObject.name == "kitten"){
 			missions.DropOff.tag = "NPC_talk";
 
 			missions.CatDroppedOff = true;
