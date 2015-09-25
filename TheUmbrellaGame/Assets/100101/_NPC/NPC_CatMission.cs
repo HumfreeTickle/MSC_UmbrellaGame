@@ -178,7 +178,7 @@ namespace NPC
 					
 				case 0:
 
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 
 					while (i <= npc_Message.Length) {
@@ -246,7 +246,7 @@ namespace NPC
 
 
 				case 3:
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					jumpAround = false;
 

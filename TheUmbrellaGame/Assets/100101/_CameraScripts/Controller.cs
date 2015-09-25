@@ -85,7 +85,7 @@ namespace CameraScripts
 				}
 			}
 
-			if (gameState == GameState.Event) {
+			if (gameState == GameState.MissionEvent) {
 				lookAtTr = lookAt.transform;
 			}
 		}
@@ -144,7 +144,7 @@ namespace CameraScripts
 					transform.LookAt (lookAtTr);
 
 
-				} else if (gameState == GameState.Event) {
+				} else if (gameState == GameState.MissionEvent) {
 					// Damp the height
 					currentHeight = Mathf.Lerp (currentHeight, wantedHeight, Time.fixedDeltaTime);
 
@@ -212,7 +212,7 @@ namespace CameraScripts
 
 			if (Physics.Raycast (cameraRay, out hit)) {
 
-				if (gameState != GameState.Event) {
+				if (gameState != GameState.MissionEvent) {
 					if (hit.collider.tag != "Player") {//hits anything other then the player
 
 						if (hit.collider.gameObject.GetComponent<MeshRenderer> ()) {// checks to see if it has a mesh renderer

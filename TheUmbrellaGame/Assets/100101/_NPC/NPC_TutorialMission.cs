@@ -174,7 +174,7 @@ namespace NPC
 
 				case 0:
 					jumpAround = false;
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					while (i <= npc_Message.Length) {
 						//npc_Message[x] //grabs the part of the list the text is attributed to
@@ -239,7 +239,7 @@ namespace NPC
 					
 				case 3:
 					jumpAround = false;
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 
 					while (i <= npc_Message.Length) {

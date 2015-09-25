@@ -209,7 +209,7 @@ namespace NPC
 					
 				case 0:
 					jumpAround = false;
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					while (i <= npc_Message.Length) {
 						npc_Message = "My boxes!!! Someone has stolen them and haphazardly placed them around the town.";
@@ -269,7 +269,7 @@ namespace NPC
 				case 3:
 
 					jumpAround = false;
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					
 					while (i <= npc_Message.Length) {

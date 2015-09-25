@@ -79,7 +79,7 @@ namespace Player
 				umbrellaAnim.SetBool ("Falling", true);
 				rotate = false;
 
-			} else if (gameManager.gameState == GameState.Event) {
+			} else if (gameManager.gameState == GameState.MissionEvent) {
 				Stabilize ();
 			}
 		}

@@ -26,7 +26,7 @@ public enum GameState // sets what game state is currently being viewed
 	/// <summary>
 	/// The player cannot move and the camera can change look at target
 	/// </summary>
-	Event,
+	MissionEvent,
 	/// <summary>
 	/// Main state of the game. Allows for full controller over the umbrella
 	/// </summary>

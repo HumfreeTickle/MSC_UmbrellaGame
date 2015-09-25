@@ -88,7 +88,7 @@ namespace Player.PhysicsStuff
 			bounceBack = Mathf.Clamp (bounceBack, 0, Mathf.Infinity);
 			gameState = GameManager.gameState;
 
-			if (gameState != GameState.Pause || gameState != GameState.GameOver) {
+			if (gameState != GameState.Pause || gameState != GameState.GameOver || gameState != GameState.MissionEvent) {
 				if (Input.GetAxis ("Vertical_R") >= 0.1f && charge >= 1) {
 					verticalInput = Input.GetAxis ("Vertical_R");
 					if (this.transform.childCount < 2) {
@@ -98,16 +98,10 @@ namespace Player.PhysicsStuff
 					}
 				}
 
-//---------------- TURN OFF UPWARDFORCE ---------------------
+//---------------------------- TURN OFF UPWARDFORCE ---------------------
 				if (charge <= 10) {
 					GetComponent<upwardForce> ().enabled = false;
 				} 
-				//------------------------- COLOUR CHANGING ---------------------------//
-
-//				ChangeColours (canopyColours.transform);
-
-
-
 
 //---------------------------- RAYCASTING STUFF -----------------------------------------------------------------------
 

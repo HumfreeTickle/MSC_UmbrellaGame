@@ -66,19 +66,28 @@ public class Tutuorial : MonoBehaviour
 			}
 
 			//------------- Removes tutorial if game is paused or character is dead ---------------------//
-			if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver || GameManager.gameState == GameState.Event) {
+			if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver || GameManager.gameState == GameState.MissionEvent) {
 				GetComponent<Image> ().enabled = false;
+				for(int i = 0; i < transform.childCount; i++){
+					transform.GetChild(i).gameObject.SetActive(false);
+				}
 			} else {
 				GetComponent<Image> ().enabled = true;
+				for(int i = 0; i < transform.childCount; i++){
+					transform.GetChild(i).gameObject.SetActive(false);
+				}
+			}
+		}else{
+			GetComponent<Image>().enabled = false;
+			for(int i = 0; i < transform.childCount; i++){
+				transform.GetChild(i).gameObject.SetActive(false);
 			}
 		}
 	}
 
 	void StartingPositions ()
 	{
-
 		animator.SetBool ("Wind", true);
-
 	}
 
 //-------------------------------------- Switch statement for all the various Tutorial states --------------------------------------
