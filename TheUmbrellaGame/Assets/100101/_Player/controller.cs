@@ -31,6 +31,9 @@ namespace Player
 		private RaycastHit hit;
 		private upwardForce upForce;
 		private bool rotate;
+		public float gravityDrop = 50f;
+		private bool hitTerrain;
+		private bool tooLow;
 
 		void Start ()
 		{
@@ -42,7 +45,7 @@ namespace Player
 			umbrellaAnim = GameObject.Find ("Umbrella").GetComponent<Animator> ();
 			rotationAnim = GameObject.Find ("Rotation_Sphere").GetComponent<Animator> ();
 			defaultUpForce = upForce.upwardsforce;
-			GetComponent<CapsuleCollider>().radius = 0.5f;
+			GetComponent<CapsuleCollider> ().radius = 0.5f;
 
 			if (!upForce.isActiveAndEnabled) {
 				upForce.enabled = true;
@@ -52,19 +55,22 @@ namespace Player
 		void FixedUpdate ()
 		{
 			if (gameManager.gameState == GameState.Game) {
-				handle.GetComponent<CapsuleCollider>().enabled = true;
+				handle.GetComponent<CapsuleCollider> ().enabled = true;
 				rb.useGravity = true;
 				rb.angularDrag = 5;
 				Movement ();
-				hit = GetComponent<CreateWind> ().RaycastingInfo;
-				if (hit.collider != null) {
-					TheDescent ();
-				} else {
-					Physics.gravity = new Vector3 (0, -18.36f, 0);
-					rb.mass = 1;
-					umbrellaAnim.SetBool ("Falling", false);
-					GetComponent<CapsuleCollider>().radius = 0.5f;	
+				hitTerrain = GetComponent<CreateWind> ().HitTerrain;
+				if (hitTerrain) {
+					hit = GetComponent<CreateWind> ().RaycastingInfo;
 				}
+
+				TheDescent ();
+//				else {
+//					Physics.gravity = new Vector3 (0, -18.36f, 0);
+//					rb.mass = 1;
+//					umbrellaAnim.SetBool ("Falling", false);
+//					GetComponent<CapsuleCollider>().radius = 0.5f;	
+//				}
 
 			} else if (gameManager.gameState == GameState.GameOver) {
 				GetComponent<upwardForce> ().enabled = false;
@@ -89,7 +95,7 @@ namespace Player
 				rotate = true;
 
 			} else {
-				rotationAnim.SetFloat("Speed", rb.velocity.magnitude);
+				rotationAnim.SetFloat ("Speed", rb.velocity.magnitude);
 				rotate = false;
 			}
 			
@@ -110,39 +116,37 @@ namespace Player
 		
 		void TheDescent () //allow the umbrella to go down
 		{
-			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 3) { // prevents the palyer from getting caught in the ground
+			// ------------ Standard on/off for the descent ---------------
+			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 3) { 
 				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce * 1.25f, Time.deltaTime * 5);
 				upForce.enabled = true;
-
+				Input.ResetInputAxes ();
+			
 			} else {
-				// ------------ Standard on/off for the descent ---------------
 				if (Input.GetAxis ("Vertical_R") <= -0.9f) {
 					upForce.enabled = false;
-				}else if(Input.GetAxis ("Vertical_R") <= -0.01f){
+				} else if (Input.GetAxis ("Vertical_R") <= -0.01f) {
 					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 0, Time.deltaTime);
-				}
-				// ------------ brings the umbrella back to equilibrium ---------------
-				else {
+				} else {
 					upForce.enabled = true;
 					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
 				}
-
 			}
 
 			if (!upForce.isActiveAndEnabled) {
-				Physics.gravity = new Vector3 (0, -50.0f, 0);
+				Physics.gravity = new Vector3 (0, -gravityDrop, 0);
 				rb.mass = 10000;
 				umbrellaAnim.SetBool ("Falling", true);
-				rotationAnim.SetBool("Input_H", true);
-				GetComponent<CapsuleCollider>().radius = 0.25f;
-
+				rotationAnim.SetBool ("Input_H", true);
+				GetComponent<CapsuleCollider> ().radius = 0.25f;
+				
 			} else {
 				Physics.gravity = new Vector3 (0, -18.36f, 0);
 				rb.mass = 1;
 				umbrellaAnim.SetBool ("Falling", false);
-				rotationAnim.SetBool("Input_H", false);
-
-				GetComponent<CapsuleCollider>().radius = 0.5f;
+				rotationAnim.SetBool ("Input_H", false);
+				
+				GetComponent<CapsuleCollider> ().radius = 0.5f;
 			}
 		}
 
@@ -151,6 +155,11 @@ namespace Player
 		{
 			rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * 10);
 			rb.angularDrag = Mathf.Lerp (rb.angularDrag, 100, Time.fixedDeltaTime * 10);
+			umbrellaAnim.SetBool ("Falling", false);
+			rotationAnim.SetBool ("Input_V", false);
+			rotationAnim.SetBool ("Input_H", false);
+			rotationAnim.SetFloat ("Speed", 0);
+			Physics.gravity = new Vector3 (0, -18.36f, 0);
 
 			upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
 			upForce.enabled = true;

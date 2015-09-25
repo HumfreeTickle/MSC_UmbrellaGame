@@ -210,7 +210,7 @@ public class GmaeManage : MonoBehaviour
 
 	void Awake ()
 	{
-		DontDestroyOnLoad (transform.gameObject);
+//		DontDestroyOnLoad (transform.gameObject);
 
 		//-------------------- For the different controllers ---------------------------------
 		if (Input.GetJoystickNames ().Length > 0) {// checks to see if a controller is connected
@@ -389,11 +389,13 @@ public class GmaeManage : MonoBehaviour
 
 		if (gameState == GameState.Pause) {
 			Paused ();
-		} else if (gameState == GameState.Game) {
+		} else if (gameState != GameState.Pause) {
 			NotPaused ();
 		}
-		
-		FixedPause ();	
+
+		if(gameState == GameState.Game){
+			FixedPause ();	
+		}
 	}
 	
 //-------------------------------------- Ending the game is here (sort of) -----------------------------------------------------------------
@@ -505,10 +507,10 @@ public class GmaeManage : MonoBehaviour
 					if (Application.loadedLevel == 0) {
 						Application.LoadLevel ("Boucing");
 					} else if (Application.loadedLevel == 1) {
-						PlayerPrefs.SetFloat ("PlayerX", lastKnownPosition.x);
-						PlayerPrefs.SetFloat ("PlayerY", lastKnownPosition.y);
-						PlayerPrefs.SetFloat ("PlayerZ", lastKnownPosition.z);
-						Application.LoadLevel ("Boucing");
+//						PlayerPrefs.SetFloat ("PlayerX", lastKnownPosition.x);
+//						PlayerPrefs.SetFloat ("PlayerY", lastKnownPosition.y);
+//						PlayerPrefs.SetFloat ("PlayerZ", lastKnownPosition.z);
+						Application.LoadLevel ("Start_Screen");
 					}
 				}
 			}
@@ -551,6 +553,9 @@ public class GmaeManage : MonoBehaviour
 								break;
 							case 4:
 								boxesMission.BoxesMisssionFinished = true;
+								break;
+							case 5:
+								gameState = GameState.GameOver;
 								break;
 							default:
 								break;

@@ -13,7 +13,7 @@ namespace NPC
 
 		//------------- Talking variables -----------------//
 		private float talkingSpeed;
-		private bool proceed = false;
+		public bool proceed = false;
 		private bool playTime; //used for a camera state change
 
 		//-------------- Tutorial Conditions ---------------//
@@ -163,7 +163,7 @@ namespace NPC
 		/// </summary>
 		void StartCatMission ()
 		{
-			if (catDroppedOff) {
+			if (catDroppedOff && !catMissionFinished) {
 				x = 3;
 			}
 		}
@@ -173,7 +173,7 @@ namespace NPC
 			int i = 0;
 			catMissionRunning = true;
 
-			while (x < 6) {
+			while (x < 4) {
 				switch (x) {
 					
 				case 0:
@@ -285,7 +285,8 @@ namespace NPC
 						yield return null;
 							
 					}
-					break; //end of case 4
+					break; //end of case 3
+
 				case 4:
 					dropOff.tag = "NPC";
 					StopCoroutine (catCoroutine);
@@ -299,7 +300,7 @@ namespace NPC
 				yield return new WaitForSeconds (talkingSpeed / 10);
 
 			}
-			yield return null;
+			yield break;
 
 		}
 	}

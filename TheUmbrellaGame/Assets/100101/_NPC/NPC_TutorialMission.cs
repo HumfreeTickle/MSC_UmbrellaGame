@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CameraScripts;
 using UnityEngine.UI;
 using System;
+using Player.PhysicsStuff;
 
 namespace NPC
 {
@@ -60,7 +61,7 @@ namespace NPC
 		private Text npc_Talking; //text box
 		private Image npc_TalkingBox; //background image
 		private NPC_Interaction npc_Interact; //used to call the mission when the player talks to an NPC
-		private bool proceed = false; // used to prevent spamming of continue button. As well as allow continue button to work
+		public bool proceed = false; // used to prevent spamming of continue button. As well as allow continue button to work
 
 		//---------------- Stuff to keep the font size relative to the screen --------------//
 //		private float _oldHeight;
@@ -166,8 +167,9 @@ namespace NPC
 		{
 			tutorialRunning = true;
 			int i = 0;
+//			proceed = false;
 			                                     
-			while (x < 2) {// only allows the first 2 cases to playout
+			while (x < 5) {// only allows the first 2 cases to playout
 				switch (x) {
 
 				case 0:
@@ -234,15 +236,6 @@ namespace NPC
 						yield return null;
 					}
 					break;
-				
-				default:
-					Debug.Log ("Default");
-					break;
-				}
-			}
-
-			while (x > 2) { //allows the last two states to play
-				switch (x) {
 					
 				case 3:
 					jumpAround = false;
@@ -269,6 +262,7 @@ namespace NPC
 								proceed = true;
 							}
 							if (proceed) {
+								umbrella.GetComponent<CreateWind>().Barriers = false;
 								i = 0;
 								x = 4;
 								proceed = false;
@@ -297,7 +291,9 @@ namespace NPC
 				}
 				yield return new WaitForSeconds (talkingSpeed / 10);
 			}
-			yield return null;
+			yield break;
+
+//			yield return null;
 		}
 
 	}//end

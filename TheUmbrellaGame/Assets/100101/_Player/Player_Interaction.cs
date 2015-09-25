@@ -17,7 +17,7 @@ namespace Player
 		void OnTriggerEnter (Collider col)
 		{
 			if (helloTutorial) {
-				if (col.gameObject.tag == "NPC_talk" || col.gameObject.tag == "NPC") {
+				if (col.gameObject.tag == "NPC_talk") {
 					tutorial.ObjectTag = col.gameObject.tag;
 					helloTutorial = false;
 				}
@@ -33,7 +33,7 @@ namespace Player
 
 		void OnTriggerExit (Collider col)
 		{ //failsafe incase they leave the trigger without finishing the tutorial.
-			if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "NPC_talk" || col.gameObject.tag == "NPC" || col.gameObject.tag == "Pickup") {
+			if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "NPC_talk" || col.gameObject.tag == "Pickup") {
 				tutorial.ObjectTag = "";
 				helloTutorial = true;
 				interactTutorial = true;

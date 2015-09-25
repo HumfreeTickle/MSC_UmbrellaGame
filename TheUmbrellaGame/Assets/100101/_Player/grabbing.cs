@@ -6,7 +6,7 @@ namespace Player
 {
 	public class grabbing : MonoBehaviour
 	{
-		public GameObject pickupObject;
+		private GameObject pickupObject;
 		private Transform originalParent;
 		private bool terrainHit;
 		public float z;
@@ -51,6 +51,7 @@ namespace Player
 			if (pickupObject.GetComponent<Rigidbody> ()) {
 				Destroy (pickupObject.GetComponent<Rigidbody> ());
 			}
+
 			if (pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled) {
 				pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled = false;
 			}

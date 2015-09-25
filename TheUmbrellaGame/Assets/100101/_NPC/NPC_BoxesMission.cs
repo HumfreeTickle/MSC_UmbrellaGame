@@ -18,7 +18,7 @@ namespace NPC
 		//------------- Talking variables -----------------//
 		
 		private float talkingSpeed;
-		public bool boxesMissionRunning;
+		private bool boxesMissionRunning;
 		
 		/// <summary>
 		/// States whether the mission has been complete or not
@@ -35,16 +35,20 @@ namespace NPC
 		
 		//--------------------------------------------------// 
 		public GameObject particales;
-		public bool boxesMissionStart;
+		private bool boxesMissionStart;
 		
 		public bool BoxesMissionStart {
+			get {
+				return boxesMissionStart;
+			}
+
 			set {
 				boxesMissionStart = value;
 			}
 		}
 
 		//ends the mission
-		public bool boxesMissionFinished = false;
+		private bool boxesMissionFinished = false;
 		/// <summary>
 		/// Allows other scripts to know when the tutorial mission has been completed
 		/// </summary>
@@ -58,7 +62,7 @@ namespace NPC
 			}
 		}
 
-		public bool boxesDropped;
+		private bool boxesDropped;
 
 		public bool BoxesDropped {
 			get {
@@ -84,7 +88,7 @@ namespace NPC
 		//		public List<string> npc_Message_Array = new List<string> (); //supposed to allow for blocks of text to be entered and seperated out automatically
 		public string npc_Message = ""; // holds the current message that needs to be displayed
 		//------------------------------------------------------------------------------//
-		public int x = 0; // for the case state **I wonder if using number's is the best way to cycle through each case
+		private int x = 0; // for the case state **I wonder if using number's is the best way to cycle through each case
 		/// <summary>
 		/// allows other scripts to increase the case state
 		/// </summary>
@@ -96,7 +100,7 @@ namespace NPC
 			}
 		}
 		
-		public bool jumpAround = true;
+		private bool jumpAround = true;
 		
 		/// <summary>
 		/// Used to animate the NPC_Tut.
@@ -184,9 +188,11 @@ namespace NPC
 					TurnOnLights (obj.transform.GetChild (child).gameObject);
 				} else {
 					if (obj.GetComponent<Light> ()) {
-						if (obj.GetComponent<Light> ().isActiveAndEnabled) {
+						if (!obj.GetComponent<Light> ().isActiveAndEnabled) {
 							obj.GetComponent<Light> ().enabled = true;
 						}
+					}else{
+						TurnOnLights (obj.transform.GetChild (child).gameObject);
 					}
 				}
 			}
@@ -198,7 +204,7 @@ namespace NPC
 			boxesMissionRunning = true;
 			int i = 0;
 			
-			while (x < 6) {// only allows the first 2 cases to playout
+			while (x < 5) {// only allows the first 2 cases to playout
 				switch (x) {
 					
 				case 0:
@@ -206,7 +212,6 @@ namespace NPC
 					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
 					npc_TalkingBox.enabled = true;
 					while (i <= npc_Message.Length) {
-						//npc_Message[x] //grabs the part of the list the text is attributed to
 						npc_Message = "My boxes!!! Someone has stolen them and haphazardly placed them around the town.";
 						npc_Talking.text = (npc_Message.Substring (0, i));
 						i += 1;
@@ -297,7 +302,9 @@ namespace NPC
 								cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
 								boxesMissionStart = false;
 								boxesMissionFinished = true;
+								GameObject.FindWithTag("Final").GetComponent<Light>().enabled = true;
 								proceed = false;
+								yield break;
 							}
 						}
 						yield return null;
@@ -323,7 +330,7 @@ namespace NPC
 				}
 				yield return new WaitForSeconds (talkingSpeed / 10);
 			}
-			yield return null;
+			yield break;
 		}
 		
 	}//end
