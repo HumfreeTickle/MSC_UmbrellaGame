@@ -164,6 +164,7 @@ namespace NPC
 		void StartCatMission ()
 		{
 			if (catDroppedOff && !catMissionFinished) {
+//				dropOff.GetComponent<NPC_Interaction>().MissionDelegate = null;
 				x = 3;
 			}
 		}
@@ -178,7 +179,7 @@ namespace NPC
 					
 				case 0:
 
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					gameManager.gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 
 					while (i <= npc_Message.Length) {
@@ -196,7 +197,9 @@ namespace NPC
 					}
 					while (i >= npc_Message.Length) {
 						if (Input.GetButtonDown ("Talk")) {
-							proceed = true;
+							if (gameManager.gameState == GameState.MissionEvent) {
+								proceed = true;
+							}
 						}
 						
 						if (proceed) {
@@ -224,13 +227,15 @@ namespace NPC
 					while (i >= npc_Message.Length) {
 						if (playTime) {
 							if (Input.GetButtonDown ("Talk")) {
-								proceed = true;
+								if (gameManager.gameState == GameState.MissionEvent) {
+									proceed = true;
+								}
 							}
 							if (proceed) {
 								npc_Message = " ";
 								npc_TalkingBox.enabled = false;
 								npc_Talking.text = npc_Message;
-								cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+								gameManager.gameState = GameState.Game;
 								catMissionStart = false; 
 
 								i = 0;
@@ -246,7 +251,7 @@ namespace NPC
 
 
 				case 3:
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					gameManager.gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					jumpAround = false;
 
@@ -265,19 +270,21 @@ namespace NPC
 							
 					}
 					while (i >= npc_Message.Length) {
-						if (!catMissionFinished) {
+						if (catMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
-								proceed = true;
+								if (gameManager.gameState == GameState.MissionEvent) {
+									proceed = true;
+								}
 							}
 							if (proceed) {
 								npc_Message = "";
 								npc_TalkingBox.enabled = false;
 								npc_Talking.text = npc_Message;
-								cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+								gameManager.missionState = MissionController.BoxesMission;
+								gameManager.gameState = GameState.Game;
 								i = 0;
 								x = 4;
 								catMissionStart = false; //might have to be moved to case 5
-								catMissionFinished = true;
 								proceed = false;
 							}
 						}

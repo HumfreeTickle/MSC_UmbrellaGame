@@ -31,6 +31,7 @@ namespace NPC
 		}
 
 		private NPC_Class npc_class = new NPC_Class ();
+		private bool talking;
 
 		void Start ()
 		{
@@ -56,11 +57,14 @@ namespace NPC
 		{
 			if (col.gameObject.tag == "Player") {
 				if (Input.GetButtonDown ("Talk")) {
+					talking = true;
 				}
-
-				if (this.gameObject.tag == "NPC_talk") {
-					if (misssionDelegate != null) {
-						misssionDelegate ();
+				if (talking) {
+					if (this.gameObject.tag == "NPC_talk") {
+						if (misssionDelegate != null) {
+							misssionDelegate ();
+							talking = false;
+						}
 					}
 				}
 

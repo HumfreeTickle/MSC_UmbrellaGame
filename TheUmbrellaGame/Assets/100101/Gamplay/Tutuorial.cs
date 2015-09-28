@@ -6,9 +6,9 @@ using Player;
 
 public class Tutuorial : MonoBehaviour
 {	
-	public GmaeManage GameManager;
+	private GmaeManage GameManager;
 
-	public float secondsToStart = 5;
+	public float secondsToStart = 4;
 	private GameState gameState;
 	private bool started;
 	private bool inTheBeginning;
@@ -34,11 +34,10 @@ public class Tutuorial : MonoBehaviour
 		}
 
 	}
-
-	public bool movementDone;
-
+	
 	void Awake ()
 	{
+		GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage>();
 		animator = GetComponent<Animator> ();
 	}
 	
@@ -74,7 +73,7 @@ public class Tutuorial : MonoBehaviour
 			} else {
 				GetComponent<Image> ().enabled = true;
 				for(int i = 0; i < transform.childCount; i++){
-					transform.GetChild(i).gameObject.SetActive(false);
+					transform.GetChild(i).gameObject.SetActive(true);
 				}
 			}
 		}else{
@@ -85,8 +84,9 @@ public class Tutuorial : MonoBehaviour
 		}
 	}
 
-	void StartingPositions ()
+	public void StartingPositions ()
 	{
+
 		animator.SetBool ("Wind", true);
 	}
 
@@ -109,10 +109,10 @@ public class Tutuorial : MonoBehaviour
 				animator.SetBool ("Interact", true);
 				break;
 
-			case "NPC":
-				animator.SetBool ("Talk", true);
-				animator.SetBool ("Interact", false);
-				break;
+//			case "NPC":
+//				animator.SetBool ("Talk", true);
+//				animator.SetBool ("Interact", false);
+//				break;
 
 			default:
 				animator.SetBool ("Talk", false);

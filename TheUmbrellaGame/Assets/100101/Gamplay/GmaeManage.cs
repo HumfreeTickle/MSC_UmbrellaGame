@@ -12,6 +12,9 @@ using NPC;
 using UnityEditor;
 #endif
 
+/// <summary>
+/// The various states of the game
+/// </summary>
 public enum GameState // sets what game state is currently being viewed
 {
 	NullState,
@@ -37,12 +40,27 @@ public enum GameState // sets what game state is currently being viewed
 	GameOver
 }
 
-//Might work better as a delegate
+/// <summary>
+/// Controller type.
+/// </summary>
 public enum ControllerType
 {
 	NullState,
 	Keyboard,
 	ConsoleContoller
+}
+
+/// <summary>
+/// Which mission is currently happening
+/// </summary>
+public enum MissionController
+{
+	TutorialMission,
+	CatMission,
+	BoxesMission,
+	HorsesMission,
+	BridgeMission,
+	Default
 }
 
 public class GmaeManage : MonoBehaviour
@@ -151,8 +169,9 @@ public class GmaeManage : MonoBehaviour
 	private Text npc_Talking;
 	//Missions
 	public float textSpeed;
-	public float TextSpeed{
-		get{
+
+	public float TextSpeed {
+		get {
 			return textSpeed;
 		}
 	}
@@ -203,8 +222,15 @@ public class GmaeManage : MonoBehaviour
 	public ControllerType controllerType { get; set; }
 
 	private ControllerType currentController = ControllerType.NullState;
+
+	public MissionController missionState { get; set; }
+
+	private MissionController currentMission = MissionController.Default;
 	
 	//--------------------------------------------------------------------------------------------------//
+
+
+
 
 //-------------------------------------- The Setup -----------------------------------------------------------------
 
@@ -279,7 +305,7 @@ public class GmaeManage : MonoBehaviour
 			tutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
 			catMission = GameObject.Find ("Missions").GetComponent<NPC_CatMission> ();
 			boxesMission = GameObject.Find ("Missions").GetComponent<NPC_BoxesMission> ();
-			canopyColour = GameObject.Find("Canopy_Colours").transform;
+			canopyColour = GameObject.Find ("Canopy_Colours").transform;
 
 			if (!PauseScreen || !WhiteScreen) {
 				return;
@@ -308,6 +334,7 @@ public class GmaeManage : MonoBehaviour
 
 		if (gameState == GameState.Intro) {
 			StartGame ();
+			missionState = MissionController.Default;
 
 		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
 
@@ -393,7 +420,7 @@ public class GmaeManage : MonoBehaviour
 			NotPaused ();
 		}
 
-		if(gameState == GameState.Game){
+		if (gameState == GameState.Game) {
 			FixedPause ();	
 		}
 	}
@@ -424,9 +451,14 @@ public class GmaeManage : MonoBehaviour
 		if (gameState != currentState) {
 			Debug.Log (gameState);
 		}
+
+		if (missionState != currentMission) {
+			Debug.Log (missionState);
+		}
 		
 		currentState = gameState;
 		currentController = controllerType;
+		currentMission = missionState;
 	}
 	
 //----------------------------------------------- Other Funcitons ------------------------------------------
@@ -539,14 +571,15 @@ public class GmaeManage : MonoBehaviour
 				if (obj.GetChild (child).GetComponent<MeshRenderer> ()) {
 					if (obj.GetChild (child).tag == umbrellaColour.name) {// checks to see if there is a mesh renderer attached to child
 						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
-						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime/2);
+						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime / 2);
 
 						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
 							currentProgress = progression;
 
-							switch(progression){
+							switch (progression) {
+
 							case 2:
-							tutorialMission.TutorialMisssionFinished = true;
+								tutorialMission.TutorialMisssionFinished = true;
 								break;
 							case 3:
 								catMission.CatMissionFinished = true;

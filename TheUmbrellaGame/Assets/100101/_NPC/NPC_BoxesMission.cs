@@ -10,6 +10,7 @@ namespace NPC
 	public class NPC_BoxesMission : MonoBehaviour
 	{
 		private GmaeManage gameManager;
+		private MissionController missionStates;
 		private GameObject boxesGuy;
 		private GameObject cmaera;
 		private GameObject umbrella;
@@ -175,7 +176,7 @@ namespace NPC
 			}
 		
 
-			if (boxesDropped) {
+			if (boxesDropped && boxesMissionRunning) {
 				x = 3;
 				boxesMissionRunning = false;
 			}
@@ -220,7 +221,9 @@ namespace NPC
 					//-------------------------------- all this stuff --------------------------------//
 					while (i >= npc_Message.Length + 1) {
 						if (Input.GetButtonDown ("Talk")) {
-							proceed = true;
+							if (gameManager.gameState == GameState.MissionEvent) {
+								proceed = true;
+							}
 						}
 						
 						if (proceed) {
@@ -247,7 +250,9 @@ namespace NPC
 					
 					while (i >= npc_Message.Length) {
 						if (Input.GetButtonDown ("Talk")) {
-							proceed = true;
+							if (gameManager.gameState == GameState.MissionEvent) {
+								proceed = true;
+							}
 						}
 						
 						if (proceed) {
@@ -286,10 +291,13 @@ namespace NPC
 						yield return new WaitForSeconds (talkingSpeed);
 						
 					}
+
 					while (i >= npc_Message.Length) {
 						if (boxesMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
-								proceed = true;
+								if (gameManager.gameState == GameState.MissionEvent) {
+									proceed = true;
+								}
 							}
 							if (proceed) {
 								npc_Message = "";
@@ -299,9 +307,12 @@ namespace NPC
 								i = 0;
 								x = 4;
 
-								cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+								missionStates = MissionController.BridgeMission;
+								gameManager.missionState = missionStates;
+								gameManager.gameState = GameState.Game;
 								boxesMissionStart = false;
-								boxesMissionFinished = true;
+
+								// Temp final stuff
 								GameObject.FindWithTag("Final").GetComponent<Light>().enabled = true;
 								proceed = false;
 								yield break;
