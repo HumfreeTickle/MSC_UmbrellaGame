@@ -99,18 +99,18 @@ namespace Environment
 		{  
 			//------------------------------------------------------//
 			//For testing purposes only
-			if (Input.GetButtonDown ("Undefined")) {
-				if (i < listOFMissionTesting.Count - 1) {
-					i += 1;
-				}else{
-					i = 0;
-				}
-			}
-
-			if (Input.GetButtonUp ("Undefined")) {
-				gameManager.missionState = listOFMissionTesting [i];
-
-			}
+//			if (Input.GetButtonDown ("Undefined")) {
+//				if (i < listOFMissionTesting.Count - 1) {
+//					i += 1;
+//				}else{
+//					i = 0;
+//				}
+//			}
+//
+//			if (Input.GetButtonUp ("Undefined")) {
+//				gameManager.missionState = listOFMissionTesting [i];
+//
+//			}
 			//------------------------------------------------------//
 
 			missionState = gameManager.missionState;

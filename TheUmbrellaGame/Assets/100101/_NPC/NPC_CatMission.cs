@@ -270,6 +270,7 @@ namespace NPC
 							
 					}
 					while (i >= npc_Message.Length) {
+
 						if (catMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
 								if (gameManager.gameState == GameState.MissionEvent) {
@@ -286,6 +287,8 @@ namespace NPC
 								x = 4;
 								catMissionStart = false; //might have to be moved to case 5
 								proceed = false;
+
+								yield break;
 							}
 						}
 
@@ -304,7 +307,7 @@ namespace NPC
 					break;
 				}
 
-				yield return new WaitForSeconds (talkingSpeed / 10);
+				yield return null;
 
 			}
 			yield break;

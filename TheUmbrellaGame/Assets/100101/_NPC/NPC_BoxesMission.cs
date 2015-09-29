@@ -339,7 +339,7 @@ namespace NPC
 
 					break;
 				}
-				yield return new WaitForSeconds (talkingSpeed / 10);
+				yield return null;
 			}
 			yield break;
 		}

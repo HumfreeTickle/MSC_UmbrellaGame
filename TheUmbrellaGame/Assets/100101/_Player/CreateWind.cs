@@ -28,6 +28,8 @@ namespace Player.PhysicsStuff
 
 		//-----------------------------------//
 		private Vector3 baseUmbrella = new Vector3 (0f, -5f, 0f);
+		public Vector3 windSource = new Vector3 (0f, 0f, 0f);
+
 		private GameObject umbrella;
 		private GameObject canopyColours;
 		private Rigidbody umbrellaRb;
@@ -175,7 +177,7 @@ namespace Player.PhysicsStuff
 		void SummonWind ()
 		{
 			//-------------------- CREATING THE WIND ----------------------------------
-			spawnDistance = transform.position - new Vector3 (0, 10, 0);
+			spawnDistance = transform.position - windSource;
 		
 			instatiatedWind = Instantiate (windSystem, spawnDistance, Quaternion.Euler (Vector3.forward)) as GameObject;
 			instatiatedWind.transform.parent = this.transform; 
