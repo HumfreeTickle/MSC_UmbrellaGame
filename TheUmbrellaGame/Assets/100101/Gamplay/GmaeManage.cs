@@ -12,6 +12,9 @@ using NPC;
 using UnityEditor;
 #endif
 
+/// <summary>
+/// The various states of the game
+/// </summary>
 public enum GameState // sets what game state is currently being viewed
 {
 	NullState,
@@ -26,7 +29,7 @@ public enum GameState // sets what game state is currently being viewed
 	/// <summary>
 	/// The player cannot move and the camera can change look at target
 	/// </summary>
-	Event,
+	MissionEvent,
 	/// <summary>
 	/// Main state of the game. Allows for full controller over the umbrella
 	/// </summary>
@@ -37,12 +40,27 @@ public enum GameState // sets what game state is currently being viewed
 	GameOver
 }
 
-//Might work better as a delegate
+/// <summary>
+/// Controller type.
+/// </summary>
 public enum ControllerType
 {
 	NullState,
 	Keyboard,
 	ConsoleContoller
+}
+
+/// <summary>
+/// Which mission is currently happening
+/// </summary>
+public enum MissionController
+{
+	TutorialMission,
+	CatMission,
+	BoxesMission,
+	HorsesMission,
+	BridgeMission,
+	Default
 }
 
 public class GmaeManage : MonoBehaviour
@@ -151,14 +169,16 @@ public class GmaeManage : MonoBehaviour
 	private Text npc_Talking;
 	//Missions
 	public float textSpeed;
-	public float TextSpeed{
-		get{
+
+	public float TextSpeed {
+		get {
 			return textSpeed;
 		}
 	}
 
 	private NPC_TutorialMission tutorialMission;
 	private NPC_CatMission catMission;
+	private NPC_BoxesMission boxesMission;
 	
 //------------------------------------ Getters and Setters ------------------------------------------------------------
 
@@ -202,14 +222,21 @@ public class GmaeManage : MonoBehaviour
 	public ControllerType controllerType { get; set; }
 
 	private ControllerType currentController = ControllerType.NullState;
+
+	public MissionController missionState { get; set; }
+
+	private MissionController currentMission = MissionController.Default;
 	
 	//--------------------------------------------------------------------------------------------------//
+
+
+
 
 //-------------------------------------- The Setup -----------------------------------------------------------------
 
 	void Awake ()
 	{
-		DontDestroyOnLoad (transform.gameObject);
+//		DontDestroyOnLoad (transform.gameObject);
 
 		//-------------------- For the different controllers ---------------------------------
 		if (Input.GetJoystickNames ().Length > 0) {// checks to see if a controller is connected
@@ -277,7 +304,8 @@ public class GmaeManage : MonoBehaviour
 			//----------------- Missions Complete Stuff --------------------//
 			tutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
 			catMission = GameObject.Find ("Missions").GetComponent<NPC_CatMission> ();
-			canopyColour = GameObject.Find("Canopy_Colours").transform;
+			boxesMission = GameObject.Find ("Missions").GetComponent<NPC_BoxesMission> ();
+			canopyColour = GameObject.Find ("Canopy_Colours").transform;
 
 			if (!PauseScreen || !WhiteScreen) {
 				return;
@@ -306,6 +334,7 @@ public class GmaeManage : MonoBehaviour
 
 		if (gameState == GameState.Intro) {
 			StartGame ();
+			missionState = MissionController.Default;
 
 		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
 
@@ -387,11 +416,13 @@ public class GmaeManage : MonoBehaviour
 
 		if (gameState == GameState.Pause) {
 			Paused ();
-		} else if (gameState == GameState.Game) {
+		} else if (gameState != GameState.Pause) {
 			NotPaused ();
 		}
-		
-		FixedPause ();	
+
+		if (gameState == GameState.Game) {
+			FixedPause ();	
+		}
 	}
 	
 //-------------------------------------- Ending the game is here (sort of) -----------------------------------------------------------------
@@ -420,9 +451,14 @@ public class GmaeManage : MonoBehaviour
 		if (gameState != currentState) {
 			Debug.Log (gameState);
 		}
+
+		if (missionState != currentMission) {
+			Debug.Log (missionState);
+		}
 		
 		currentState = gameState;
 		currentController = controllerType;
+		currentMission = missionState;
 	}
 	
 //----------------------------------------------- Other Funcitons ------------------------------------------
@@ -503,10 +539,10 @@ public class GmaeManage : MonoBehaviour
 					if (Application.loadedLevel == 0) {
 						Application.LoadLevel ("Boucing");
 					} else if (Application.loadedLevel == 1) {
-						PlayerPrefs.SetFloat ("PlayerX", lastKnownPosition.x);
-						PlayerPrefs.SetFloat ("PlayerY", lastKnownPosition.y);
-						PlayerPrefs.SetFloat ("PlayerZ", lastKnownPosition.z);
-						Application.LoadLevel ("Boucing");
+//						PlayerPrefs.SetFloat ("PlayerX", lastKnownPosition.x);
+//						PlayerPrefs.SetFloat ("PlayerY", lastKnownPosition.y);
+//						PlayerPrefs.SetFloat ("PlayerZ", lastKnownPosition.z);
+						Application.LoadLevel ("Start_Screen");
 					}
 				}
 			}
@@ -535,17 +571,24 @@ public class GmaeManage : MonoBehaviour
 				if (obj.GetChild (child).GetComponent<MeshRenderer> ()) {
 					if (obj.GetChild (child).tag == umbrellaColour.name) {// checks to see if there is a mesh renderer attached to child
 						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
-						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime/2);
+						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime / 2);
 
 						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
 							currentProgress = progression;
 
-							switch(progression){
+							switch (progression) {
+
 							case 2:
-							tutorialMission.TutorialMisssionFinished = true;
+								tutorialMission.TutorialMisssionFinished = true;
 								break;
 							case 3:
 								catMission.CatMissionFinished = true;
+								break;
+							case 4:
+								boxesMission.BoxesMisssionFinished = true;
+								break;
+							case 5:
+								gameState = GameState.GameOver;
 								break;
 							default:
 								break;

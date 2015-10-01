@@ -19,18 +19,19 @@ namespace NPC
 		public AudioClip b_AudioClip;
 		private float talktime;
 		private AudioSource npcAudioSource;
-		private bool saidHello;
 
 		public delegate void MissionDelegation ();
 
 		private MissionDelegation misssionDelegate;
 	
-		public MissionDelegation MissionDelegate{
-			set{
+		public MissionDelegation MissionDelegate {
+			set {
 				misssionDelegate = value;
 			}
 		}
+
 		private NPC_Class npc_class = new NPC_Class ();
+		private bool talking;
 
 		void Start ()
 		{
@@ -56,21 +57,22 @@ namespace NPC
 		{
 			if (col.gameObject.tag == "Player") {
 				if (Input.GetButtonDown ("Talk")) {
-					saidHello = true;
+					talking = true;
 				}
-
-				if(saidHello){
-					if (misssionDelegate != null) {
-						misssionDelegate ();
-						saidHello = false;
+				if (talking) {
+					if (this.gameObject.tag == "NPC_talk") {
+						if (misssionDelegate != null) {
+							misssionDelegate ();
+							talking = false;
+						}
 					}
 				}
+
 			}
 		}
 
 		void OnTriggerExit ()
 		{
-			saidHello = false;
 			npc_class.coroutineRunning = false;
 		}
 	}

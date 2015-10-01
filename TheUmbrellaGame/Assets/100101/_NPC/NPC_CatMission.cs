@@ -13,18 +13,18 @@ namespace NPC
 
 		//------------- Talking variables -----------------//
 		private float talkingSpeed;
-		private bool proceed = false;
+		public bool proceed = false;
 		private bool playTime; //used for a camera state change
 
 		//-------------- Tutorial Conditions ---------------//
 		private bool catMissionFinished;
 
-		public bool CatMissionFinished{
-			get{
+		public bool CatMissionFinished {
+			get {
 				return catMissionFinished;
 			}
 
-			set{
+			set {
 				catMissionFinished = value;
 			}
 		}
@@ -65,11 +65,13 @@ namespace NPC
 		private GameObject cmaera;
 		private GameObject cameraSet;
 		private GameObject dropOff;
-		public GameObject DropOff{
-			get{
+
+		public GameObject DropOff {
+			get {
 				return dropOff;
 			}
 		}
+
 		private NPC_TutorialMission tutorialMissionStuff;
 		
 		//-------------- Talking Stuff ---------------//
@@ -111,7 +113,7 @@ namespace NPC
 
 		void Start ()
 		{
-			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage>();
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
 			cat = GameObject.Find ("kitten"); //kitten to look at
 			cmaera = GameObject.Find ("Follow Camera"); 
@@ -124,6 +126,7 @@ namespace NPC
 			dropOff = GameObject.Find ("NPC_Cat");
 			npc_Animator = dropOff.GetComponent<Animator> ();
 			overHereLight = dropOff.transform.FindChild ("Sphere").transform.FindChild ("Activate").GetComponent<Light> ();//where ever the light is on the NPC_Talk characters. I think it's a child of the 'head'.
+			overHereLight.enabled = false;
 
 			cameraSet = cmaera.GetComponent<Controller> ().lookAt;
 			npc_Interact = dropOff.GetComponent<NPC_Interaction> ();
@@ -160,7 +163,8 @@ namespace NPC
 		/// </summary>
 		void StartCatMission ()
 		{
-			if (catDroppedOff) {
+			if (catDroppedOff && !catMissionFinished) {
+//				dropOff.GetComponent<NPC_Interaction>().MissionDelegate = null;
 				x = 3;
 			}
 		}
@@ -168,15 +172,14 @@ namespace NPC
 		IEnumerator Cat_Mission ()
 		{
 			int i = 0;
-//			dropOff.tag = "NPC_talk";
 			catMissionRunning = true;
 
-			while (x < 6) {
+			while (x < 4) {
 				switch (x) {
 					
 				case 0:
 
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
+					gameManager.gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 
 					while (i <= npc_Message.Length) {
@@ -194,7 +197,9 @@ namespace NPC
 					}
 					while (i >= npc_Message.Length) {
 						if (Input.GetButtonDown ("Talk")) {
-							proceed = true;
+							if (gameManager.gameState == GameState.MissionEvent) {
+								proceed = true;
+							}
 						}
 						
 						if (proceed) {
@@ -222,13 +227,15 @@ namespace NPC
 					while (i >= npc_Message.Length) {
 						if (playTime) {
 							if (Input.GetButtonDown ("Talk")) {
-								proceed = true;
+								if (gameManager.gameState == GameState.MissionEvent) {
+									proceed = true;
+								}
 							}
 							if (proceed) {
 								npc_Message = " ";
 								npc_TalkingBox.enabled = false;
 								npc_Talking.text = npc_Message;
-								cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+								gameManager.gameState = GameState.Game;
 								catMissionStart = false; 
 
 								i = 0;
@@ -244,7 +251,7 @@ namespace NPC
 
 
 				case 3:
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
+					gameManager.gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					jumpAround = false;
 
@@ -263,34 +270,36 @@ namespace NPC
 							
 					}
 					while (i >= npc_Message.Length) {
+
 						if (catMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
-								proceed = true;
+								if (gameManager.gameState == GameState.MissionEvent) {
+									proceed = true;
+								}
 							}
 							if (proceed) {
 								npc_Message = "";
 								npc_TalkingBox.enabled = false;
 								npc_Talking.text = npc_Message;
-								cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+								gameManager.missionState = MissionController.BoxesMission;
+								gameManager.gameState = GameState.Game;
 								i = 0;
 								x = 4;
 								catMissionStart = false; //might have to be moved to case 5
-								catMissionFinished = true;
 								proceed = false;
+
+								yield break;
 							}
 						}
 
 						yield return null;
 							
 					}
-					break; //end of case 4
+					break; //end of case 3
+
 				case 4:
-					if (catMissionFinished) {
-						dropOff.tag = "NPC";
-						StopCoroutine (catCoroutine);
-					} else {
-						x = 3;
-					}
+					dropOff.tag = "NPC";
+					StopCoroutine (catCoroutine);
 					break;
 				default:
 					yield return null;
@@ -298,10 +307,10 @@ namespace NPC
 					break;
 				}
 
-				yield return new WaitForSeconds (talkingSpeed / 10);
+				yield return null;
 
 			}
-			yield return null;
+			yield break;
 
 		}
 	}

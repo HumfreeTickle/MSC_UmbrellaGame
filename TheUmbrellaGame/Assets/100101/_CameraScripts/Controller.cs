@@ -57,11 +57,28 @@ namespace CameraScripts
 		// the height we want the camera to be above the target
 		public float height = 5.0f;
 
+		public float maxHeight = 10f;
+
 		// How much we want to damp the movement
 		public float heightDamping = 2.0f;
 		public float rotationDamping = 3.0f;
 		public Material transparent;
 		public Material backupMaterial;
+
+		private Tutuorial tutorialObject;
+
+
+
+		private float overSteer = 0f;
+		public float maxOverSteer = 10;
+
+		private float lastHorizontalInput;
+
+		public float LastHorizontalInput{
+			set{
+				lastHorizontalInput = value;
+			}
+		}
 
 		void Start ()
 		{
@@ -71,6 +88,8 @@ namespace CameraScripts
 
 			lookAtTr = lookAt.transform;
 			lookAtRb = lookAt.GetComponent<Rigidbody> ();
+			height = 3f;
+			distance = 2.5f;
 		}
 		
 		void Update ()
@@ -85,7 +104,7 @@ namespace CameraScripts
 				}
 			}
 
-			if (gameState == GameState.Event) {
+			if (gameState == GameState.MissionEvent) {
 				lookAtTr = lookAt.transform;
 			}
 		}
@@ -97,9 +116,16 @@ namespace CameraScripts
 				return;
 			}
 			if (gameState == GameState.Intro) {
-				if (Vector3.Distance (transform.position, lookAtTr.position) > 20) {
+				if (Vector3.Distance (transform.position, lookAtTr.position) > 15) {
 					Input.ResetInputAxes ();
 				}
+
+				height = 3f;
+				distance = 2.5f;
+
+			}else{
+				height = maxHeight;
+				distance = 2.8f;
 			}
 
 
@@ -123,14 +149,21 @@ namespace CameraScripts
 					currentHeight = Mathf.Lerp (currentHeight, wantedHeight, heightDamping * Time.fixedDeltaTime);
 					
 					// Convert the angle into a euler axis rotation using Quaternions
-					Quaternion currentRotation = Quaternion.Euler (0, currentRotationAngle, 0);
+					Quaternion currentRotation = Quaternion.Euler (0, currentRotationAngle + overSteer, 0);
 					
 					// Set the position of the camera on the x-z plane behind the target
-					
+
 					if (lookAtRb.velocity.magnitude > 10) {
+						overSteer = Mathf.Lerp (overSteer, maxOverSteer*Mathf.Round(lastHorizontalInput), Time.fixedDeltaTime);
+						maxHeight = Mathf.Lerp (maxHeight, 5, Time.fixedDeltaTime);
+
 						newCameraFOV = camrea.fieldOfView + (lookAtRb.velocity.magnitude * Time.fixedDeltaTime);
 						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, Mathf.Clamp (newCameraFOV, 60, 90), Time.fixedDeltaTime * speed);
 					} else {
+						if (Quaternion.Angle (transform.rotation, currentRotation) < 35){
+							overSteer = Mathf.Lerp (overSteer, 0, Time.fixedDeltaTime);
+						}
+						maxHeight = Mathf.Lerp (maxHeight, 10, Time.fixedDeltaTime);
 						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, 60, Time.fixedDeltaTime);
 					}
 					
@@ -144,7 +177,10 @@ namespace CameraScripts
 					transform.LookAt (lookAtTr);
 
 
-				} else if (gameState == GameState.Event) {
+				} else if (gameState == GameState.MissionEvent) {
+
+					camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, 60, Time.fixedDeltaTime);
+
 					// Damp the height
 					currentHeight = Mathf.Lerp (currentHeight, wantedHeight, Time.fixedDeltaTime);
 
@@ -209,10 +245,12 @@ namespace CameraScripts
 			Ray cameraRay = camrea.ScreenPointToRay (screenPos);
 			Vector3 cameraDir = cameraRay.direction * 100;
 			Debug.DrawRay (cameraRay.origin, cameraDir, Color.blue);
+			LayerMask pickups = 12;
 
-			if (Physics.Raycast (cameraRay, out hit)) {
+			
+			if (Physics.Raycast (cameraRay, out hit, pickups)) {
 
-				if (gameState != GameState.Event) {
+				if (gameState != GameState.MissionEvent) {
 					if (hit.collider.tag != "Player") {//hits anything other then the player
 
 						if (hit.collider.gameObject.GetComponent<MeshRenderer> ()) {// checks to see if it has a mesh renderer

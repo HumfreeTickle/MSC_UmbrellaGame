@@ -51,6 +51,7 @@ namespace Player
 			if (pickupObject.GetComponent<Rigidbody> ()) {
 				Destroy (pickupObject.GetComponent<Rigidbody> ());
 			}
+
 			if (pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled) {
 				pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled = false;
 			}
@@ -69,6 +70,8 @@ namespace Player
 			transform.DetachChildren ();
 			pickupObject.transform.parent = originalParent;
 			pickupObject.AddComponent<Rigidbody> ();
+			pickupObject = null;
+			originalParent = null;
 		}
 
 		void OnTriggerEnter (Collider col)
