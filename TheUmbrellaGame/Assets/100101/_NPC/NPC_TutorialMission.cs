@@ -42,6 +42,12 @@ namespace NPC
 		private GameObject cameraSet;
 		private GameObject npc_Tutorial;
 
+		public GameObject NPC_Tutorial{
+			get{
+				return npc_Tutorial;
+			}
+		}
+
 		//ends the mission
 		private bool tutorialMissionFinished = false;
 		/// <summary>
@@ -160,6 +166,7 @@ namespace NPC
 		void StartTutorialMission ()//Allows the mission to actually start. Nothing happens if it isn't here
 		{
 			tutorialMission = true;
+//			npc_Tutorial.GetComponent<NPC_Interaction>().MissionDelegate = null;
 		}
 
 //------------------------------------------ Mission Coroutine ------------------------------------------------//
@@ -174,7 +181,7 @@ namespace NPC
 
 				case 0:
 					jumpAround = false;
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
+					gameManager.gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					while (i <= npc_Message.Length) {
 						//npc_Message[x] //grabs the part of the list the text is attributed to
@@ -186,7 +193,9 @@ namespace NPC
 				//-------------------------------- all this stuff --------------------------------//
 					while (i >= npc_Message.Length + 1) {
 						if (Input.GetButtonDown ("Talk")) {
-							proceed = true;
+							if (gameManager.gameState == GameState.MissionEvent) {
+								proceed = true;
+							}
 						}
 
 						if (proceed) {
@@ -214,18 +223,21 @@ namespace NPC
 
 					while (i >= npc_Message.Length) {
 						if (Input.GetButtonDown ("Talk")) {
-							proceed = true;
+							if (gameManager.gameState == GameState.MissionEvent) {
+								proceed = true;
+							}
 						}
 
 						if (proceed) {
 							npc_Message = "";
 							npc_TalkingBox.enabled = false;
 							npc_Talking.text = npc_Message;
+							npc_Tutorial.tag = "NPC";
 							cameraSet = umbrella;
 							cmaera.GetComponent<Controller> ().lookAt = cameraSet;
 							yield return new WaitForSeconds (0.5f);
 							if (playTime) {
-								cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+								gameManager.gameState = GameState.Game;
 								tutorialMission = false; 
 								i = 0;
 								x = 2;
@@ -239,7 +251,7 @@ namespace NPC
 					
 				case 3:
 					jumpAround = false;
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.Event;
+					gameManager.gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 
 					while (i <= npc_Message.Length) {
@@ -259,10 +271,15 @@ namespace NPC
 					while (i >= npc_Message.Length) {
 						if (tutorialMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
-								proceed = true;
+								if (gameManager.gameState == GameState.MissionEvent) {
+									proceed = true;
+								}
 							}
 							if (proceed) {
 								umbrella.GetComponent<CreateWind>().Barriers = false;
+								gameManager.missionState = MissionController.CatMission;
+								npc_Tutorial.tag = "NPC";
+
 								i = 0;
 								x = 4;
 								proceed = false;
@@ -289,7 +306,7 @@ namespace NPC
 					Debug.Log ("Default");
 					break;
 				}
-				yield return new WaitForSeconds (talkingSpeed / 10);
+				yield return null;
 			}
 			yield break;
 

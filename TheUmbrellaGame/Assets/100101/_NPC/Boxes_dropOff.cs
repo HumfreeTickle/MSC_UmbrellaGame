@@ -26,7 +26,7 @@ public class Boxes_dropOff : MonoBehaviour
 			}
 		}
 
-		if (numberOfBoxesCollected >= boxCount.childCount + 1  && !boxMission.BoxesDropped) {
+		if (numberOfBoxesCollected >= boxCount.childCount  && !boxMission.BoxesDropped) {
 			boxMission.JumpAround_Boxes = true;			
 			boxMission.BoxesDropped = true;
 		}
@@ -43,8 +43,6 @@ public class Boxes_dropOff : MonoBehaviour
 					col.transform.GetChild(i).GetComponent<Light>().enabled = false;
 				}
 			}
-			print ("got: " + numberOfBoxesCollected);
-
 		}
 	}
 }

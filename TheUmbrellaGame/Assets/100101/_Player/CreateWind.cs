@@ -28,6 +28,8 @@ namespace Player.PhysicsStuff
 
 		//-----------------------------------//
 		private Vector3 baseUmbrella = new Vector3 (0f, -5f, 0f);
+		public Vector3 windSource = new Vector3 (0f, 0f, 0f);
+
 		private GameObject umbrella;
 		private GameObject canopyColours;
 		private Rigidbody umbrellaRb;
@@ -88,7 +90,7 @@ namespace Player.PhysicsStuff
 			bounceBack = Mathf.Clamp (bounceBack, 0, Mathf.Infinity);
 			gameState = GameManager.gameState;
 
-			if (gameState != GameState.Pause || gameState != GameState.GameOver) {
+			if (gameState != GameState.Pause || gameState != GameState.GameOver || gameState != GameState.MissionEvent) {
 				if (Input.GetAxis ("Vertical_R") >= 0.1f && charge >= 1) {
 					verticalInput = Input.GetAxis ("Vertical_R");
 					if (this.transform.childCount < 2) {
@@ -98,31 +100,24 @@ namespace Player.PhysicsStuff
 					}
 				}
 
-//---------------- TURN OFF UPWARDFORCE ---------------------
+//---------------------------- TURN OFF UPWARDFORCE ---------------------
 				if (charge <= 10) {
 					GetComponent<upwardForce> ().enabled = false;
 				} 
-				//------------------------- COLOUR CHANGING ---------------------------//
-
-//				ChangeColours (canopyColours.transform);
-
-
-
 
 //---------------------------- RAYCASTING STUFF -----------------------------------------------------------------------
 
 				Vector3 downRayDown = (Vector3.down * 100);
+				LayerMask clouds = 5;
 
-				if (Physics.Raycast (transform.position + baseUmbrella, downRayDown, out hit, Mathf.Infinity)) {
+				if (Physics.Raycast (transform.position + baseUmbrella, downRayDown, out hit, Mathf.Infinity, clouds.value)) {
 					//------------- DEBUGGING -----------------------------
 					Debug.DrawRay (transform.position + baseUmbrella, downRayDown, Color.green, 10, false);
 					hitTerrain = true;
-
 					//------------- CONDITIONS ----------------------------
 					if (hit.collider.tag == "Terrain") {
 						umbrellaRb.drag = 0;
 						GameManager.LAstKnownPosition = new Vector3 (transform.localPosition.x, hit.transform.position.y, transform.localPosition.z);
-
 
 					} 
 
@@ -132,7 +127,10 @@ namespace Player.PhysicsStuff
 							tutorialAnim.SetBool ("Fall", true);
 						} else {
 							tutorialAnim.SetBool ("Fall", false);
+						}
 
+						if(hit.collider.tag == null){
+							tutorialAnim.SetBool ("Fall", false);
 						}
 					}
 
@@ -179,14 +177,16 @@ namespace Player.PhysicsStuff
 		void SummonWind ()
 		{
 			//-------------------- CREATING THE WIND ----------------------------------
-			spawnDistance = transform.position - new Vector3 (0, 10, 0);
+			spawnDistance = transform.position - windSource;
 		
 			instatiatedWind = Instantiate (windSystem, spawnDistance, Quaternion.Euler (Vector3.forward)) as GameObject;
 			instatiatedWind.transform.parent = this.transform; 
 			instatiatedWind.GetComponent<ParticleSystem> ().enableEmission = true;
 			instatiatedWind.GetComponent<wind> ().gameState = gameState;
-			instatiatedWind.GetComponent<wind> ().windForce = charge * verticalInput;
+			instatiatedWind.GetComponent<wind> ().WindForce = charge * verticalInput;
+			instatiatedWind.GetComponent<wind> ().AlphaWind = verticalInput;
 
+			
 			//--------------------	TURNS OFF PARTICLES AFTER ONE CYCLE -----------------
 //			if (Input.GetAxis("Verical_R") < 0.1f) {
 //				instatiatedWind.GetComponent<ParticleSystem> ().enableEmission = false;

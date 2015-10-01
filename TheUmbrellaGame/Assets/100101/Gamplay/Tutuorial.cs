@@ -6,9 +6,9 @@ using Player;
 
 public class Tutuorial : MonoBehaviour
 {	
-	public GmaeManage GameManager;
+	private GmaeManage GameManager;
 
-	public float secondsToStart = 5;
+	public float secondsToStart = 4;
 	private GameState gameState;
 	private bool started;
 	private bool inTheBeginning;
@@ -34,11 +34,10 @@ public class Tutuorial : MonoBehaviour
 		}
 
 	}
-
-	public bool movementDone;
-
+	
 	void Awake ()
 	{
+		GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage>();
 		animator = GetComponent<Animator> ();
 	}
 	
@@ -66,19 +65,29 @@ public class Tutuorial : MonoBehaviour
 			}
 
 			//------------- Removes tutorial if game is paused or character is dead ---------------------//
-			if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver || GameManager.gameState == GameState.Event) {
+			if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver || GameManager.gameState == GameState.MissionEvent) {
 				GetComponent<Image> ().enabled = false;
+				for(int i = 0; i < transform.childCount; i++){
+					transform.GetChild(i).gameObject.SetActive(false);
+				}
 			} else {
 				GetComponent<Image> ().enabled = true;
+				for(int i = 0; i < transform.childCount; i++){
+					transform.GetChild(i).gameObject.SetActive(true);
+				}
+			}
+		}else{
+			GetComponent<Image>().enabled = false;
+			for(int i = 0; i < transform.childCount; i++){
+				transform.GetChild(i).gameObject.SetActive(false);
 			}
 		}
 	}
 
-	void StartingPositions ()
+	public void StartingPositions ()
 	{
 
 		animator.SetBool ("Wind", true);
-
 	}
 
 //-------------------------------------- Switch statement for all the various Tutorial states --------------------------------------
@@ -100,10 +109,10 @@ public class Tutuorial : MonoBehaviour
 				animator.SetBool ("Interact", true);
 				break;
 
-			case "NPC":
-				animator.SetBool ("Talk", true);
-				animator.SetBool ("Interact", false);
-				break;
+//			case "NPC":
+//				animator.SetBool ("Talk", true);
+//				animator.SetBool ("Interact", false);
+//				break;
 
 			default:
 				animator.SetBool ("Talk", false);

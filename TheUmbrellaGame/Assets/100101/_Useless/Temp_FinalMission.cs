@@ -21,7 +21,9 @@ public class Temp_FinalMission : MonoBehaviour
 	{
 		if (col.gameObject.tag == "Player") {
 			if (Input.GetButtonDown ("Interact")) {
+				gameManager.missionState = MissionController.Default;
 				bridgeAnimation.SetBool ("Fixed", false);
+				transform.GetChild(0).GetComponent<Light>().enabled = false;
 				if (playParticles) {
 					Instantiate (particales, umbrella.position + new Vector3 (0, 1f, 0), Quaternion.identity);
 					playParticles = false;
