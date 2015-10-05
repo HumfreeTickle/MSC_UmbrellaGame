@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 using Player.PhysicsStuff;
+using Inheritence;
 
 namespace Player
 {
@@ -10,11 +13,22 @@ namespace Player
 		private Transform originalParent;
 		private bool terrainHit;
 		public float z;
+		public float throwingSpeed;
+		public GameObject waterParticles;
+		private GameObject instanWaterParticles;
+		private Rigidbody rb;
+		private Achievements achieves;
+		private DestroyObject destroy = new Inheritence.DestroyObject ();
 
+		void Start ()
+		{
+			achieves = GameObject.Find ("Follow Camera").GetComponent<Achievements> ();
+			rb = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
+		}
 
 		void Update ()
 		{
-			terrainHit = GameObject.Find("main_Sphere").GetComponent<CreateWind>().HitTerrain;
+			terrainHit = GameObject.Find ("main_Sphere").GetComponent<CreateWind> ().HitTerrain;
 
 			if (terrainHit) {
 				if (pickupObject != null) {
@@ -70,6 +84,8 @@ namespace Player
 			transform.DetachChildren ();
 			pickupObject.transform.parent = originalParent;
 			pickupObject.AddComponent<Rigidbody> ();
+
+			pickupObject.GetComponent<Rigidbody> ().AddForce (rb.velocity * throwingSpeed);
 			pickupObject = null;
 			originalParent = null;
 		}
@@ -79,6 +95,22 @@ namespace Player
 			if (col.gameObject.tag == "Pickup") {
 				pickupObject = col.gameObject;
 				originalParent = pickupObject.transform.parent;
+			} 
+		}
+
+		void OnTriggerStay (Collider col)
+		{
+			if (col.gameObject.tag == "River") {
+				if (rb.velocity.magnitude > 10) {
+					instanWaterParticles = Instantiate (waterParticles, transform.position, Quaternion.identity) as GameObject;
+					instanWaterParticles.GetComponent<ParticleSystem> ().Play ();
+					destroy.DestroyOnTimer (instanWaterParticles, 1f);
+					if (!achieves.CoroutineInMotion) {
+						if(achieves.achievements.Contains("Splish. Splash.")){
+							StartCoroutine( achieves.Notification( achieves.achievements[0]));
+						}
+					}
+				}
 			}
 		}
 

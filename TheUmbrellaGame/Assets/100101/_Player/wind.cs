@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Inheritence;
+using XInputDotNetPure;
+
 
 namespace Player
 {
@@ -54,11 +56,13 @@ namespace Player
 		{
 			if (umbrella.name == "main_Sphere") {
 				umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * windForce);
+
 				if(!goGoAnimation){
 					StartCoroutine(AnimationControl());
 				}
 				if(gameState == GameState.Game){
 					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * windForce * 10);
+
 				}else if(gameState == GameState.Intro){
 					gameTutorial.AnimatorYeah.SetBool("Wind",false);
 					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * 1000);

@@ -36,7 +36,7 @@ namespace Player.PhysicsStuff
 		private Animator tutorialAnim;
 		public float verticalInput;
 		//-----------------------------------//
-		private bool barriers = true;
+		public bool barriers = true;
 
 		/// <summary>
 		/// Turns on/off the barriers surrounding the first island
