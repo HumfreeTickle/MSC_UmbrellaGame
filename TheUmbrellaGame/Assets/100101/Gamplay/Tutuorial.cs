@@ -20,7 +20,7 @@ public class Tutuorial : MonoBehaviour
 		}
 
 	}
-	private string objectTag;
+	public string objectTag;
 
 	/// <summary>
 	/// Used for the tutorial for button commands
@@ -108,11 +108,6 @@ public class Tutuorial : MonoBehaviour
 				animator.SetBool ("Talk", false);
 				animator.SetBool ("Interact", true);
 				break;
-
-//			case "NPC":
-//				animator.SetBool ("Talk", true);
-//				animator.SetBool ("Interact", false);
-//				break;
 
 			default:
 				animator.SetBool ("Talk", false);

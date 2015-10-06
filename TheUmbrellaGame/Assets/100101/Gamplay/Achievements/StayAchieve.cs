@@ -1,33 +1,37 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class StayAchieve : MonoBehaviour {
+public class StayAchieve : MonoBehaviour
+{
 
 	private Achievements achieves;
 	private float _timer;
-	
 	public string achievementName;
-	public int listItem;
-	
+
 	void Start ()
 	{
 		achieves = GameObject.Find ("Follow Camera").GetComponent<Achievements> ();
 		
 	}
 	
-	void OnTriggerStay ()
+	void OnTriggerStay (Collider col)
 	{
-		_timer += Time.deltaTime;
-		if (_timer > 2) {
-			if (!achieves.CoroutineInMotion) {
-				if (achieves.achievements.Contains (achievementName)) {
-					StartCoroutine (achieves.Notification (achieves.achievements [listItem]));
-				}
-			}	
+		if (col.gameObject.tag == "Player") {
+			_timer += Time.deltaTime;
+			if (_timer > 2) {
+				if (!achieves.CoroutineInMotion) {
+					if (achieves.achievements.Contains (achievementName)) {
+						StartCoroutine (achieves.Notification (achieves.achievements[achieves.achievements.IndexOf(achievementName)]));
+					}
+				}	
+			}
 		}
 	}
 	
-	void OnTriggerExit(){
-		_timer = 0;
+	void OnTriggerExit (Collider col)
+	{
+		if (col.gameObject.tag == "Player") {
+			_timer = 0;
+		}
 	}
 }

@@ -14,7 +14,7 @@ namespace Player
 		private Controller cameraController;
 //	------------------------------------
 
-		public Rigidbody handle;
+		public GameObject handle;
 //	------------------------------------
 		private Animator umbrellaAnim;
 		private Animator rotationAnim;
@@ -46,7 +46,7 @@ namespace Player
 		void Start ()
 		{
 			rb = GetComponent<Rigidbody> ();
-
+			handle = GameObject.Find ("handle");
 			gameManager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>();
 			cameraController = GameObject.Find("Follow Camera").GetComponent<Controller>();
 			upForce = GetComponent<upwardForce> ();

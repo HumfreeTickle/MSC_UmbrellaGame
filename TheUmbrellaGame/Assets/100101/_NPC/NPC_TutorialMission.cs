@@ -139,15 +139,7 @@ namespace NPC
 	
 		void Update ()
 		{	
-			//--------------------------------------------------------------------------------------------------//
-			//Definitely needs to be in GameManager
-			//resizes font to screen size
-//			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
-//				_oldWidth = Screen.width;
-//				_oldHeight = Screen.height;
-//				npc_Talking.fontSize = Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / Ratio);
-//			}
-			//--------------------------------------------------------------------------------------------------//
+
 			npc_Animator.SetBool ("PLay", jumpAround);
 			overHereLight.enabled = jumpAround;
 			playTime = cmaera.GetComponent<Controller> ().PlayTime;

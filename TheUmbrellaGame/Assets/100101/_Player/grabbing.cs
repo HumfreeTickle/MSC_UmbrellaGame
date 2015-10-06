@@ -18,10 +18,12 @@ namespace Player
 		private GameObject instanWaterParticles;
 		private Rigidbody rb;
 		private Achievements achieves;
+		private Tutuorial tutorial;
 		private DestroyObject destroy = new Inheritence.DestroyObject ();
 
 		void Start ()
 		{
+			tutorial = GameObject.Find("Tutorial").GetComponent<Tutuorial>();
 			achieves = GameObject.Find ("Follow Camera").GetComponent<Achievements> ();
 			rb = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
 		}
@@ -62,6 +64,8 @@ namespace Player
 
 			pickupObject.transform.parent = transform;
 			pickupObject.transform.localPosition = Vector3.zero - new Vector3 (0, 0, z);
+			pickupObject.tag = "Player";
+			tutorial.ObjectTag = "";
 			if (pickupObject.GetComponent<Rigidbody> ()) {
 				Destroy (pickupObject.GetComponent<Rigidbody> ());
 			}
@@ -83,6 +87,8 @@ namespace Player
 	
 			transform.DetachChildren ();
 			pickupObject.transform.parent = originalParent;
+			pickupObject.tag = "Pickup";
+
 			pickupObject.AddComponent<Rigidbody> ();
 
 			pickupObject.GetComponent<Rigidbody> ().AddForce (rb.velocity * throwingSpeed);

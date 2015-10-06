@@ -17,18 +17,16 @@ namespace Environment
 
 		private bool turning;
 		private bool tutorialRunning;
-		private NPCManage npcManager = new NPCManage();
-	    
+		private NPCManage npcManager = new NPCManage ();
 		public GameObject lineOne;
 		public GameObject lineTwo;
 		private Color transparentStart = Color.white;
-		private Color transparentEnd = new Color(1,1,1, 0.7f);
 
-
-		void Start(){
-			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial>();
-			npc_TutorialMission = GameObject.Find("Missions").GetComponent<NPC_TutorialMission>();
-			activeLight = transform.FindChild("Activate").GetComponent<Light>();
+		void Start ()
+		{
+			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
+			npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
+			activeLight = transform.FindChild ("Activate").GetComponent<Light> ();
 		}
 
 		void Update ()
@@ -47,22 +45,22 @@ namespace Environment
 		void onRotation ()
 		{
 			transform.Rotate (0, speed * Time.deltaTime, 0);//the direction and speed at which the windmill will move
-			lineOne.SetActive(true);
-			lineTwo.SetActive(true);
-			transparentStart = Color.Lerp(transparentStart, new Color(1,1,1,0), Time.deltaTime);
-			transparentEnd = Color.Lerp(transparentEnd, new Color(1,1,1,0), Time.deltaTime);
+			lineOne.SetActive (true);
+			lineTwo.SetActive (true);
+			transparentStart = Color.Lerp (transparentStart, new Color (1, 1, 1, 0), Time.deltaTime / 2);
 
-			lineOne.GetComponent<LineRenderer>().material.SetColor("_Color",transparentStart);
-			lineTwo.GetComponent<LineRenderer>().material.SetColor("_Color",transparentStart);
+			lineOne.GetComponent<LineRenderer> ().material.SetColor ("_Color", transparentStart);
+			lineTwo.GetComponent<LineRenderer> ().material.SetColor ("_Color", transparentStart);
 
 
 		}
 
 		void OnTriggerStay (Collider col)
 		{
-			if(rotation){
-				col.GetComponent<Rigidbody> ().AddForce (col.transform.forward * -1 * blowforce);//blow back the umbrella
-//				Instantiate(windEffect, transform.position, Quaternion.identity);
+			if (rotation) {
+				if (col.GetComponent<Rigidbody> ()) {
+					col.GetComponent<Rigidbody> ().AddForce (col.transform.forward * -1 * blowforce);//blow back the umbrella
+				}
 			}
 
 			if (col.gameObject.tag == "Player") {//if the umbrella interacts with the windmill
@@ -73,7 +71,7 @@ namespace Environment
 					if (tutorialRunning) {
 						rotation = true;//turn on the windmill
 						activeLight.enabled = false;
-						activeLight.gameObject.transform.GetChild(0).gameObject.SetActive(true);
+						activeLight.gameObject.transform.GetChild (0).gameObject.SetActive (true);
 						tutorial.ObjectTag = "";
 						this.tag = "Untagged";
 //						col.GetComponent<Rigidbody> ().AddForce (col.transform.forward * -1 * blowforce);//blow back the umbrella

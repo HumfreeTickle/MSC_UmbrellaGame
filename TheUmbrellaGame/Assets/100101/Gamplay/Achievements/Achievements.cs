@@ -14,13 +14,13 @@ public class Achievements : MonoBehaviour
 	private Color fullColourText;
 	private Color startColourBG;
 	private Color fullColourBG;
-
 	private Text achievementText;
 	private AudioSource jingle;
 	
 	//-------------------------------//
 
-	public List<string> achievements = new List<string> ();
+	public List<string> achievements;// = new List<string> ();
+
 	private bool coroutineInMotion;
 
 	public bool CoroutineInMotion {
@@ -35,18 +35,25 @@ public class Achievements : MonoBehaviour
 
 	//-------------------------------//
 
+//
+	void OnValidate ()
+	{
+		if (achievements.Count < 9) {
+			achievements.Add ("Splish. Splash.");
+			achievements.Add ("Assassin's Jump");
+			achievements.Add ("Relaxing Bench");
+			achievements.Add ("Bach to basics");
+			achievements.Add ("Oh so corny");
+			achievements.Add ("Somewhere over the river");
+			achievements.Add ("Let there be light");
+			achievements.Add ("Like a prayer");
+			achievements.Add ("Ring the bell");
+		}
+
+	}
+
 	void Start ()
 	{	
-		achievements.Add ("Splish. Splash.");
-		achievements.Add ("Assassin's Jump");
-		achievements.Add ("Relaxing Bench");
-		achievements.Add ("Bach to basics");
-		achievements.Add ("Oh so corny");
-		achievements.Add ("Somewhere over the river");
-		achievements.Add ("Let there be light");
-		achievements.Add ("Like a prayer");
-
-
 		achievementNotification = GameObject.Find ("Achievements_Box").GetComponent<Image> ();
 		achievementText = GameObject.Find ("Achievemts_text").GetComponent<Text> ();
 		startColourBG = achievementNotification.color;
@@ -78,7 +85,7 @@ public class Achievements : MonoBehaviour
 		achievementText.color = startColourText;
 		achievementText.text = "";
 
-		achievements.Remove(notificationText);
+		achievements.Remove (notificationText);
 		coroutineInMotion = false;
 		yield break;
 	}
