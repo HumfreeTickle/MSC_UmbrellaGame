@@ -6,8 +6,8 @@ namespace Player
 	public class Player_Interaction : MonoBehaviour
 	{
 		private Tutuorial tutorial;
-		private bool helloTutorial = true; //stops the L1 tutorial from constantly activating
-		private bool interactTutorial = true; //stops the R1 tutorial from constantly activating
+		public bool helloTutorial = true; //stops the L1 tutorial from constantly activating
+		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
 		private Transform handle;
 
 		void Start ()
@@ -22,21 +22,17 @@ namespace Player
 				if (col.gameObject.tag == "NPC_talk") {
 					tutorial.ObjectTag = col.gameObject.tag;
 					helloTutorial = false;
-				}else{
-					tutorial.ObjectTag = "";
-				}
+				} 
+
 			}
 
 			if (interactTutorial) {
-				if (col.transform.parent != handle) {
-					if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "Pickup") {
-						tutorial.ObjectTag = "Interaction";
-						interactTutorial = false;
-					}
-				}else{
-					tutorial.ObjectTag = "";
+
+				if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "Pickup") {
+					tutorial.ObjectTag = "Interaction";
+					interactTutorial = false;
 				}
-			}
+			} 
 		}
 
 		void OnTriggerExit (Collider col)

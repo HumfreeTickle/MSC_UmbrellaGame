@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 using Player.PhysicsStuff;
+using Inheritence;
 
 namespace Player
 {
@@ -10,11 +13,24 @@ namespace Player
 		private Transform originalParent;
 		private bool terrainHit;
 		public float z;
+		public float throwingSpeed;
+		public GameObject waterParticles;
+		private GameObject instanWaterParticles;
+		private Rigidbody rb;
+		private Achievements achieves;
+		private Tutuorial tutorial;
+		private DestroyObject destroy = new Inheritence.DestroyObject ();
 
+		void Start ()
+		{
+			tutorial = GameObject.Find("Tutorial").GetComponent<Tutuorial>();
+			achieves = GameObject.Find ("Follow Camera").GetComponent<Achievements> ();
+			rb = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
+		}
 
 		void Update ()
 		{
-			terrainHit = GameObject.Find("main_Sphere").GetComponent<CreateWind>().HitTerrain;
+			terrainHit = GameObject.Find ("main_Sphere").GetComponent<CreateWind> ().HitTerrain;
 
 			if (terrainHit) {
 				if (pickupObject != null) {
@@ -48,6 +64,8 @@ namespace Player
 
 			pickupObject.transform.parent = transform;
 			pickupObject.transform.localPosition = Vector3.zero - new Vector3 (0, 0, z);
+			pickupObject.tag = "Player";
+			tutorial.ObjectTag = "";
 			if (pickupObject.GetComponent<Rigidbody> ()) {
 				Destroy (pickupObject.GetComponent<Rigidbody> ());
 			}
@@ -69,7 +87,11 @@ namespace Player
 	
 			transform.DetachChildren ();
 			pickupObject.transform.parent = originalParent;
+			pickupObject.tag = "Pickup";
+
 			pickupObject.AddComponent<Rigidbody> ();
+
+			pickupObject.GetComponent<Rigidbody> ().AddForce (rb.velocity * throwingSpeed);
 			pickupObject = null;
 			originalParent = null;
 		}
@@ -79,6 +101,22 @@ namespace Player
 			if (col.gameObject.tag == "Pickup") {
 				pickupObject = col.gameObject;
 				originalParent = pickupObject.transform.parent;
+			} 
+		}
+
+		void OnTriggerStay (Collider col)
+		{
+			if (col.gameObject.tag == "River") {
+				if (rb.velocity.magnitude > 10) {
+					instanWaterParticles = Instantiate (waterParticles, transform.position, Quaternion.identity) as GameObject;
+					instanWaterParticles.GetComponent<ParticleSystem> ().Play ();
+					destroy.DestroyOnTimer (instanWaterParticles, 1f);
+					if (!achieves.CoroutineInMotion) {
+						if(achieves.achievements.Contains("Splish. Splash.")){
+							StartCoroutine( achieves.Notification( achieves.achievements[0]));
+						}
+					}
+				}
 			}
 		}
 

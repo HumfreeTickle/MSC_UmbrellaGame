@@ -46,7 +46,7 @@ namespace Player
 		void Start ()
 		{
 			rb = GetComponent<Rigidbody> ();
-
+			handle = GameObject.Find ("handle");
 			gameManager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>();
 			cameraController = GameObject.Find("Follow Camera").GetComponent<Controller>();
 			upForce = GetComponent<upwardForce> ();
@@ -155,7 +155,7 @@ namespace Player
 				rb.mass = 10000;
 				umbrellaAnim.SetBool ("Falling", true);
 				rotationAnim.SetBool ("Input_H", true);
-				GetComponent<CapsuleCollider> ().radius = 0.25f;
+				GetComponent<CapsuleCollider> ().radius = Mathf.Lerp(GetComponent<CapsuleCollider> ().radius, 0.25f, Time.fixedDeltaTime* 2);
 
 				transparentColorStart = Color.white;
 				transparentColorEnd = new Color(1,1,1, 0.5f);
@@ -169,7 +169,8 @@ namespace Player
 				umbrellaAnim.SetBool ("Falling", false);
 				rotationAnim.SetBool ("Input_H", false);
 				
-				GetComponent<CapsuleCollider> ().radius = 0.5f;
+				GetComponent<CapsuleCollider> ().radius = Mathf.Lerp(GetComponent<CapsuleCollider> ().radius, 0.5f, Time.fixedDeltaTime * 2);
+
 
 
 				transparentColorStart = Color.Lerp (transparentColorStart, new Color (1, 1, 1, 0), Time.deltaTime*5);

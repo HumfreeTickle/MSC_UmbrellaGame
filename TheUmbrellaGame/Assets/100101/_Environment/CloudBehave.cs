@@ -21,6 +21,7 @@ namespace Environment
 		[System.NonSerialized]
 		public Quaternion
 			cloudRotation = new Quaternion (0.7f, 0, 0, -0.7f);
+		private GameObject newlySpawnedCloud;
 
 		void Start ()
 		{	
@@ -41,7 +42,9 @@ namespace Environment
 		void createSomeClouds ()
 		{
 			if (transform.position.x <= -600) {
-				Instantiate (newCloud, new Vector3 (500, transform.position.y, transform.position.z), cloudRotation);
+				newlySpawnedCloud = Instantiate (newCloud, new Vector3 (500, transform.position.y, transform.position.z), cloudRotation) as GameObject;
+				newlySpawnedCloud.transform.parent = GameObject.Find("Clouds").transform;
+
 				Destroy (gameObject);
 			}
 		}

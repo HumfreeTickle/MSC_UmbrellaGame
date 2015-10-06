@@ -16,7 +16,7 @@ public class NavMeshMovement : MonoBehaviour {
 	
 		agent = gameObject.GetComponent<NavMeshAgent>();
 		agent.SetDestination(destination.position);
-		mover.SetBool("IsMoving", true);
+//		mover.SetBool("IsMoving", true);
 
 	}
 	

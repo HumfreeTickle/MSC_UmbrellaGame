@@ -1,24 +1,41 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ChimneyBlow : MonoBehaviour {
+namespace Enivironment
+{
+	public class ChimneyBlow : MonoBehaviour
+	{
+		public float push;
+		private float savedPush;
+		private Animator umbrellaAnim;
 
-	public float push;
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-
-
-		void OnTriggerEnter (Collider other)
+		void Start ()
 		{
-			
+			savedPush = push;
+			umbrellaAnim = GameObject.Find ("Umbrella").GetComponent<Animator> ();
+		}
+
+		void OnTriggerStay (Collider other)
+		{
 			if (other.gameObject.tag == "Player") {
-			other.GetComponent<Rigidbody> ().AddForce(transform.up * push);
-	
+				if (other.GetComponent<Rigidbody> ()) {
+					other.GetComponent<Rigidbody> ().AddForce (transform.forward * push);
+				}
+				umbrellaAnim.SetBool ("Hit", true);
+
+				push -= 1;
+				push = Mathf.Clamp (push, 0, savedPush);
+			}
+		}
+
+		void OnTriggerExit (Collider other)
+		{
+			if (other.gameObject.tag == "Player") {
+				umbrellaAnim.SetBool ("Hit", false);
+
+				push = savedPush;
+				
+			}
+		}
 	}
-}
 }
