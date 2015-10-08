@@ -392,7 +392,8 @@ public class GmaeManage : MonoBehaviour
 	void RestartGame ()
 	{
 		if (Input.GetKeyDown (KeyCode.R)) {
-			Application.LoadLevel ("Boucing");
+			gameState = GameState.GameOver;
+//			Application.LoadLevel ("Boucing");
 		}
 	}
 
@@ -542,7 +543,9 @@ public class GmaeManage : MonoBehaviour
 //						PlayerPrefs.SetFloat ("PlayerX", lastKnownPosition.x);
 //						PlayerPrefs.SetFloat ("PlayerY", lastKnownPosition.y);
 //						PlayerPrefs.SetFloat ("PlayerZ", lastKnownPosition.z);
-						Application.LoadLevel ("Start_Screen");
+						Application.LoadLevel ("Boucing");
+
+//						Application.LoadLevel ("Start_Screen");
 					}
 				}
 			}

@@ -62,7 +62,10 @@ public class Achievements : MonoBehaviour
 		startColourText = achievementText.color;
 		fullColourText = new Vector4 (startColourText.r, startColourText.g, startColourText.b, 1);
 	}
-
+	/// <summary>
+	/// Desplays the specified notificationText.
+	/// </summary>
+	/// <param name="notificationText">Which list element that will be displayed.</param>
 	public IEnumerator Notification (string notificationText)
 	{
 		coroutineInMotion = true;

@@ -21,6 +21,7 @@ public class StayAchieve : MonoBehaviour
 			if (_timer > 2) {
 				if (!achieves.CoroutineInMotion) {
 					if (achieves.achievements.Contains (achievementName)) {
+						//Starts the message coroutine in Achievements script
 						StartCoroutine (achieves.Notification (achieves.achievements[achieves.achievements.IndexOf(achievementName)]));
 					}
 				}	
