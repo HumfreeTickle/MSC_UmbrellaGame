@@ -23,7 +23,7 @@ namespace Player
 
 		void Start ()
 		{
-			tutorial = GameObject.Find("Tutorial").GetComponent<Tutuorial>();
+			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
 			achieves = GameObject.Find ("Follow Camera").GetComponent<Achievements> ();
 			rb = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
 		}
@@ -69,9 +69,10 @@ namespace Player
 			if (pickupObject.GetComponent<Rigidbody> ()) {
 				Destroy (pickupObject.GetComponent<Rigidbody> ());
 			}
-
-			if (pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled) {
-				pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled = false;
+			if (pickupObject.transform.FindChild ("Activate")) {
+				if (pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled) {
+					pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled = false;
+				}
 			}
 		}
 
@@ -112,8 +113,8 @@ namespace Player
 					instanWaterParticles.GetComponent<ParticleSystem> ().Play ();
 					destroy.DestroyOnTimer (instanWaterParticles, 1f);
 					if (!achieves.CoroutineInMotion) {
-						if(achieves.achievements.Contains("Splish. Splash.")){
-							StartCoroutine( achieves.Notification( achieves.achievements[0]));
+						if (achieves.achievements.Contains ("Splish. Splash.")) {
+							StartCoroutine (achieves.Notification (achieves.achievements [0]));
 						}
 					}
 				}

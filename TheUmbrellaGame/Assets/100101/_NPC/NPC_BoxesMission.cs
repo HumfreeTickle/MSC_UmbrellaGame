@@ -118,7 +118,7 @@ namespace NPC
 		private Light overHereLight;
 		private IEnumerator boxesCoroutine;
 		private NPC_CatMission catMissionStuff;
-		private GameObject boxes;
+		private Transform boxes;
 
 
 		//--------------------------------------------//
@@ -142,7 +142,7 @@ namespace NPC
 			npc_Interact = boxesGuy.GetComponent<NPC_Interaction> (); // 
 			boxesCoroutine = Boxes_Mission ();
 
-			boxes = GameObject.Find ("CratePickupCollection");
+			boxes = GameObject.Find ("CratePickupCollection").transform;
 			
 			//doesn't quite work
 			npc_Message.Split (new[] { "/n" }, StringSplitOptions.None);
@@ -182,19 +182,22 @@ namespace NPC
 			}
 		}
 
-		void TurnOnLights (GameObject obj)
+		void TurnOnLights (Transform obj)
 		{
-			for (int child = 0; child < obj.transform.childCount; child++) {
-				if (obj.transform.GetChild (child).transform.childCount > 0) {
-					TurnOnLights (obj.transform.GetChild (child).gameObject);
+			for (int child = 0; child < obj.childCount; child++) {
+				if (obj.GetChild (child).childCount > 0) {
+					TurnOnLights (obj.GetChild (child).transform);
 				} else {
-					if (obj.GetComponent<Light> ()) {
-						if (!obj.GetComponent<Light> ().isActiveAndEnabled) {
-							obj.GetComponent<Light> ().enabled = true;
+					if (obj.GetChild(child).GetComponent<Light> ()) {
+					if (!obj.GetChild(child).GetComponent<Light> ().isActiveAndEnabled) {
+						obj.GetChild(child).GetComponent<Light> ().enabled = true;
 						}
-					}else{
-						TurnOnLights (obj.transform.GetChild (child).gameObject);
 					}
+//					else{
+//						print ("Parent: " + obj.transform.parent.name );
+//						print ("Child: " + obj.name + " # " + child);
+//						TurnOnLights (obj.transform.GetChild (child).gameObject);
+//					}
 				}
 			}
 		}

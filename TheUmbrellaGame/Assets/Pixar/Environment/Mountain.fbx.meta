@@ -9,13 +9,23 @@ ModelImporter:
     100002: Lamp
     100004: Landscape.001
     100006: //RootNode
+    100008: Landscape.001_MeshPart0
+    100010: Landscape.001_MeshPart1
     400000: Camera
     400002: Lamp
     400004: Landscape.001
     400006: //RootNode
+    400008: Landscape.001_MeshPart0
+    400010: Landscape.001_MeshPart1
     2300000: Landscape.001
+    2300002: Landscape.001_MeshPart0
+    2300004: Landscape.001_MeshPart1
     3300000: Landscape.001
+    3300002: Landscape.001_MeshPart0
+    3300004: Landscape.001_MeshPart1
     4300000: Landscape.001
+    4300002: Landscape.001_MeshPart0
+    4300004: Landscape.001_MeshPart1
   materials:
     importMaterials: 1
     materialName: 0
@@ -25,6 +35,10 @@ ModelImporter:
     bakeSimulation: 0
     optimizeGameObjects: 0
     motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 1
     animationRotationError: .5
     animationPositionError: .5

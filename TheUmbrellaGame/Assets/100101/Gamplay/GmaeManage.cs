@@ -17,7 +17,7 @@ using UnityEditor;
 /// </summary>
 public enum GameState // sets what game state is currently being viewed
 {
-	NullState,
+//	NullState,
 	/// <summary>
 	/// The beginning state of each scene. Player cannont move. 
 	/// </summary>
@@ -107,8 +107,8 @@ public class GmaeManage : MonoBehaviour
 
 
 	//-- Canvas Stuff ---
-	private Image PauseScreen; // pause screen image
-	private Image WhiteScreen;
+	public Image PauseScreen; // pause screen image
+	public Image WhiteScreen;
 	private Image umbrellaGame;
 	private Image startButton;
 
@@ -146,7 +146,7 @@ public class GmaeManage : MonoBehaviour
 	public Vector3 startingPos;
 	//-----------------------------------------------//
 	public List<Material> allTheColoursOfTheUmbrella;
-	public List<Transform> canopyColours;
+//	public List<Transform> canopyColours;
 	public Transform canopyColour;
 	private Material umbrellaColour;
 	public float thresholdVector;
@@ -217,7 +217,7 @@ public class GmaeManage : MonoBehaviour
 	
 	public GameState gameState { get; set; }
 
-	private GameState currentState = GameState.NullState;
+	public GameState currentState = GameState.Intro;
 	
 	public ControllerType controllerType { get; set; }
 
@@ -230,7 +230,8 @@ public class GmaeManage : MonoBehaviour
 	//--------------------------------------------------------------------------------------------------//
 
 
-
+	//------Presentation Stuff-------//
+	public string umbrellaObject;
 
 //-------------------------------------- The Setup -----------------------------------------------------------------
 
@@ -258,7 +259,7 @@ public class GmaeManage : MonoBehaviour
 
 		//-------------------- For the different Scenes ---------------------------------
 
-		if (Application.loadedLevel == 0) { //Start screen
+		if (Application.loadedLevelName == "Start_Screen") { //Start screen
 
 			gameState = GameState.Intro; 
 			startButton = GameObject.Find ("Start Button").GetComponent<Image> ();
@@ -269,14 +270,14 @@ public class GmaeManage : MonoBehaviour
 			harpIntroSource.pitch = -0.6f;
 
 
-			umbrella = GameObject.Find ("Umbrella");
+			umbrella = GameObject.Find (umbrellaObject);
 			umbrellaRb = umbrella.GetComponent<Rigidbody> ();
 
 			if (!startButton || !umbrellaGame || !umbrella || !WhiteScreen) {
 				return;
 			}
 
-		} else if (Application.loadedLevel == 1) { //Main screen
+		} else if (Application.loadedLevelName == "Boucing") { //Main screen
 
 			gameState = GameState.Intro; 
 			PauseScreen = GameObject.Find ("Pause Screen").GetComponent<Image> ();
@@ -284,13 +285,12 @@ public class GmaeManage : MonoBehaviour
 			WhiteScreen.color = Color.white;
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
 
-
-//			cameraClipFar = GetComponent<Camera> ();
-//			cameraClipFar.farClipPlane = 800;
-
-
-			umbrella = GameObject.Find ("main_Sphere");
-			umbrellaRb = umbrella.GetComponent<Rigidbody> ();
+			if (umbrella == null) {
+				umbrella = GameObject.Find ("main_Sphere");
+			}
+			if (umbrella != null) {
+				umbrellaRb = umbrella.GetComponent<Rigidbody> ();
+			}
 			if (PlayerPrefs.GetFloat ("PlayerX") != 0 || PlayerPrefs.GetFloat ("PlayerY") != 0 || PlayerPrefs.GetFloat ("PlayerZ") != 0) {
 				startingPos = new Vector3 (PlayerPrefs.GetFloat ("PlayerX"), PlayerPrefs.GetFloat ("PlayerY"), PlayerPrefs.GetFloat ("PlayerZ"));
 			} else {
@@ -305,7 +305,9 @@ public class GmaeManage : MonoBehaviour
 			tutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
 			catMission = GameObject.Find ("Missions").GetComponent<NPC_CatMission> ();
 			boxesMission = GameObject.Find ("Missions").GetComponent<NPC_BoxesMission> ();
-			canopyColour = GameObject.Find ("Canopy_Colours").transform;
+			if (canopyColour == null) {
+				canopyColour = GameObject.Find ("Canopy_Colours").transform;
+			}
 
 			if (!PauseScreen || !WhiteScreen) {
 				return;
@@ -317,9 +319,7 @@ public class GmaeManage : MonoBehaviour
 
 	void Update ()
 	{
-		if (Application.loadedLevel == 1) {
-
-
+		if (Application.loadedLevelName == "Boucing") {
 
 			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
 				_oldWidth = Screen.width;
@@ -352,7 +352,7 @@ public class GmaeManage : MonoBehaviour
 	
 	void StartGame ()
 	{
-		if (Application.loadedLevel == 0) { //Opening screen
+		if (Application.loadedLevelName == "Start_Screen") { //Opening screen
 
 			if (Input.GetButtonDown ("Submit")) {
 				if (!startButton) {
@@ -380,7 +380,7 @@ public class GmaeManage : MonoBehaviour
 				}
 			}
 
-		} else if (Application.loadedLevel == 1) { //Main game screen
+		} else if (Application.loadedLevelName == "Boucing") { //Main game screen
 			Physics.gravity = new Vector3 (0, -18.36f, 0);
 			WhiteScreenTransisitions ();
 
@@ -392,7 +392,7 @@ public class GmaeManage : MonoBehaviour
 	void RestartGame ()
 	{
 		if (Input.GetKeyDown (KeyCode.R)) {
-			Application.LoadLevel ("Boucing");
+			gameState = GameState.GameOver;
 		}
 	}
 
@@ -536,13 +536,15 @@ public class GmaeManage : MonoBehaviour
 				fading.FadeIN (WhiteScreen, 1);
 
 				if (WhiteScreen.color.a >= 0.95) {
-					if (Application.loadedLevel == 0) {
+					if (Application.loadedLevelName == "Start_Screen") {
 						Application.LoadLevel ("Boucing");
-					} else if (Application.loadedLevel == 1) {
+					} else if (Application.loadedLevelName == "Boucing") {
 //						PlayerPrefs.SetFloat ("PlayerX", lastKnownPosition.x);
 //						PlayerPrefs.SetFloat ("PlayerY", lastKnownPosition.y);
 //						PlayerPrefs.SetFloat ("PlayerZ", lastKnownPosition.z);
-						Application.LoadLevel ("Start_Screen");
+						Application.LoadLevel ("Boucing");
+
+//						Application.LoadLevel ("Start_Screen");
 					}
 				}
 			}
@@ -551,7 +553,7 @@ public class GmaeManage : MonoBehaviour
 
 	void whichLevel ()
 	{
-		Application.LoadLevel (1); //Changes to the next scene
+		Application.LoadLevel ("Boucing"); //Changes to the next scene
 	}
 
 	void Progress ()
