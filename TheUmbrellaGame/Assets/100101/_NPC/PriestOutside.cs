@@ -14,7 +14,7 @@ public class PriestOutside : MonoBehaviour {
 		if(other.gameObject.tag == "ChurchExit"){
 
 			anim.enabled=false;
-			gameObject.transform.position = new Vector3(-3f, -.7f, 87.9f);
+			gameObject.transform.position = new Vector3(-9.5f, 0.15f, 94.8f);
 			Debug.Log ("Should Exit");
 		}
 	}

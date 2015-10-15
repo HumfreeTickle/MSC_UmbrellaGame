@@ -36,8 +36,8 @@ namespace NPC
 		
 		//--------------------------------------------------// 
 		public GameObject particales;
+
 		private bool boxesMissionStart;
-		
 		public bool BoxesMissionStart {
 			get {
 				return boxesMissionStart;
