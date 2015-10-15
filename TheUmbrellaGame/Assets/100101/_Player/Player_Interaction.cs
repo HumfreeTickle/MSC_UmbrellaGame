@@ -8,11 +8,9 @@ namespace Player
 		private Tutuorial tutorial;
 		public bool helloTutorial = true; //stops the L1 tutorial from constantly activating
 		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
-		private Transform handle;
 
 		void Start ()
 		{
-			handle = GameObject.Find ("handle").transform;
 			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
 		}
 	

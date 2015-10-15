@@ -5,15 +5,16 @@ namespace Player
 {
 	public class upwardForce : MonoBehaviour
 	{
-		public GmaeManage gameManager;
+		private GmaeManage gameManager;
 		public float upwardsforce;
 		private Rigidbody rb;
 		public float conterBalance = 1;
 		private float sw;
-		public float sine;
+		private float sine;
 
 		void Start ()
 		{
+			gameManager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>();
 			rb = GetComponent<Rigidbody> ();
 		}
 	

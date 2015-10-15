@@ -279,6 +279,7 @@ public class GmaeManage : MonoBehaviour
 
 		} else if (Application.loadedLevelName == "Boucing") { //Main screen
 
+			Terrain.activeTerrain.detailObjectDensity =0;
 			gameState = GameState.Intro; 
 			PauseScreen = GameObject.Find ("Pause Screen").GetComponent<Image> ();
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
@@ -321,6 +322,8 @@ public class GmaeManage : MonoBehaviour
 	{
 		if (Application.loadedLevelName == "Boucing") {
 
+
+
 			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
 				_oldWidth = Screen.width;
 				_oldHeight = Screen.height;
@@ -334,6 +337,7 @@ public class GmaeManage : MonoBehaviour
 
 		if (gameState == GameState.Intro) {
 			StartGame ();
+			Terrain.activeTerrain.detailObjectDensity = Mathf.Lerp(Terrain.activeTerrain.detailObjectDensity, 1, Time.deltaTime);
 			missionState = MissionController.Default;
 
 		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {

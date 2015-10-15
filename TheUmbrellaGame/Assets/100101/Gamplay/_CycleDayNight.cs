@@ -25,22 +25,46 @@ namespace Environment
 				return currentPhase;
 			}
 		} 
-	
-		/// The scene ambient color used for full daylight.  
-		private Color fullLight = new Color (253.0f / 255.0f, 248.0f / 255.0f, 223.0f / 255.0f);  
-	
-		/// The scene ambient color used for full night.  
-		private Color fullDark = new Color (32.0f / 255.0f, 28.0f / 255.0f, 46.0f / 255.0f);  
-	
 		/// The scene fog color to use at dawn and dusk.  
-		private Color dawnDuskFog = new Color (133.0f / 255.0f, 124.0f / 255.0f, 102.0f / 255.0f);  
+		public Color dawnDuskSun = new Color (133.0f / 255.0f, 124.0f / 255.0f, 102.0f / 255.0f);  
 	
 		/// The scene fog color to use during the day.  
-		private Color dayFog = new Color (180.0f / 255.0f, 208.0f / 255.0f, 209.0f / 255.0f);  
+		public Color daySun = new Color (180.0f / 255.0f, 208.0f / 255.0f, 209.0f / 255.0f);  
 	
 		/// The scene fog color to use at night.  
-		private Color nightFog = new Color (12.0f / 255.0f, 15.0f / 255.0f, 91.0f / 255.0f);    
+		public Color nightSun = new Color (12.0f / 255.0f, 15.0f / 255.0f, 91.0f / 255.0f); 
+
+
+		//
+		public Color DawnSkyTint;
+
+		//
+		public Color DaySkyTint;
+
+		//
+		public Color EveningSkyTint;
+
+		//
+		public Color NightSkyTint;
+
+		//
+		public Color DawnGround;
 	
+		//
+		public Color DayGround;
+
+		//
+		public Color EveningGround;
+
+		//
+		public Color NightGround;
+	
+		//
+		private Color currentSkyTint;
+
+		//
+		private Color currentGround;
+
 		// The amount of blending that occurs between each skybox
 		private float blendRatio;
 
@@ -62,6 +86,7 @@ namespace Environment
 		//
 		private GmaeManage gameManager;
 		private MissionController missionState;
+		public bool updateSkyboxes;
 		/// Initializes working variables and performs starting calculations.  
 		void Initialize ()
 		{  
@@ -76,16 +101,17 @@ namespace Environment
 			listOFMissionTesting.Add (MissionController.HorsesMission);
 			listOFMissionTesting.Add (MissionController.BridgeMission);
 
+			currentSkyTint = DawnSkyTint;
+			currentGround = DawnGround;
+
 		}  
 	
 		/// Sets the script control fields to reasonable default values for an acceptable day/night cycle effect.  
 		void Reset ()
 		{    
-			fullDark = new Color (32.0f / 255.0f, 28.0f / 255.0f, 46.0f / 255.0f);  
-			fullLight = new Color (253.0f / 255.0f, 248.0f / 255.0f, 223.0f / 255.0f);  
-			dawnDuskFog = new Color (133.0f / 255.0f, 124.0f / 255.0f, 102.0f / 255.0f);  
-			dayFog = new Color (180.0f / 255.0f, 208.0f / 255.0f, 209.0f / 255.0f);  
-			nightFog = new Color (12.0f / 255.0f, 15.0f / 255.0f, 91.0f / 255.0f);  
+			dawnDuskSun = new Color (133.0f / 255.0f, 124.0f / 255.0f, 102.0f / 255.0f);  
+			daySun = new Color (180.0f / 255.0f, 208.0f / 255.0f, 209.0f / 255.0f);  
+			nightSun = new Color (12.0f / 255.0f, 15.0f / 255.0f, 91.0f / 255.0f);  
 		}  
 	
 		// Use this for initialization  
@@ -93,24 +119,23 @@ namespace Environment
 		{  
 			Initialize ();  
 		}
-
 	
 		void Update ()
 		{  
 			//------------------------------------------------------//
 			//For testing purposes only
-//			if (Input.GetButtonDown ("Undefined")) {
-//				if (i < listOFMissionTesting.Count - 1) {
-//					i += 1;
-//				}else{
-//					i = 0;
-//				}
-//			}
-//
-//			if (Input.GetButtonUp ("Undefined")) {
-//				gameManager.missionState = listOFMissionTesting [i];
-//
-//			}
+			if (Input.GetButtonDown ("Undefined")) {
+				if (i < listOFMissionTesting.Count - 1) {
+					i += 1;
+				}else{
+					i = 0;
+				}
+			}
+
+			if (Input.GetButtonUp ("Undefined")) {
+				gameManager.missionState = listOFMissionTesting [i];
+
+			}
 			//------------------------------------------------------//
 
 			missionState = gameManager.missionState;
@@ -119,42 +144,42 @@ namespace Environment
 			case MissionController.TutorialMission:
 				SetDay (0.5f); //early morning 
 				SetSun (45);
-				blendRatio = 0.7f;
+//				blendRatio = 0.7f;
 
 				break;
 
 			case MissionController.CatMission:
 				SetDay (0.9f); //mid-day 
 				SetSun (90);
-				blendRatio = 1;
+//				blendRatio = 1;
 
 				break;
 
 			case MissionController.BoxesMission:
 				SetDusk (0.5f); //mid afternoon 
 				SetSun (160);
-				blendRatio = 0.7f;
+//				blendRatio = 0.7f;
 
 				break;
 
 			case MissionController.HorsesMission:
 				SetDusk (0.3f);  
 				SetSun (200);
-				blendRatio = 0;
+//				blendRatio = 0;
 
 				break;
 
 			case MissionController.BridgeMission:
 				SetNight (); 
 				SetSun (270);
-				blendRatio = 1;
+//				blendRatio = 1;
 
 				break;
 
 			case MissionController.Default:
 				SetDawn ();  
 				SetSun (0);
-				blendRatio = 0;
+//				blendRatio = 0;
 
 				break;
 
@@ -166,7 +191,9 @@ namespace Environment
 
 			// Perform standard updates:    
 			UpdateFog (); 
-			UpdateSkyboxBlendFactor (blendRatio);  
+			if (updateSkyboxes) {
+				UpdateSkyboxBlendFactor (blendRatio);
+			}
 		
 		}  
 	
@@ -174,11 +201,14 @@ namespace Environment
 		public void SetDawn ()
 		{  
 			if (sun != null) {
-				sun.intensity = Mathf.Lerp(sun.intensity, 0.3f, Time.deltaTime);
+				sun.intensity = Mathf.Lerp (sun.intensity, 0.3f, Time.deltaTime);
 
 			}  
+
+			RenderSettings.ambientIntensity = 0.3f;
+
 			currentPhase = DayPhase.Dawn;
-			if (RenderSettings.skybox != dawn) {
+			if (RenderSettings.skybox != dawn && updateSkyboxes) {
 				RenderSettings.skybox = dawn;
 			}
 		}  
@@ -188,10 +218,11 @@ namespace Environment
 		public void SetDay (float lighting)
 		{  
 			if (sun != null) {
-				sun.intensity = Mathf.Lerp(sun.intensity, lighting, Time.deltaTime);
+				sun.intensity = Mathf.Lerp (sun.intensity, lighting, Time.deltaTime);
 			}  
 			currentPhase = DayPhase.Day;
-			if (RenderSettings.skybox != day) {
+			RenderSettings.ambientIntensity = lighting;
+			if (RenderSettings.skybox != day && updateSkyboxes) {
 				RenderSettings.skybox = day;
 			}
 
@@ -201,11 +232,12 @@ namespace Environment
 		public void SetDusk (float lighting)
 		{  
 			if (sun != null) {
-				sun.intensity = Mathf.Lerp(sun.intensity, lighting, Time.deltaTime);
+				sun.intensity = Mathf.Lerp (sun.intensity, lighting, Time.deltaTime);
 			} 
+			RenderSettings.ambientIntensity = lighting;
 
 			currentPhase = DayPhase.Dusk;
-			if (RenderSettings.skybox != evening) {
+			if (RenderSettings.skybox != evening && updateSkyboxes) {
 				RenderSettings.skybox = evening;
 			}
 
@@ -215,12 +247,14 @@ namespace Environment
 		/// turning off the directional light, if any.  
 		public void SetNight ()
 		{  
-//			RenderSettings.ambientLight = fullDark;  
 			if (sun != null) {
-				sun.intensity = Mathf.Lerp(sun.intensity, 0.3f, Time.deltaTime);
+				sun.intensity = Mathf.Lerp (sun.intensity, 0.3f, Time.deltaTime);
 			} 
+			RenderSettings.ambientIntensity = 0.3f;
+
+			
 			currentPhase = DayPhase.Night;  
-			if (RenderSettings.skybox != night) {
+			if (RenderSettings.skybox != night && updateSkyboxes) {
 				RenderSettings.skybox = night;
 			}
 
@@ -235,18 +269,39 @@ namespace Environment
 			mapCentre.rotation = Quaternion.Slerp (mapCentre.rotation, Quaternion.Euler (new Vector3 (-placement, 0, 0)), Time.deltaTime);
 		}
 
-		/// Interpolates the fog color between the specified phase colors during each phase's transition.  
-		/// eg. From DawnDusk to Day, Day to DawnDusk, DawnDusk to Night, and Night to DawnDusk  
+		// Interpolates the fog color between the specified phase colors during each phase's transition.  
+		// eg. From DawnDusk to Day, Day to DawnDusk, DawnDusk to Night, and Night to DawnDusk
+	 
 		private void UpdateFog ()
 		{  
+			RenderSettings.skybox.SetFloat("_AtomosphereThickness", 1);
+			RenderSettings.skybox.SetColor("_SkyTint", currentSkyTint);
+			RenderSettings.skybox.SetColor("_groundColor", currentGround);
+			RenderSettings.skybox.SetFloat("_Exposure", 0.6f);
+
 			if (currentPhase == DayPhase.Dawn) {  
-				sun.color = Color.Lerp (dawnDuskFog, dayFog, Time.deltaTime);  
+				sun.color = Color.Lerp (dawnDuskSun, daySun, Time.deltaTime);
+
+				currentSkyTint = Color.Lerp(currentSkyTint, DawnSkyTint, Time.deltaTime);
+				currentGround = Color.Lerp(currentGround, DawnGround, Time.deltaTime);
+
 			} else if (currentPhase == DayPhase.Day) {  
-				sun.color = Color.Lerp (dayFog, dawnDuskFog, Time.deltaTime);  
+				sun.color = Color.Lerp (daySun, dawnDuskSun, Time.deltaTime); 
+				
+				currentSkyTint = Color.Lerp(currentSkyTint, DaySkyTint, Time.deltaTime);
+				currentGround = Color.Lerp(currentGround, DayGround, Time.deltaTime);
+
 			} else if (currentPhase == DayPhase.Dusk) {  
-				sun.color = Color.Lerp (dawnDuskFog, nightFog, Time.deltaTime);  
+				sun.color = Color.Lerp (dawnDuskSun, nightSun, Time.deltaTime); 
+				
+				currentSkyTint = Color.Lerp(currentSkyTint, EveningSkyTint, Time.deltaTime);
+				currentGround = Color.Lerp(currentGround, EveningGround, Time.deltaTime);
+
 			} else if (currentPhase == DayPhase.Night) {  
-				sun.color = Color.Lerp (nightFog, dawnDuskFog, Time.deltaTime); 
+				sun.color = Color.Lerp (nightSun, dawnDuskSun, Time.deltaTime);
+				
+				currentSkyTint = Color.Lerp(currentSkyTint, NightSkyTint, Time.deltaTime);
+				currentGround = Color.Lerp(currentGround, NightGround, Time.deltaTime);
 			}  
 		}  
 	

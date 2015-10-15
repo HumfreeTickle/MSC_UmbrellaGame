@@ -5,6 +5,7 @@ using CameraScripts;
 using UnityEngine.UI;
 using System;
 using Player.PhysicsStuff;
+using Environment;
 
 namespace NPC
 {
@@ -206,7 +207,7 @@ namespace NPC
 						npc_Message = "Not sure how you could do it but maybe if you get a closer look.";
 						npc_Talking.text = (npc_Message.Substring (0, i));
 						cameraSet = windmill;
-						windmill.tag = "Interaction";
+						windmill.GetComponent<RotationBlades>().LightsOn = true;
 
 						cmaera.GetComponent<Controller> ().lookAt = cameraSet;
 						i += 1;
@@ -214,6 +215,7 @@ namespace NPC
 					}
 
 					while (i >= npc_Message.Length) {
+						windmill.GetComponent<RotationBlades>().LightsOn = false;
 						if (Input.GetButtonDown ("Talk")) {
 							if (gameManager.gameState == GameState.MissionEvent) {
 								proceed = true;

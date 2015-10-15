@@ -55,11 +55,10 @@ public class HorseRescue : MonoBehaviour {
       		speed --;
 			//speed = 4;
 			timer = 500;
-			Debug.Log("ATzero");
-			print (Vector3.Distance(horse.transform.position, destination0.position));
+//			print (Vector3.Distance(horse.transform.position, destination0.position));
 			}
 
-			print(fast);
+//			print(fast);
 
 
 //---------This is the function to move to next spot. There is not a timer for the first spot---------------------------------

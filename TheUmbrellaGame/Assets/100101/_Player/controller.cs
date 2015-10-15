@@ -14,7 +14,7 @@ namespace Player
 		private Controller cameraController;
 //	------------------------------------
 
-		public GameObject handle;
+		private GameObject handle;
 //	------------------------------------
 		private Animator umbrellaAnim;
 		private Animator rotationAnim;
