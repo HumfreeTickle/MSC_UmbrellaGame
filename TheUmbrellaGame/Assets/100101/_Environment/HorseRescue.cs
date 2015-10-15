@@ -53,7 +53,18 @@ public class HorseRescue : MonoBehaviour {
 		anim.SetFloat("SPEED",speed);
 		anim.SetFloat("SpeedRun",run);
 
+<<<<<<< HEAD
 
+=======
+			if(!isMoving){
+      		speed --;
+			//speed = 4;
+			timer = 500;
+//			print (Vector3.Distance(horse.transform.position, destination0.position));
+			}
+
+//			print(fast);
+>>>>>>> origin/master
 
 		if (Vector3.Distance(horse.transform.position, destination0.position) <= 5f){
 			nextDestination= destination1;

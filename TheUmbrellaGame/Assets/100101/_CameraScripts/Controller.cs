@@ -272,17 +272,17 @@ namespace CameraScripts
 								whatAmIHitting = hit.collider.gameObject;
 								backupMaterial = whatAmIHitting.GetComponent<MeshRenderer> ().sharedMaterial;
 								whatAmIHitting.GetComponent<MeshRenderer> ().sharedMaterial = transparent;
-								if (whatAmIHitting.gameObject.transform.childCount > 0) {
-
-									for (int i = 0; i < whatAmIHitting.gameObject.transform.childCount; i++) {
-										if (whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ()) {
-											whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ().enabled = false;
-										}
-									}
-//								foreach (MeshRenderer child in whatAmIHittingChildren) {
-//									child.enabled = false;
+//								if (whatAmIHitting.gameObject.transform.childCount > 0) {
+//
+//									for (int i = 0; i < whatAmIHitting.gameObject.transform.childCount; i++) {
+//										if (whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ()) {
+//											whatAmIHitting.gameObject.transform.GetChild (i).GetComponent<MeshRenderer> ().enabled = false;
+//										}
+//									}
+////								foreach (MeshRenderer child in whatAmIHittingChildren) {
+////									child.enabled = false;
+////								}
 //								}
-								}
 							}
 						}
 
