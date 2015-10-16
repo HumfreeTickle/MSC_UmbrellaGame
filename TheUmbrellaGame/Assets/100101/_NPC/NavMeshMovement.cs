@@ -9,7 +9,19 @@ public class NavMeshMovement : MonoBehaviour {
 	public bool isThere;
 	public bool thereAgain;
 	public Animator mover;
+<<<<<<< HEAD
 	public Transform BridgeDestination;
+=======
+
+	private static bool finalMission;
+
+	public bool FinalMission{
+		set{
+			finalMission = value;
+		}
+	}
+
+>>>>>>> origin/master
 
 	// Use this for initialization
 	void Start () {

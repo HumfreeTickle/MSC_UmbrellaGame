@@ -10,7 +10,7 @@ public class HorseRescue : MonoBehaviour {
 	private NavMeshAgent horse;
 	public float timer;
 	private Animator anim;
-	public Transform Brolly;
+	private Transform Brolly;
 
 	public bool atdestination;
 	
@@ -36,7 +36,11 @@ public class HorseRescue : MonoBehaviour {
 		timer = 500;
 		anim = gameObject.GetComponent<Animator>();
 		nextDestination= destination1;
+<<<<<<< HEAD
 	
+=======
+		Brolly = GameObject.Find("main_Sphere").transform;
+>>>>>>> origin/master
 	}
 	
 	// Update is called once per frame
@@ -46,8 +50,11 @@ public class HorseRescue : MonoBehaviour {
 		anim.SetFloat("SPEED",speed);
 		anim.SetFloat("SpeedRun",run);
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/master
 		if (Vector3.Distance(horse.transform.position, destination0.position) <= 5f){
 			nextDestination= destination1;
 			speed--;
@@ -79,13 +86,11 @@ public class HorseRescue : MonoBehaviour {
 			timer=500;
 			horse.SetDestination(nextDestination.position);
 			speed = 80;
-			Debug.Log("Should Walk");
 			}
 
-		if(Vector3.Distance(horse.transform.position, nextDestination.position) >= 15f){
-			Debug.Log("RUN!!!!!");
-			run = 200;
-		}
+//		if(Vector3.Distance(horse.transform.position, nextDestination.position) >= 15f){
+//			run = 200;
+//		}
 
 		if(timer == 0){
 			horse.SetDestination(lastDestination.position);

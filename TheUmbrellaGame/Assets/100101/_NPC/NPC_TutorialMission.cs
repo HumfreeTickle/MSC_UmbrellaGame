@@ -19,8 +19,8 @@ namespace NPC
 		private float talkingSpeed;
 
 		//-------------- Tutorial Conditions ---------------//
-		private bool tutorialMission;
-		private bool tutorialRunning;
+		public bool tutorialMission;
+		public bool tutorialRunning;
 
 		/// <summary>
 		/// States whether the mission has been complete or not
@@ -50,7 +50,7 @@ namespace NPC
 		}
 
 		//ends the mission
-		private bool tutorialMissionFinished = false;
+		public bool tutorialMissionFinished = false;
 		/// <summary>
 		/// Allows other scripts to know when the tutorial mission has been completed
 		/// </summary>
@@ -82,7 +82,7 @@ namespace NPC
 //		public List<string> npc_Message_Array = new List<string> (); //supposed to allow for blocks of text to be entered and seperated out automatically
 		public string npc_Message = ""; // holds the current message that needs to be displayed
 		//------------------------------------------------------------------------------//
-		private int x = 0; // for the case state **I wonder if using number's is the best way to cycle through each case
+		public int x = 0; // for the case state **I wonder if using number's is the best way to cycle through each case
 		/// <summary>
 		/// allows other scripts to increase the case state
 		/// </summary>
@@ -276,6 +276,7 @@ namespace NPC
 
 								i = 0;
 								x = 4;
+
 								proceed = false;
 							}
 						}

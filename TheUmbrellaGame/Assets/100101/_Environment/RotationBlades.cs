@@ -1,14 +1,16 @@
 using UnityEngine;
 using System.Collections;
 using NPC;
+using CameraScripts;
 
 namespace Environment
 {
 	public class RotationBlades : MonoBehaviour
 	{
-		private bool rotation;//this is the blades turning
+		public bool rotation;//this is the blades turning
 		private Light activeLight;//the halo pointing where to interact with the windmill
 		private GameObject caughtPieceofWood;
+		private GameObject windParticles;
 		private NPC_TutorialMission npc_TutorialMission;
 		private Tutuorial tutorial;
 		public float blowforce;//the force that will be applied to the blowback from the windmill
@@ -31,6 +33,13 @@ namespace Environment
 		}
 
 		private Transform handle;
+		private GameObject umbrella;
+		private Controller cmaera;
+		private GameObject cameraSet;
+		private GmaeManage gameManager;
+		private bool running;
+		private bool zeldafy = true;
+		private Vector3 moveTo;
 
 		void Start ()
 		{
@@ -38,7 +47,15 @@ namespace Environment
 			npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
 			caughtPieceofWood = transform.FindChild ("Caught_Wood").gameObject;
 			activeLight = caughtPieceofWood.transform.FindChild ("Activate").GetComponent<Light> ();
+			windParticles = activeLight.gameObject.transform.GetChild (0).gameObject;
+
 			handle = GameObject.Find ("handle").transform;
+
+			umbrella = GameObject.Find ("main_Sphere");
+			cmaera = GameObject.Find ("Follow Camera").GetComponent<Controller> ();
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
+
+			moveTo = GameObject.Find ("MoveTo").transform.position;
 		}
 
 		void Update ()
@@ -48,10 +65,10 @@ namespace Environment
 				if (lightsOn) {
 					activeLight.enabled = true;
 				}
-
-				if (rotation) {
-					onRotation ();
-				}
+			}
+			if (rotation) {
+				onRotation ();
+				StartCoroutine (cameraMove ());
 			}
 		}
 
@@ -66,20 +83,9 @@ namespace Environment
 			lineTwo.GetComponent<LineRenderer> ().material.SetColor ("_Color", transparentStart);
 
 			activeLight.enabled = false;
-			activeLight.gameObject.transform.GetChild (0).gameObject.SetActive (true);
-			tutorial.ObjectTag = "";
-			this.tag = "Untagged";
-			//						col.GetComponent<Rigidbody> ().AddForce (col.transform.forward * -1 * blowforce);//blow back the umbrella
-			//						windPushEffect = Instantiate(windEffect, transform.position, Quaternion.identity) as GameObject;
-			//						windPushEffect.transform.parent = this.transform;
-			//----------------------------------//
-			npcManager.WindmillMission = true;
-			//----------------------------------//
-			npc_TutorialMission.NPC_Tutorial.tag = "NPC_talk";
-			npc_TutorialMission.Tut_X = 3;
-			npc_TutorialMission.TutorialRunning = false;
-			npc_TutorialMission.JumpAround_Tut = true;
-			
+			if (windParticles != null) {
+				windParticles.SetActive (true);
+			}
 		}
 		
 		void OnTriggerEnter (Collider col)
@@ -113,28 +119,60 @@ namespace Environment
 		{
 			if (col.tag == "Player") {//if the umbrella interacts with the windmill
 				if (handle.FindChild (caughtPieceofWood.name)) {
-					//Could I have it create a ray in the direction of the umbrella that changes the amount of force based on distance??
+					rotation = true;//turn on the windmill
+					running = true;
 
-//				if (Input.GetButtonDown ("Interact")) {
-//					if (tutorialRunning) {
-						rotation = true;//turn on the windmill
-//						activeLight.enabled = false;
-//						activeLight.gameObject.transform.GetChild (0).gameObject.SetActive (true);
-//						tutorial.ObjectTag = "";
-//						this.tag = "Untagged";
-////						col.GetComponent<Rigidbody> ().AddForce (col.transform.forward * -1 * blowforce);//blow back the umbrella
-////						windPushEffect = Instantiate(windEffect, transform.position, Quaternion.identity) as GameObject;
-////						windPushEffect.transform.parent = this.transform;
-//						//----------------------------------//
-//						npcManager.WindmillMission = true;
-//						//----------------------------------//
-//						npc_TutorialMission.NPC_Tutorial.tag = "NPC_talk";
-//						npc_TutorialMission.Tut_X = 3;
-//						npc_TutorialMission.TutorialRunning = false;
-//						npc_TutorialMission.JumpAround_Tut = true;
-//					}
+					tutorial.ObjectTag = "";
+					this.tag = "Untagged";
+					//						col.GetComponent<Rigidbody> ().AddForce (col.transform.forward * -1 * blowforce);//blow back the umbrella
+					//						windPushEffect = Instantiate(windEffect, transform.position, Quaternion.identity) as GameObject;
+					//						windPushEffect.transform.parent = this.transform;
+					//----------------------------------//
+					npcManager.WindmillMission = true;
+					//----------------------------------//
+					npc_TutorialMission.NPC_Tutorial.tag = "NPC_talk";
+					npc_TutorialMission.Tut_X = 3;
+					npc_TutorialMission.TutorialRunning = false;
+					npc_TutorialMission.JumpAround_Tut = true;
+					//camera change needs to be added into a coroutine 
+
 				}
 			}
+		}
+
+		IEnumerator cameraMove ()
+		{
+			while (running) {
+				while(zeldafy){
+				gameManager.gameState = GameState.MissionEvent;
+				cameraSet = this.gameObject;
+				cmaera.lookAt = cameraSet;
+				cmaera.MoveYerself = false;
+
+				while (Vector3.Distance(cmaera.transform.position, moveTo) > 10 && cameraSet ==  this.gameObject) {
+					if (!cmaera.MoveYerself) {
+						cmaera.transform.position = Vector3.Lerp (cmaera.transform.position, moveTo, Time.deltaTime/2);
+
+						yield return null;
+					}
+						zeldafy = false;
+
+					yield return null;
+
+					}
+					yield return null;
+
+				}
+				yield return new WaitForSeconds (5);
+				cameraSet = umbrella;
+				cmaera.lookAt = cameraSet;
+				cmaera.MoveYerself = true;
+				gameManager.gameState = GameState.Game;
+				running = false;
+			}
+
+			yield break;
+//			look back at the windmill when you've made it start :)
 		}
 	}
 }

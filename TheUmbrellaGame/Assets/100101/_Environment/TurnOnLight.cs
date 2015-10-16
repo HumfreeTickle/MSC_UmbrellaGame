@@ -15,6 +15,8 @@ namespace Environment
 		{
 			GetComponent<CapsuleCollider>().radius = 1.5f;
 			GetComponent<CapsuleCollider>().height = 0.25f;
+			GetComponent<CapsuleCollider>().isTrigger = true;
+
 			sun = GameObject.Find ("Sun").GetComponent<_CycleDayNight> ();
 		}
 
@@ -23,25 +25,25 @@ namespace Environment
 			day_Night = sun.CurrentPhase;
 
 			if (day_Night == DayPhase.Night || day_Night == DayPhase.Dusk) {
-				this.tag = "Interaction";
-
-				if (LitUp) {
+//				this.tag = "Interaction";
+//
+//				if (LitUp) {
 					GetComponent<Light> ().enabled = true;
-				}
+//				}
 
 			} else {
-				this.tag = "Untagged";
+//				this.tag = "Untagged";
 				GetComponent<Light> ().enabled = false;
 			}
 		}
 
-		void OnTriggerEnter (Collider col)
-		{
-			if (col.gameObject.tag == "Player") {
-				if (day_Night == DayPhase.Night || day_Night == DayPhase.Dusk) {
-					LitUp = true;
-				}
-			}
-		}
+//		void OnTriggerEnter (Collider col)
+//		{
+//			if (col.gameObject.tag == "Player") {
+//				if (day_Night == DayPhase.Night || day_Night == DayPhase.Dusk) {
+//					LitUp = true;
+//				}
+//			}
+//		}
 	}
 }
