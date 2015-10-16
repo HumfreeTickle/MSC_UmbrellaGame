@@ -113,7 +113,7 @@ namespace Player
 
 			if (interactTutorial) {
 				
-				if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "Pickup") {
+				if (col.gameObject.tag == "Pickup") {
 					tutorial.ObjectTag = "Interaction";
 					interactTutorial = false;
 				}
