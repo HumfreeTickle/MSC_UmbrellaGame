@@ -11,12 +11,19 @@ namespace NPC
 	{
 		private GmaeManage gameManager;
 		private MissionController missionStates;
-		private GameObject priest;
+
 		private GameObject cmaera;
+		private GameObject cameraSet;
+
 		private GameObject umbrella;
+
+		private GameObject bridge_npc;
 		private GameObject church;
+		private GameObject priest;
+
 		private GameObject lightHouse;
 		private GameObject lightHouseKeeper;
+
 		private GameObject pickupTool;
 		
 		//------------- Talking variables -----------------//
@@ -115,48 +122,58 @@ namespace NPC
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			cmaera = GameObject.Find ("Follow Camera"); 
 			umbrella = cmaera.GetComponent<Controller> ().lookAt; //let's the camera look at different things
-			catMissionStuff = GetComponent<NPC_CatMission> ();
-			priest = GameObject.Find ("Priest");
 
+			catMissionStuff = GetComponent<NPC_CatMission> ();
+			boxesMissionStuff = GetComponent<NPC_BoxesMission>();
+			horseMissionStuff = GetComponent<HorseMission_BackEnd>();
+
+			bridge_npc = GameObject.Find("");
+			priest = GameObject.Find ("Priest");
+			church = GameObject.Find("");
+			lightHouse = GameObject.Find("");
+			lightHouseKeeper = GameObject.Find("NPC_LightHouseKeeper");
+			pickupTool = GameObject.Find("");
 
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
 			npc_TalkingBox = GameObject.Find ("NPC_TalkBox").GetComponent<Image> ();
+
 			npc_Animator = priest.GetComponent<Animator> ();
 			if (!npc_Animator.isActiveAndEnabled) {
 				npc_Animator.enabled = true;
 			}
 			overHereLight = priest.transform.FindChild ("Sphere").transform.FindChild ("Activate").GetComponent<Light> ();//where ever the light is on the NPC_Talk characters. 
 			overHereLight.enabled = false;
-			
+
+			// gonna need a few of these
+			// 1. bridge_npc
+			// 2. priest
+			// 3. lighthouse keeper
 			npc_Interact = priest.GetComponent<NPC_Interaction> (); // 
 			finalCoroutine = Final_Mission ();
 
 			//doesn't quite work
 			npc_Message.Split (new[] { "/n" }, StringSplitOptions.None);
+
 		}
 		
 		void Update ()
 		{
-			if (catMissionStuff.CatMissionFinished) {
+			if (catMissionStuff.CatMissionFinished && boxesMissionStuff.BoxesMisssionFinished && horseMissionStuff.HorseMisssionFinished) {
+
+				bridge_npc.GetComponent<NavMeshMovement>().FinalMission = true;
+
 				priest.tag = "NPC_talk";
 				talkingSpeed = gameManager.TextSpeed;
-				
-				npc_Animator.SetBool ("Play", jumpAround);
-				overHereLight.enabled = jumpAround;
-				npc_Interact.MissionDelegate = StartBoxesMission;
-				
-				if (finalMissionStart) {
-					npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
-					if (!finalMissionRunning) {
-						StartCoroutine (Final_Mission ());
-					}
-				} else {
-					npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0f), Time.deltaTime);
+
+				npc_Interact.MissionDelegate = StartFinalMission;
+
+				if (!finalMissionRunning) {
+					StartCoroutine (Final_Mission ());
 				}
 			}
 		}
 		
-		void StartBoxesMission ()//Allows the mission to actually start. Nothing happens if it isn't here
+		void StartFinalMission ()//Allows the mission to actually start. Nothing happens if it isn't here
 		{
 			if (!finalMissionStart) {
 				finalMissionStart = true;
@@ -175,39 +192,57 @@ namespace NPC
 			finalMissionRunning = true;
 			int i = 0;
 			
-			while (x < 5) {// only allows the first 2 cases to playout
+			while (x < 14) {
 				switch (x) {
 					
 				case 0:
-					jumpAround = false;
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
-					npc_TalkingBox.enabled = true;
-					while (i <= npc_Message.Length) {
-						npc_Message = "My boxes!!! Someone has stolen them and haphazardly placed them around the town.";
-						npc_Talking.text = (npc_Message.Substring (0, i));
-						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
-					}
-					//-------------------------------- all this stuff --------------------------------//
-					while (i >= npc_Message.Length + 1) {
-						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
-								proceed = true;
-							}
-						}
-						
-						if (proceed) {
-							i = 0;
-							x = 1;
-							proceed = false;
-						}
-						yield return null;
-					}
+
+					// this has to activate the NPC's to go to the chrurch;
+					// should probably set a static boolean to true;
+					// in NavMesh Movement
+
+					// Also highlights one of the NPC's to talk to
+					// once you've talked to him then it moves onto the next case;
+
+//					jumpAround = false;
+//					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+//					npc_TalkingBox.enabled = true;
+//					while (i <= npc_Message.Length) {
+//						npc_Message = "My boxes!!! Someone has stolen them and haphazardly placed them around the town.";
+//						npc_Talking.text = (npc_Message.Substring (0, i));
+//						i += 1;
+//						yield return new WaitForSeconds (talkingSpeed);
+//					}
+//					//-------------------------------- all this stuff --------------------------------//
+//					while (i >= npc_Message.Length + 1) {
+//						if (Input.GetButtonDown ("Talk")) {
+//							if (gameManager.gameState == GameState.MissionEvent) {
+//								proceed = true;
+//							}
+//						}
+//						
+//						if (proceed) {
+//							i = 0;
+//							x = 1;
+//							proceed = false;
+//						}
+//						yield return null;
+//					}
 					
 					break;
 					
 					
 				case 1:
+
+					// first talking part
+					// tells the player to go see the priest
+					// probably should move the camera
+					cameraSet = church;
+					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
+					cameraSet = umbrella;
+					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
 					while (i <= npc_Message.Length) {
 						npc_Message = "Can you please retrive them from their unusual locals?";
 						npc_Talking.text = (npc_Message.Substring (0, i));
@@ -224,25 +259,29 @@ namespace NPC
 						}
 						
 						if (proceed) {
-								npc_Message = "";
-								npc_TalkingBox.enabled = false;
-								npc_Talking.text = npc_Message;
-								i = 0;
-								x = 2;
-								proceed = false;
-								cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+							npc_Message = "";
+							npc_TalkingBox.enabled = false;
+							npc_Talking.text = npc_Message;
+							i = 0;
+							x = 2;
+							proceed = false;
+							cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
 						}
 						yield return null;
 					}
 					break;
-					
+				// break in the action
+				// to allow the player to move to the priest.
 					
 				case 3:
-					
-					jumpAround = false;
+
+					// priest tells you that the bridge needs to be fixed
+					// and to follow him outside
+
+				//-------- talking code ------------//
 					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
-					
+
 					while (i <= npc_Message.Length) {
 						
 						cmaera.GetComponent<GmaeManage> ().Progression = 4;
@@ -257,6 +296,8 @@ namespace NPC
 						yield return new WaitForSeconds (talkingSpeed);
 						
 					}
+				//---------------------------------//
+
 					
 					while (i >= npc_Message.Length) {
 						if (finalMissionFinished) {
@@ -288,17 +329,200 @@ namespace NPC
 						
 					}
 					break;
+
+				//again another break in the action to allow the priest to get outside and the player
 					
-				case 4:
+				case 5:
+
+					//-------- talking code ------------//
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					npc_TalkingBox.enabled = true;
+					
+					while (i <= npc_Message.Length) {
+						
+						cmaera.GetComponent<GmaeManage> ().Progression = 4;
+						if (playParticles) {
+							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
+							playParticles = false;
+							
+						}
+						npc_Message = "You are a saint of an umbrella. Thank you so very much.";
+						npc_Talking.text = (npc_Message.Substring (0, i));
+						i += 1;
+						yield return new WaitForSeconds (talkingSpeed);
+						
+					}
+					//---------------------------------//
+
+					// priest points out the light house and tells the player to go see the keeper up on the balcony
+					// warns that he is a very grumpy man
+					cameraSet = lightHouse;
+					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
+					cameraSet = umbrella;
+					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
 					priest.tag = "NPC";
 					StopCoroutine (finalCoroutine);
 					x = 5;
 					break;
+
+				// break in the action
+
+				case 7:
+					//-------- talking code ------------//
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					npc_TalkingBox.enabled = true;
 					
-				case 5:
+					while (i <= npc_Message.Length) {
+						
+						cmaera.GetComponent<GmaeManage> ().Progression = 4;
+						if (playParticles) {
+							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
+							playParticles = false;
+							
+						}
+						npc_Message = "What do you want? Fix the bridge ayyy! Hmm.. Alrigh' but you gotta do something for me first.";
+						npc_Talking.text = (npc_Message.Substring (0, i));
+						i += 1;
+						yield return new WaitForSeconds (talkingSpeed);
+						
+					}
+					//---------------------------------//
+
+					//-------- talking code ------------//
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					npc_TalkingBox.enabled = true;
 					
+					while (i <= npc_Message.Length) {
+						
+						cmaera.GetComponent<GmaeManage> ().Progression = 4;
+						if (playParticles) {
+							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
+							playParticles = false;
+							
+						}
+						npc_Message = "See that guy over there. He has a tool I need, but he won't give it to me. I need you to get it from him.";
+						npc_Talking.text = (npc_Message.Substring (0, i));
+						i += 1;
+						yield return new WaitForSeconds (talkingSpeed);
+						
+					}
+					//---------------------------------//
+					// talking to the lighthouse keeper
+					// needs you to rob a tool off the guy cutting the trees
+					// camera focuses on the guy
+					cameraSet = pickupTool;
+					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
+					cameraSet = umbrella;
+					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
 					break;
+
+				// break to steal the tool
+
+				case 9:
+					//-------- talking code ------------//
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					npc_TalkingBox.enabled = true;
 					
+					while (i <= npc_Message.Length) {
+						
+						cmaera.GetComponent<GmaeManage> ().Progression = 4;
+						if (playParticles) {
+							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
+							playParticles = false;
+							
+						}
+						npc_Message = "Give me a minute.. gotta fix some things.";
+						npc_Talking.text = (npc_Message.Substring (0, i));
+						i += 1;
+						yield return new WaitForSeconds (talkingSpeed);
+						
+					}
+					//---------------------------------//
+					// return to th lighthouse keeper
+					// give him the part
+					// animation of him repairing stuff
+					// camera moves out like the windmill
+					cameraSet = lightHouse;
+					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
+					cameraSet = umbrella;
+					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
+					// done in another script
+					// lighthouse turns on and starts to spin
+
+					break;
+
+				case 10:
+					//-------- talking code ------------//
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					npc_TalkingBox.enabled = true;
+					
+					while (i <= npc_Message.Length) {
+						
+						cmaera.GetComponent<GmaeManage> ().Progression = 4;
+						if (playParticles) {
+							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
+							playParticles = false;
+							
+						}
+						npc_Message = "Alrigh' bring me over to the bridge there would ya. I hope a dainty umbrella like yerself can carry me. The wife likes to cook so might be a bit heavier then I used to be.";
+						npc_Talking.text = (npc_Message.Substring (0, i));
+						i += 1;
+						yield return new WaitForSeconds (talkingSpeed);
+						
+					}
+					//---------------------------------//
+					// asks to be carried over to the priest
+					// camera moves
+					cameraSet = priest;
+					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
+					cameraSet = umbrella;
+					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
+					break;
+
+				//break in action for transport
+
+				case 12:
+					// drop off repairman
+					// animation for repairs
+					// bridge lowers
+					break;
+
+				case 13:
+					//-------- talking code ------------//
+					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					npc_TalkingBox.enabled = true;
+					
+					while (i <= npc_Message.Length) {
+						
+						cmaera.GetComponent<GmaeManage> ().Progression = 4;
+						if (playParticles) {
+							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
+							playParticles = false;
+							
+						}
+						npc_Message = "Thank you, your talents have surely helped everyone on this fine day.";
+						npc_Talking.text = (npc_Message.Substring (0, i));
+						i += 1;
+						yield return new WaitForSeconds (talkingSpeed);
+						
+					}
+					//---------------------------------//
+					// priest thanks you
+					// new colour gained
+
+					break;
+
+				case 14:
+					yield break;
+
 				default:
 					Debug.Log ("Default");
 					yield return new WaitForSeconds (10);

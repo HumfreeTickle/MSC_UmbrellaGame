@@ -21,6 +21,9 @@ namespace Player
 		private Tutuorial tutorial;
 		private DestroyObject destroy = new Inheritence.DestroyObject ();
 
+		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
+
+
 		void Start ()
 		{
 			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
@@ -107,6 +110,14 @@ namespace Player
 
 		void OnTriggerStay (Collider col)
 		{
+
+			if (interactTutorial) {
+				
+				if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "Pickup") {
+					tutorial.ObjectTag = "Interaction";
+					interactTutorial = false;
+				}
+			} 
 			if (col.gameObject.tag == "River") {
 				if (rb.velocity.magnitude > 10) {
 					instanWaterParticles = Instantiate (waterParticles, transform.position, Quaternion.identity) as GameObject;
@@ -126,6 +137,11 @@ namespace Player
 			if (col.gameObject.tag == "Pickup") {
 				pickupObject = null;
 				originalParent = null;
+			}
+
+			if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "NPC_talk" || col.gameObject.tag == "NPC" || col.gameObject.tag == "Pickup") {
+				tutorial.ObjectTag = "";
+				interactTutorial = true;
 			}
 		}
 	}

@@ -10,6 +10,14 @@ public class NavMeshMovement : MonoBehaviour {
 	public bool thereAgain;
 	public Animator mover;
 
+	private static bool finalMission;
+
+	public bool FinalMission{
+		set{
+			finalMission = value;
+		}
+	}
+
 
 	// Use this for initialization
 	void Start () {
