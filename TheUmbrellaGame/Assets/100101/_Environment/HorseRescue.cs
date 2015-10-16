@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class HorseRescue : MonoBehaviour {
@@ -36,13 +36,6 @@ public class HorseRescue : MonoBehaviour {
 		timer = 500;
 		anim = gameObject.GetComponent<Animator>();
 		nextDestination= destination1;
-
-		//speed = 5; 
-
-
-
-
-
 	
 	}
 	
@@ -53,18 +46,7 @@ public class HorseRescue : MonoBehaviour {
 		anim.SetFloat("SPEED",speed);
 		anim.SetFloat("SpeedRun",run);
 
-<<<<<<< HEAD
 
-=======
-			if(!isMoving){
-      		speed --;
-			//speed = 4;
-			timer = 500;
-//			print (Vector3.Distance(horse.transform.position, destination0.position));
-			}
-
-//			print(fast);
->>>>>>> origin/master
 
 		if (Vector3.Distance(horse.transform.position, destination0.position) <= 5f){
 			nextDestination= destination1;

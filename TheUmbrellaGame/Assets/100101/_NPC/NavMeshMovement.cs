@@ -9,7 +9,7 @@ public class NavMeshMovement : MonoBehaviour {
 	public bool isThere;
 	public bool thereAgain;
 	public Animator mover;
-
+	public Transform BridgeDestination;
 
 	// Use this for initialization
 	void Start () {
