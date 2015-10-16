@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class HorseRescue : MonoBehaviour {
@@ -36,7 +36,11 @@ public class HorseRescue : MonoBehaviour {
 		timer = 500;
 		anim = gameObject.GetComponent<Animator>();
 		nextDestination= destination1;
+<<<<<<< HEAD
+	
+=======
 		Brolly = GameObject.Find("main_Sphere").transform;
+>>>>>>> origin/master
 	}
 	
 	// Update is called once per frame
@@ -46,6 +50,11 @@ public class HorseRescue : MonoBehaviour {
 		anim.SetFloat("SPEED",speed);
 		anim.SetFloat("SpeedRun",run);
 
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> origin/master
 		if (Vector3.Distance(horse.transform.position, destination0.position) <= 5f){
 			nextDestination= destination1;
 			speed--;
