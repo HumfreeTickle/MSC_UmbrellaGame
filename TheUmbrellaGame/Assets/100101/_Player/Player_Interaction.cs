@@ -24,13 +24,13 @@ namespace Player
 
 			}
 
-			if (interactTutorial) {
-
-				if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "Pickup") {
-					tutorial.ObjectTag = "Interaction";
-					interactTutorial = false;
-				}
-			} 
+//			if (interactTutorial) {
+//
+//				if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "Pickup") {
+//					tutorial.ObjectTag = "Interaction";
+//					interactTutorial = false;
+//				}
+//			} 
 		}
 
 		void OnTriggerExit (Collider col)
@@ -38,7 +38,7 @@ namespace Player
 			if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "NPC_talk" || col.gameObject.tag == "NPC" || col.gameObject.tag == "Pickup") {
 				tutorial.ObjectTag = "";
 				helloTutorial = true;
-				interactTutorial = true;
+//				interactTutorial = true;
 			}
 		}
 	}

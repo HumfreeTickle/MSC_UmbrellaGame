@@ -279,17 +279,23 @@ public class GmaeManage : MonoBehaviour
 
 		} else if (Application.loadedLevelName == "Boucing") { //Main screen
 
-			Terrain.activeTerrain.detailObjectDensity =0;
+			Terrain.activeTerrain.detailObjectDensity = 0;
 			gameState = GameState.Intro; 
-			PauseScreen = GameObject.Find ("Pause Screen").GetComponent<Image> ();
-			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
+			if (PauseScreen == null) {
+				PauseScreen = GameObject.Find ("Pause Screen").GetComponent<Image> ();
+			}
+			if (WhiteScreen == null) {
+				WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
+			}
 			WhiteScreen.color = Color.white;
+
+
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
 
 			if (umbrella == null) {
 				umbrella = GameObject.Find ("main_Sphere");
 			}
-			if (umbrella != null) {
+			if (umbrella == null) {
 				umbrellaRb = umbrella.GetComponent<Rigidbody> ();
 			}
 			if (PlayerPrefs.GetFloat ("PlayerX") != 0 || PlayerPrefs.GetFloat ("PlayerY") != 0 || PlayerPrefs.GetFloat ("PlayerZ") != 0) {
@@ -337,7 +343,7 @@ public class GmaeManage : MonoBehaviour
 
 		if (gameState == GameState.Intro) {
 			StartGame ();
-			Terrain.activeTerrain.detailObjectDensity = Mathf.Lerp(Terrain.activeTerrain.detailObjectDensity, 1, Time.deltaTime);
+			Terrain.activeTerrain.detailObjectDensity = Mathf.Lerp (Terrain.activeTerrain.detailObjectDensity, 1, Time.deltaTime);
 			missionState = MissionController.Default;
 
 		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {

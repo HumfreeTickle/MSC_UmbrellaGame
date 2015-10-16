@@ -56,7 +56,6 @@ namespace CameraScripts
 		public float side = 2f;
 		// the height we want the camera to be above the target
 		public float height = 5.0f;
-
 		public float maxHeight = 10f;
 
 		// How much we want to damp the movement
@@ -64,18 +63,24 @@ namespace CameraScripts
 		public float rotationDamping = 3.0f;
 		public Material transparent;
 		public Material backupMaterial;
-
 		private Tutuorial tutorialObject;
+		private bool moveYerself = true;
+		public bool MoveYerself{
+			get{
+				return moveYerself;
+			}
 
-
+			set{
+				moveYerself = value;
+			}
+		}
 
 		private float overSteer = 0f;
 		public float maxOverSteer = 10;
-
 		private float lastHorizontalInput;
 
-		public float LastHorizontalInput{
-			set{
+		public float LastHorizontalInput {
+			set {
 				lastHorizontalInput = value;
 			}
 		}
@@ -86,6 +91,7 @@ namespace CameraScripts
 			gameState = GameManager.gameState;
 			camrea = GetComponent<Camera> ();
 
+			lookAt = GameObject.Find ("main_Sphere");
 			lookAtTr = lookAt.transform;
 			lookAtRb = lookAt.GetComponent<Rigidbody> ();
 			height = 3f;
@@ -123,7 +129,7 @@ namespace CameraScripts
 				height = 3f;
 				distance = 2.5f;
 
-			}else{
+			} else {
 				height = maxHeight;
 				distance = 2.8f;
 			}
@@ -154,14 +160,17 @@ namespace CameraScripts
 					// Set the position of the camera on the x-z plane behind the target
 
 					if (lookAtRb.velocity.magnitude > 10) {
-						overSteer = Mathf.Lerp (overSteer, maxOverSteer*Mathf.Round(lastHorizontalInput), Time.fixedDeltaTime);
+						rotationDamping = 5;
+						overSteer = Mathf.Lerp (overSteer, maxOverSteer * Mathf.Round (lastHorizontalInput), Time.fixedDeltaTime);
 						maxHeight = Mathf.Lerp (maxHeight, 5, Time.fixedDeltaTime);
 
 						newCameraFOV = camrea.fieldOfView + (lookAtRb.velocity.magnitude * Time.fixedDeltaTime);
 						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, Mathf.Clamp (newCameraFOV, 60, 90), Time.fixedDeltaTime * speed);
 					} else {
-						if (Quaternion.Angle (transform.rotation, currentRotation) < 35){
+						if (Quaternion.Angle (transform.rotation, currentRotation) < 35) {
 							overSteer = Mathf.Lerp (overSteer, 0, Time.fixedDeltaTime);
+							rotationDamping = 10;
+
 						}
 						maxHeight = Mathf.Lerp (maxHeight, 10, Time.fixedDeltaTime);
 						camrea.fieldOfView = Mathf.Lerp (camrea.fieldOfView, 60, Time.fixedDeltaTime);
@@ -185,7 +194,9 @@ namespace CameraScripts
 					currentHeight = Mathf.Lerp (currentHeight, wantedHeight, Time.fixedDeltaTime);
 
 					// Set the height of the camera
-					transform.position = new Vector3 (transform.position.x, currentHeight, transform.position.z);
+					if (moveYerself) {
+						transform.position = new Vector3 (transform.position.x, currentHeight, transform.position.z);
+					}
 
 					lookAtTr = lookAt.transform;
 
