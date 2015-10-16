@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 2edbd29abef76499b837aaf24eb69bf0
+timeCreated: 1444991295
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - waterParticles: {fileID: 105440, guid: 79c291c1b59c74a74a01a636d3380cc3, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
