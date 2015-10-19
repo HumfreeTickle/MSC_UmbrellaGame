@@ -81,7 +81,7 @@ namespace NPC
 		//		public List<string> npc_Message_Array = new List<string> (); //supposed to allow for blocks of text to be entered and seperated out automatically
 		private string npc_Message = ""; // holds the current message that needs to be displayed
 		//------------------------------------------------------------------------------//
-		public int x = 0; // for the case state **I wonder if using number's is the best way to cycle through each case
+		private int x = 0; // for the case state **I wonder if using number's is the best way to cycle through each case
 
 		public int X {
 			set {
@@ -128,6 +128,9 @@ namespace NPC
 		private bool playTime;
 		private Vector3 moveTo;
 		private Vector3 robbingPoint;
+		private Vector3 lighthouseLookAt;
+		private LightOnRotate lighthouseRotate;
+		private GameObject LightHouseKeep_DropOff;
 
 		//--------------------------------------------//
 		
@@ -144,13 +147,18 @@ namespace NPC
 			bridge_npc = GameObject.Find ("NPC_Bridge");
 			priest = GameObject.Find ("Priest");
 			church = GameObject.Find ("Church_Roof");
-			lightHouse = GameObject.Find ("LigthHouse_Glass");
+			lightHouse = GameObject.Find ("Lighthouse_LookAt");
 			lightHouseKeeper = GameObject.Find ("NPC_LightHouseKeeper");
 
 			moveTo = GameObject.Find ("lighthouseMove").transform.position;
 			robbingPoint = GameObject.Find ("Robbing_Point").transform.position;
 
-			pickupTool = GameObject.Find ("NPC_Worker");
+			pickupTool = GameObject.Find ("Pickaxe");
+
+			lighthouseLookAt = GameObject.Find ("Lighthouse_Look").transform.position;
+			lighthouseRotate = GameObject.Find ("LigthHouse_Glass").GetComponent<LightOnRotate> ();
+
+			LightHouseKeep_DropOff = GameObject.Find("LightHouseKeep_DropOff");
 
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
 			npc_TalkingBox = GameObject.Find ("NPC_TalkBox").GetComponent<Image> ();
@@ -178,7 +186,7 @@ namespace NPC
 					if (!npc_Animator.isActiveAndEnabled) {
 						npc_Animator.enabled = true;
 					}
-					npc_Animator.SetBool ("Play", jumpAround);
+//					npc_Animator.SetBool ("Play", jumpAround);
 					overHereLight = bridge_npc.transform.FindChild ("Sphere").transform.FindChild ("Activate").GetComponent<Light> ();
 					overHereLight.enabled = jumpAround;
 					npc_Interact = bridge_npc.GetComponent<NPC_Interaction> ();
@@ -196,6 +204,10 @@ namespace NPC
 					}
 				} else {
 					npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0f), Time.deltaTime);
+				}
+
+				if (pickupTool.transform.parent == GameObject.Find ("handle").transform) {
+					toolPickedup = true;
 				}
 			}
 		}
@@ -222,8 +234,8 @@ namespace NPC
 			}
 			
 			// when you picked up the tool
-			else if (currentPerson == lightHouseKeeper && toolPickedup) {
-//				x = 10;
+			else if (currentPerson == lightHouseKeeper && toolPickedup && !lighthouseRotate.LightHerUp) {
+				x = 10;
 			}
 		}
 		
@@ -258,7 +270,15 @@ namespace NPC
 						}
 
 						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
+
+						if (i < 44) {
+							yield return new WaitForSeconds (talkingSpeed);
+						} else if (i == 45) {
+							yield return new WaitForSeconds (1);
+						} else {
+							yield return new WaitForSeconds (talkingSpeed);
+
+						}
 					}
 					
 					while (i >= npc_Message.Length) {
@@ -313,10 +333,17 @@ namespace NPC
 
 					while (i <= npc_Message.Length) {
 
-						npc_Message = "The bridge is broken?? Hmm, I better check this out. Please come with me outside.";
+						npc_Message = "The bridge is broken? I better check this out. Please come with me outside.";
 						npc_Talking.text = (npc_Message.Substring (0, i));
 						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
+						if (i < 22) {
+							yield return new WaitForSeconds (talkingSpeed);
+						} else if (i == 22) {
+							yield return new WaitForSeconds (1);
+						} else {
+							yield return new WaitForSeconds (talkingSpeed);
+							
+						}
 						
 					}
 				
@@ -359,14 +386,14 @@ namespace NPC
 					//-------- talking code ------------//
 					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
-					npc_Animator.SetBool ("Outside", false);
+//					npc_Animator.SetBool ("Outside", false);
 
 					
 					while (i <= npc_Message.Length) {
 						npc_Message = "This is bad. The lighthouse keeper is the only one who can fix this.";
 						npc_Talking.text = (npc_Message.Substring (0, i));
 						i += 1;
-						if (i == 14) {
+						if (i == 13) {
 							cameraSet = lightHouseKeeper;
 							cmaera.GetComponent<Controller> ().lookAt = cameraSet;
 							cmaera.GetComponent<Controller> ().MoveYerself = false;
@@ -378,8 +405,14 @@ namespace NPC
 							cmaera.transform.position = Vector3.Lerp (cmaera.transform.position, moveTo, Time.deltaTime / 2);
 						}
 
-						yield return new WaitForSeconds (talkingSpeed);
-						
+						if (i < 14) {
+							yield return new WaitForSeconds (talkingSpeed);
+						} else if (i == 14) {
+							yield return new WaitForSeconds (1);
+						} else {
+							yield return new WaitForSeconds (talkingSpeed);
+							
+						}
 					}
 					//---------------------------------//
 
@@ -438,11 +471,22 @@ namespace NPC
 					npc_TalkingBox.enabled = true;
 					
 					while (i <= npc_Message.Length) {
-						npc_Message = "What do you want? Fix the bridge ayyy! ..... Alrigh' but you gotta do something for me first.";
+						npc_Message = "What do you want? Fix the bridge ayyy! Alrigh' but you gotta do something for me first.";
 						npc_Talking.text = (npc_Message.Substring (0, i));
 						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
-						
+						if (i < 18) {
+							yield return new WaitForSeconds (talkingSpeed);
+						} else if (i == 18) {
+							yield return new WaitForSeconds (1);
+						} else if (i > 18 && i < 39) {
+							yield return new WaitForSeconds (talkingSpeed);
+							
+						} else if (i == 39) {
+							yield return new WaitForSeconds (1);
+						} else {
+							yield return new WaitForSeconds (talkingSpeed);
+
+						}
 					}
 
 					while (i >= npc_Message.Length) {
@@ -473,7 +517,8 @@ namespace NPC
 					while (i <= npc_Message.Length) {
 						npc_Message = "See that guy over there. He has a tool I need, but he won't give it to me. I need you to get it from him.";
 						npc_Talking.text = (npc_Message.Substring (0, i));
-						if (i == 26) {
+						if (i == 25) {
+							pickupTool.tag = "Pickup";
 							cameraSet = pickupTool;
 							cmaera.GetComponent<Controller> ().lookAt = cameraSet;
 							cmaera.GetComponent<Controller> ().MoveYerself = false;
@@ -486,8 +531,15 @@ namespace NPC
 						}
 
 						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
-						
+
+						if (i < 26) {
+							yield return new WaitForSeconds (talkingSpeed);
+						} else if (i == 26) {
+							yield return new WaitForSeconds (1);
+						} else {
+							yield return new WaitForSeconds (talkingSpeed);
+							
+						}
 					}
 
 					while (i >= npc_Message.Length) {
@@ -507,14 +559,11 @@ namespace NPC
 							yield return new WaitForSeconds (0.5f);
 
 							if (playTime) {
-								// Delegate needs to be changed
 								finalMissionStart = false;
-
-
+							
 								i = 0;
 								x = 9;
 
-								
 								gameManager.gameState = GameState.Game;
 								
 								finalMissionStart = false;
@@ -536,72 +585,123 @@ namespace NPC
 
 				// break to steal the tool
 
-//------------------------------------------- Has yet to be finished
 
 				case 10:
 					//-------- talking code ------------//
 					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
-					
+					npc_Animator = lightHouseKeeper.GetComponent<Animator> ();
+
 					while (i <= npc_Message.Length) {
-						
-						cmaera.GetComponent<GmaeManage> ().Progression = 4;
-						if (playParticles) {
-							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
-							playParticles = false;
-							
-						}
 						npc_Message = "Give me a minute.. gotta fix some things.";
+						pickupTool.transform.parent = lightHouseKeeper.transform.FindChild ("Hand_R").transform;
+						pickupTool.transform.localPosition = new Vector3 (0, 1, 0);
+						pickupTool.tag = "Untagged";
+
 						npc_Talking.text = (npc_Message.Substring (0, i));
+						if (i == 19) {
+							npc_Animator.SetBool ("FixIt", true);
+							cameraSet = lightHouse;
+							cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+							cmaera.GetComponent<Controller> ().MoveYerself = false;
+							yield return null;
+						}
+
+						if (i == 30) {
+							lighthouseRotate.LightHerUp = true;
+						}
+
+						if (!cmaera.GetComponent<Controller> ().MoveYerself) {
+							cmaera.transform.position = Vector3.Lerp (cmaera.transform.position, lighthouseLookAt, Time.deltaTime / 2);
+						}
+
 						i += 1;
 						yield return new WaitForSeconds (talkingSpeed);
-						
 					}
-					//---------------------------------//
-					// return to th lighthouse keeper
-					// give him the part
-					// animation of him repairing stuff
-					// camera moves out like the windmill
-					cameraSet = lightHouse;
-					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
 
-					cameraSet = umbrella;
-					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+					while (i >= npc_Message.Length) {
+						if (Input.GetButtonDown ("Talk")) {
+							if (gameManager.gameState == GameState.MissionEvent) {
+								proceed = true;
+							}
+						}
 
-					// done in another script
-					// lighthouse turns on and starts to spin
+						if (proceed) {
+							npc_Message = "";
+							npc_Talking.text = npc_Message;
+							npc_TalkingBox.enabled = false;
 
+							npc_Animator.SetBool ("FixIt", false);
+
+							cmaera.GetComponent<Controller> ().MoveYerself = true;
+
+							cameraSet = umbrella;
+							cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
+							yield return new WaitForSeconds (0.5f);
+
+							if (playTime) {
+								i = 0;
+								x = 11;
+
+								finalMissionRunning = false;
+
+								proceed = false;
+								yield return null;
+							}
+
+							yield return null;
+						}
+						yield return null;
+					}
 					break;
 
 				case 11:
 					//-------- talking code ------------//
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
-					
+					lightHouseKeeper.tag = "Pickup";
+					pickupTool.SetActive(false);
+
+					if (npc_Animator.isActiveAndEnabled) {
+						npc_Animator.enabled = false;
+					}
+
 					while (i <= npc_Message.Length) {
-						
-						cmaera.GetComponent<GmaeManage> ().Progression = 4;
-						if (playParticles) {
-							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
-							playParticles = false;
-							
-						}
-						npc_Message = "Alrigh' bring me over to the bridge there would ya. I hope a dainty umbrella like yerself can carry me. The wife likes to cook so might be a bit heavier then I used to be.";
+	
+						npc_Message = "Alrigh' bring me over to the bridge there would ya. I hope a dainty umbrella like yerself can carry me.";
 						npc_Talking.text = (npc_Message.Substring (0, i));
 						i += 1;
 						yield return new WaitForSeconds (talkingSpeed);
 						
 					}
-					//---------------------------------//
-					// asks to be carried over to the priest
-					// camera moves
-					cameraSet = priest;
-					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
 
-					cameraSet = umbrella;
-					cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+					while (i >= npc_Message.Length) {
+						if (Input.GetButtonDown ("Talk")) {
+							if (gameManager.gameState == GameState.MissionEvent) {
+								proceed = true;
+							}
+						}
+						if (proceed) {
+							npc_Message = "";
+							npc_Talking.text = npc_Message;
+							npc_TalkingBox.enabled = false;
+							if (LightHouseKeep_DropOff.GetComponent<MeshRenderer> ()) {
+								LightHouseKeep_DropOff.GetComponent<MeshRenderer> ().enabled = true;
+							}
 
-					break;
+							gameManager.gameState = GameState.Game;
+							
+							finalMissionStart = false;
+							finalMissionRunning = false;
+
+							proceed = false;
+						}
+
+						yield return null;
+					}
+
+
+					yield break;
 
 				//break in action for transport
 
@@ -609,7 +709,12 @@ namespace NPC
 					// drop off repairman
 					// animation for repairs
 					// bridge lowers
-					break;
+
+					Debug.Log("Part 12");
+
+
+					yield break;
+
 
 				case 13:
 					//-------- talking code ------------//

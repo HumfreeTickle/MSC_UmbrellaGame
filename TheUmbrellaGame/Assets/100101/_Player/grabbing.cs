@@ -23,6 +23,7 @@ namespace Player
 		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
 
 		private bool thrown;
+		private bool pickup;
 
 		void Start ()
 		{
@@ -41,6 +42,7 @@ namespace Player
 						if (Input.GetButtonDown ("Interact")) {
 							if (!IsInvoking ("Pickup")) {
 								Invoke ("Pickup", 0);
+								pickup = true;
 							}
 						}
 					}
@@ -49,21 +51,25 @@ namespace Player
 					if (Input.GetButtonDown ("Interact")) {
 						if (!IsInvoking ("Detachment")) {
 							Invoke ("Detachment", 0);
+							pickup = false;
+
 						}
 					}
 				}
 			}
+
+			if (pickupObject != null) {
+				if (pickup) {
+					TurnOffColliders (pickupObject.transform);
+				} else {
+					TurnOnColliders (pickupObject.transform);
+				}
+			}
+
 		}
 
 		void Pickup ()
 		{
-			if (pickupObject.GetComponent<BoxCollider> ()) {
-				pickupObject.GetComponent<BoxCollider> ().enabled = false;
-			} else if (pickupObject.GetComponent<MeshCollider> ()) {
-				pickupObject.GetComponent<MeshCollider> ().enabled = false;
-			} else if (pickupObject.GetComponent<SphereCollider> ()) {
-				pickupObject.GetComponent<SphereCollider> ().enabled = false;
-			}
 
 			pickupObject.transform.parent = transform;
 			pickupObject.transform.localPosition = Vector3.zero - new Vector3 (0, 0, z);
@@ -84,13 +90,15 @@ namespace Player
 
 		void Detachment ()
 		{
-			if (pickupObject.GetComponent<BoxCollider> ()) {
-				pickupObject.GetComponent<BoxCollider> ().enabled = true;
-			} else if (pickupObject.GetComponent<MeshCollider> ()) {
-				pickupObject.GetComponent<MeshCollider> ().enabled = true;
-			} else if (pickupObject.GetComponent<SphereCollider> ()) {
-				pickupObject.GetComponent<SphereCollider> ().enabled = true;
-			}
+			TurnOnColliders (pickupObject.transform);
+
+//			if (pickupObject.GetComponent<BoxCollider> ()) {
+//				pickupObject.GetComponent<BoxCollider> ().enabled = true;
+//			} else if (pickupObject.GetComponent<MeshCollider> ()) {
+//				pickupObject.GetComponent<MeshCollider> ().enabled = true;
+//			} else if (pickupObject.GetComponent<SphereCollider> ()) {
+//				pickupObject.GetComponent<SphereCollider> ().enabled = true;
+//			}
 	
 			transform.DetachChildren ();
 			pickupObject.transform.parent = originalParent;
@@ -147,6 +155,57 @@ namespace Player
 			if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "NPC_talk" || col.gameObject.tag == "NPC" || col.gameObject.tag == "Pickup") {
 				tutorial.ObjectTag = "";
 				interactTutorial = true;
+			}
+		}
+
+		void TurnOffColliders (Transform obj)
+		{
+			for (int child = 0; child < obj.childCount; child++) { //goes through each child object one at a time
+
+				if (obj.GetComponent<BoxCollider> ()) {
+					obj.GetComponent<BoxCollider> ().enabled = false;
+				} else if (obj.GetComponent<MeshCollider> ()) {
+					obj.GetComponent<MeshCollider> ().enabled = false;
+				} else if (obj.GetComponent<SphereCollider> ()) {
+					obj.GetComponent<SphereCollider> ().enabled = false;
+				}
+
+				if (obj.GetChild (child).transform.childCount > 0) {
+					TurnOffColliders (obj.GetChild (child));
+				} else {
+					if (obj.GetChild (child).GetComponent<BoxCollider> ()) {
+						obj.GetChild (child).GetComponent<BoxCollider> ().enabled = false;
+					} else if (obj.GetChild (child).GetComponent<MeshCollider> ()) {
+						obj.GetChild (child).GetComponent<MeshCollider> ().enabled = false;
+					} else if (obj.GetChild (child).GetComponent<SphereCollider> ()) {
+						obj.GetChild (child).GetComponent<SphereCollider> ().enabled = false;
+					}
+				}
+			}
+		}
+
+		void TurnOnColliders (Transform obj)
+		{
+			for (int child = 0; child< obj.childCount; child++) { //goes through each child object one at a time
+				if (obj.GetComponent<BoxCollider> ()) {
+					obj.GetComponent<BoxCollider> ().enabled = true;
+				} else if (obj.GetComponent<MeshCollider> ()) {
+					obj.GetComponent<MeshCollider> ().enabled = true;
+				} else if (obj.GetComponent<SphereCollider> ()) {
+					obj.GetComponent<SphereCollider> ().enabled = true;
+				}
+
+				if (obj.GetChild (child).transform.childCount > 0) {
+					TurnOnColliders (obj.GetChild (child));
+				} else {
+					if (obj.GetComponent<BoxCollider> ()) {
+						obj.GetComponent<BoxCollider> ().enabled = true;
+					} else if (obj.GetChild (child).GetComponent<MeshCollider> ()) {
+						obj.GetChild (child).GetComponent<MeshCollider> ().enabled = true;
+					} else if (obj.GetChild (child).GetComponent<SphereCollider> ()) {
+						obj.GetChild (child).GetComponent<SphereCollider> ().enabled = true;
+					}
+				}
 			}
 		}
 	}

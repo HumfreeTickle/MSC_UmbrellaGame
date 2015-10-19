@@ -132,7 +132,8 @@ namespace NPC
 				overHereLight.enabled = jumpAround;
 				npc_Interact.MissionDelegate = StartHorsesMission;
 
-				npc_Animator.SetBool ("Play", jumpAround);
+
+//				npc_Animator.SetBool ("Play", jumpAround);
 
 
 				if (horsesMissionStart) {

@@ -20,7 +20,8 @@ public class Cat_DropOff : MonoBehaviour {
 		if(col.gameObject.name == "kitten"){
 
 			if(!droppedOff){
-			Instantiate(dropParticle,col.gameObject.transform.position, Quaternion.identity);
+				Instantiate(dropParticle,col.gameObject.transform.position, Quaternion.identity);
+				GetComponent<MeshRenderer>().enabled = false;
 				droppedOff = true;
 			}
 			catGuy.enabled = true;
