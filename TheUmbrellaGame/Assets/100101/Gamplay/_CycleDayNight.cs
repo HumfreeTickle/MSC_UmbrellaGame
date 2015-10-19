@@ -57,8 +57,8 @@ namespace Environment
 		private GmaeManage gameManager;
 		private MissionController missionState;
 		public bool updateSkyboxes;
-
 		public float ambientIntensity = 0.3f;
+		public bool testing;
 		/// Initializes working variables and performs starting calculations.  
 		void Initialize ()
 		{  
@@ -93,17 +93,19 @@ namespace Environment
 		{  
 			//------------------------------------------------------//
 			//For testing purposes only
-			if (Input.GetButtonDown ("Undefined")) {
-				if (i < listOFMissionTesting.Count - 1) {
-					i += 1;
-				} else {
-					i = 0;
+			if (testing) {
+				if (Input.GetButtonDown ("Undefined")) {
+					if (i < listOFMissionTesting.Count - 1) {
+						i += 1;
+					} else {
+						i = 0;
+					}
 				}
-			}
 
-			if (Input.GetButtonUp ("Undefined")) {
-				gameManager.missionState = listOFMissionTesting [i];
+				if (Input.GetButtonUp ("Undefined")) {
+					gameManager.missionState = listOFMissionTesting [i];
 
+				}
 			}
 			//------------------------------------------------------//
 
@@ -226,7 +228,7 @@ namespace Environment
 				sun.flare = null;
 
 			} 
-			RenderSettings.ambientIntensity = 0.7f;
+			RenderSettings.ambientIntensity = 0.9f;
 
 			
 			currentPhase = DayPhase.Night;  

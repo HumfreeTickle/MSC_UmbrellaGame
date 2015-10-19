@@ -6,21 +6,12 @@ namespace Environment
 	public class CloudBehave : MonoBehaviour
 	{
 
-		// This should move the cloud from right to left,slowly. When a cloud gets to a certain point it instatiates a new cloud then deletes itself.
-
-//
-//	
-// Would be better if this was a class that generated all the clouds at random positions.//
-//
-//
-
-
 		private Rigidbody cloud;
 		public float speedOfCloud;
 		public GameObject newCloud;
+
 		[System.NonSerialized]
-		public Quaternion
-			cloudRotation = new Quaternion (0.7f, 0, 0, -0.7f);
+		public Quaternion cloudRotation = new Quaternion (0.7f, 0, 0, -0.7f);
 		private GameObject newlySpawnedCloud;
 
 		void Start ()
@@ -41,8 +32,8 @@ namespace Environment
 
 		void createSomeClouds ()
 		{
-			if (transform.position.x <= -600) {
-				newlySpawnedCloud = Instantiate (newCloud, new Vector3 (500, transform.position.y, transform.position.z), cloudRotation) as GameObject;
+			if (transform.position.x <= -800) {
+				newlySpawnedCloud = Instantiate (newCloud, new Vector3 (800, transform.position.y, transform.position.z), cloudRotation) as GameObject;
 				newlySpawnedCloud.transform.parent = GameObject.Find("Clouds").transform;
 
 				Destroy (gameObject);

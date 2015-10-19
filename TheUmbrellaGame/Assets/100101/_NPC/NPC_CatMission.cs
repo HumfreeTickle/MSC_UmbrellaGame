@@ -13,11 +13,11 @@ namespace NPC
 
 		//------------- Talking variables -----------------//
 		private float talkingSpeed;
-		public bool proceed = false;
+		private bool proceed = false;
 		private bool playTime; //used for a camera state change
 
 		//-------------- Tutorial Conditions ---------------//
-		private bool catMissionFinished;
+		public bool catMissionFinished;
 
 		public bool CatMissionFinished {
 			get {
@@ -84,7 +84,7 @@ namespace NPC
 		// Create a list that fills up when ever there is an enter break "\n"
 		// split string
 //		public List<string> npc_Message_Array = new List<string> ();
-		public string npc_Message = "";
+		private string npc_Message = "";
 		//------------------------------------------------------------------------------//
 		private int x = 0;
 		
