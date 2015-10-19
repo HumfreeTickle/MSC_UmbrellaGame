@@ -20,9 +20,9 @@ namespace Player
 		private Achievements achieves;
 		private Tutuorial tutorial;
 		private DestroyObject destroy = new Inheritence.DestroyObject ();
-
 		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
 
+		private bool thrown;
 
 		void Start ()
 		{
@@ -67,6 +67,7 @@ namespace Player
 
 			pickupObject.transform.parent = transform;
 			pickupObject.transform.localPosition = Vector3.zero - new Vector3 (0, 0, z);
+			pickupObject.transform.rotation = Quaternion.identity;
 			pickupObject.tag = "Player";
 			tutorial.ObjectTag = "";
 			if (pickupObject.GetComponent<Rigidbody> ()) {
@@ -77,6 +78,8 @@ namespace Player
 					pickupObject.transform.FindChild ("Activate").GetComponent<Light> ().enabled = false;
 				}
 			}
+
+			thrown = false;
 		}
 
 		void Detachment ()
@@ -94,8 +97,10 @@ namespace Player
 			pickupObject.tag = "Pickup";
 
 			pickupObject.AddComponent<Rigidbody> ();
-
-			pickupObject.GetComponent<Rigidbody> ().AddForce (rb.velocity * throwingSpeed);
+			if (!thrown) {
+				pickupObject.GetComponent<Rigidbody> ().AddForce (rb.velocity * throwingSpeed);
+				thrown = true;
+			}
 			pickupObject = null;
 			originalParent = null;
 		}
@@ -113,7 +118,7 @@ namespace Player
 
 			if (interactTutorial) {
 				
-				if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "Pickup") {
+				if (col.gameObject.tag == "Pickup") {
 					tutorial.ObjectTag = "Interaction";
 					interactTutorial = false;
 				}

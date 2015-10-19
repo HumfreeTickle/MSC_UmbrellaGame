@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Inheritence;
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> origin/master
 
 namespace Player
 {
@@ -20,12 +23,6 @@ namespace Player
 		private Animator umbrellaModel;
 		private static bool goGoAnimation;
 
-		private float alphaWind;
-		public float AlphaWind{
-			set{
-				alphaWind = value;
-			}
-		}
 
 		public GameState gameState;
 		private Tutuorial gameTutorial;

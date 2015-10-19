@@ -46,6 +46,7 @@ namespace Environment
 			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
 			npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
 			caughtPieceofWood = transform.FindChild ("Caught_Wood").gameObject;
+
 			activeLight = caughtPieceofWood.transform.FindChild ("Activate").GetComponent<Light> ();
 			windParticles = activeLight.gameObject.transform.GetChild (0).gameObject;
 

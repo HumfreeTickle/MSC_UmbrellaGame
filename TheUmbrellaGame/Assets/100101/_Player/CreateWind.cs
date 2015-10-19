@@ -29,7 +29,6 @@ namespace Player.PhysicsStuff
 		//-----------------------------------//
 		private Vector3 baseUmbrella = new Vector3 (0f, -5f, 0f);
 		public Vector3 windSource = new Vector3 (0f, 0f, 0f);
-
 		private GameObject umbrella;
 		private GameObject canopyColours;
 		private Rigidbody umbrellaRb;
@@ -66,6 +65,8 @@ namespace Player.PhysicsStuff
 			}
 		}
 
+		private bool onceOnly;
+
 		void Start ()
 		{
 			GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
@@ -95,7 +96,7 @@ namespace Player.PhysicsStuff
 					verticalInput = Input.GetAxis ("Vertical_R");
 					if (this.transform.childCount < 2) {
 						if (!IsInvoking ("SummonWind")) {
-							Invoke ("SummonWind", 0.1f);
+							Invoke ("SummonWind", 0);
 						}
 					}
 				}
@@ -117,19 +118,24 @@ namespace Player.PhysicsStuff
 					//------------- CONDITIONS ----------------------------
 					if (hit.collider.tag == "Terrain") {
 						umbrellaRb.drag = 0;
-						GameManager.LAstKnownPosition = new Vector3 (transform.localPosition.x, hit.transform.position.y, transform.localPosition.z);
+//						GameManager.LAstKnownPosition = new Vector3 (transform.localPosition.x, hit.transform.position.y, transform.localPosition.z);
 
 					} 
 
 					// Activate falling tutorial
 					if (gameState == GameState.Game) {
 						if (hit.collider.tag == "Terrain" && hit.distance > maxTerrainDistance) {
-							tutorialAnim.SetBool ("Fall", true);
+							if (!onceOnly) {
+
+								tutorialAnim.SetBool ("Fall", true);
+								onceOnly = true;
+							}
+
 						} else {
 							tutorialAnim.SetBool ("Fall", false);
 						}
 
-						if(hit.collider.tag == null){
+						if (hit.collider.tag == null) {
 							tutorialAnim.SetBool ("Fall", false);
 						}
 					}
@@ -163,12 +169,6 @@ namespace Player.PhysicsStuff
 						if (gameStart && charge <= 10) {
 							umbrellaChild.material.color = Color.Lerp (umbrellaChild.material.color, blackTint, Time.deltaTime);
 						}
-//						else if(gameStart && charge > 10){
-//							//NEEDS A WAY TO DIFFERENTIATE EACH SECTION
-						//The tag system I used for giving the umbrella colour might work
-//						umbrellaChild.material.color = Color.Lerp (umbrellaChild.material.color, originalColours [child], Time.deltaTime);
-//						}
-
 					}
 				}
 			}
@@ -184,13 +184,7 @@ namespace Player.PhysicsStuff
 			instatiatedWind.GetComponent<ParticleSystem> ().enableEmission = true;
 			instatiatedWind.GetComponent<wind> ().gameState = gameState;
 			instatiatedWind.GetComponent<wind> ().WindForce = charge * verticalInput;
-			instatiatedWind.GetComponent<wind> ().AlphaWind = verticalInput;
 
-			
-			//--------------------	TURNS OFF PARTICLES AFTER ONE CYCLE -----------------
-//			if (Input.GetAxis("Verical_R") < 0.1f) {
-//				instatiatedWind.GetComponent<ParticleSystem> ().enableEmission = false;
-//			}
 		}
 	}
 }

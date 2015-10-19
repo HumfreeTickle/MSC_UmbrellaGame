@@ -43,6 +43,8 @@ namespace Player
 		private Color transparentColorStart = Color.white;
 		private Color transparentColorEnd = new Color(1,1,1, 0.5f);
 
+		public float distanceFromTerrain;
+
 		void Start ()
 		{
 			rb = GetComponent<Rigidbody> ();
@@ -76,12 +78,7 @@ namespace Player
 				}
 
 				TheDescent ();
-//				else {
-//					Physics.gravity = new Vector3 (0, -18.36f, 0);
-//					rb.mass = 1;
-//					umbrellaAnim.SetBool ("Falling", false);
-//					GetComponent<CapsuleCollider>().radius = 0.5f;	
-//				}
+
 
 			} else if (gameManager.gameState == GameState.GameOver) {
 				GetComponent<upwardForce> ().enabled = false;
@@ -129,10 +126,9 @@ namespace Player
 		void TheDescent () //allow the umbrella to go down
 		{
 			// ------------ Standard on/off for the descent ---------------
-			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < 3) { 
+			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < Mathf.Clamp(distanceFromTerrain, 0, Mathf.Infinity)) { 
 				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce * 1.25f, Time.deltaTime * 5);
 				upForce.enabled = true;
-//				Input.ResetInputAxes ();
 
 			} else {
 				if (Input.GetAxis ("Vertical_R") <= -0.9f) {

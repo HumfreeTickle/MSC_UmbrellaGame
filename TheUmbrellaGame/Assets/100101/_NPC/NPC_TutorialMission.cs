@@ -19,8 +19,8 @@ namespace NPC
 		private float talkingSpeed;
 
 		//-------------- Tutorial Conditions ---------------//
-		public bool tutorialMission;
-		public bool tutorialRunning;
+		private bool tutorialMission;
+		private bool tutorialRunning;
 
 		/// <summary>
 		/// States whether the mission has been complete or not
@@ -43,8 +43,8 @@ namespace NPC
 		private GameObject cameraSet;
 		private GameObject npc_Tutorial;
 
-		public GameObject NPC_Tutorial{
-			get{
+		public GameObject NPC_Tutorial {
+			get {
 				return npc_Tutorial;
 			}
 		}
@@ -68,7 +68,7 @@ namespace NPC
 		private Text npc_Talking; //text box
 		private Image npc_TalkingBox; //background image
 		private NPC_Interaction npc_Interact; //used to call the mission when the player talks to an NPC
-		public bool proceed = false; // used to prevent spamming of continue button. As well as allow continue button to work
+		private bool proceed = false; // used to prevent spamming of continue button. As well as allow continue button to work
 
 		//---------------- Stuff to keep the font size relative to the screen --------------//
 //		private float _oldHeight;
@@ -80,9 +80,9 @@ namespace NPC
 		// split string
 
 //		public List<string> npc_Message_Array = new List<string> (); //supposed to allow for blocks of text to be entered and seperated out automatically
-		public string npc_Message = ""; // holds the current message that needs to be displayed
+		private string npc_Message = ""; // holds the current message that needs to be displayed
 		//------------------------------------------------------------------------------//
-		public int x = 0; // for the case state **I wonder if using number's is the best way to cycle through each case
+		private int x = 0; // for the case state **I wonder if using number's is the best way to cycle through each case
 		/// <summary>
 		/// allows other scripts to increase the case state
 		/// </summary>
@@ -115,7 +115,7 @@ namespace NPC
 
 		void Start ()
 		{
-			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage>();
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			windmill = GameObject.Find ("Cylinder"); //windmill part to look at
 			cmaera = GameObject.Find ("Follow Camera"); 
 			umbrella = cmaera.GetComponent<Controller> ().lookAt; //let's the camera look at different things
@@ -206,16 +206,18 @@ namespace NPC
 					while (i <= npc_Message.Length) {
 						npc_Message = "Not sure how you could do it but maybe if you get a closer look.";
 						npc_Talking.text = (npc_Message.Substring (0, i));
-						cameraSet = windmill;
-						windmill.GetComponent<RotationBlades>().LightsOn = true;
 
-						cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+						if (i == 9) {
+							cameraSet = windmill;
+							windmill.GetComponent<RotationBlades> ().LightsOn = true;
+							cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+						}
 						i += 1;
 						yield return new WaitForSeconds (talkingSpeed);
 					}
 
 					while (i >= npc_Message.Length) {
-						windmill.GetComponent<RotationBlades>().LightsOn = false;
+						windmill.GetComponent<RotationBlades> ().LightsOn = false;
 						if (Input.GetButtonDown ("Talk")) {
 							if (gameManager.gameState == GameState.MissionEvent) {
 								proceed = true;
@@ -229,6 +231,7 @@ namespace NPC
 							npc_Tutorial.tag = "NPC";
 							cameraSet = umbrella;
 							cmaera.GetComponent<Controller> ().lookAt = cameraSet;
+
 							yield return new WaitForSeconds (0.5f);
 							if (playTime) {
 								gameManager.gameState = GameState.Game;
@@ -270,7 +273,7 @@ namespace NPC
 								}
 							}
 							if (proceed) {
-								umbrella.GetComponent<CreateWind>().Barriers = false;
+								umbrella.GetComponent<CreateWind> ().Barriers = false;
 								gameManager.missionState = MissionController.CatMission;
 								npc_Tutorial.tag = "NPC";
 

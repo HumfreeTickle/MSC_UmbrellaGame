@@ -40,7 +40,7 @@ namespace NPC
 			}
 		}
 
-		private bool horseMissionFinished = false;
+		public bool horseMissionFinished = false;
 
 		public bool HorseMisssionFinished {
 			get {
@@ -67,10 +67,10 @@ namespace NPC
 		private Text npc_Talking; //text box
 		private Image npc_TalkingBox; //background image
 		private NPC_Interaction npc_Interact; //used to call the mission when the player talks to an NPC
-		public bool proceed = false; // used to prevent spamming of continue button. As well as allow continue button to work
+		private bool proceed = false; // used to prevent spamming of continue button. As well as allow continue button to work
 
 		//		public List<string> npc_Message_Array = new List<string> (); //supposed to allow for blocks of text to be entered and seperated out automatically
-		public string npc_Message = ""; // holds the current message that needs to be displayed
+		private string npc_Message = ""; // holds the current message that needs to be displayed
 
 			
 		private int x = 0; // for the case state
@@ -85,7 +85,6 @@ namespace NPC
 		private bool playParticles = true;
 		private Animator npc_Animator;
 		private Light overHereLight;
-		private IEnumerator horseCoroutine;
 		private NPC_CatMission catMissionStuff;
 		private Transform horses;
 
@@ -102,16 +101,21 @@ namespace NPC
 			npc_TalkingBox = GameObject.Find ("NPC_TalkBox").GetComponent<Image> ();
 			overHereLight = horseGuy.transform.FindChild ("Sphere").transform.FindChild ("Activate").GetComponent<Light> ();
 			overHereLight.enabled = false;
-			horseCoroutine = Horse_Mission ();
 			npc_Interact = horseGuy.GetComponent<NPC_Interaction> ();
 
-			horses = GameObject.Find ("Horse").transform;
+			npc_Animator = horseGuy.GetComponent<Animator> ();
+			if (!npc_Animator.isActiveAndEnabled) {
+				npc_Animator.enabled = true;
+			}
+
+			horses = GameObject.Find ("Horses").transform;
 
 			if (GetComponent<Animator> ()) {
 				if (!npc_Animator.isActiveAndEnabled) {
 					npc_Animator.enabled = true;
 				}
 			}
+			catMissionStuff = GameObject.Find("Missions").GetComponent<NPC_CatMission>();
 
 		}
 	
@@ -119,23 +123,26 @@ namespace NPC
 		void Update ()
 		{
 
-			//if (catMissionStuff.CatMissionFinished) {
-			horseGuy.tag = "NPC_talk";
-			talkingSpeed = gameManager.TextSpeed;
+			if (catMissionStuff.CatMissionFinished) {
+				horseGuy.tag = "NPC_talk";
+				talkingSpeed = gameManager.TextSpeed;
 				
 //				npc_Animator.SetBool ("Play", jumpAround);
-			overHereLight.enabled = jumpAround;
-			npc_Interact.MissionDelegate = StartHorsesMission;
+				overHereLight.enabled = jumpAround;
+				npc_Interact.MissionDelegate = StartHorsesMission;
 
-			if (horsesMissionStart) {
-				npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
-				if (!horseMissionRunning) {
-					StartCoroutine (Horse_Mission ());
+				npc_Animator.SetBool ("Play", jumpAround);
+
+
+				if (horsesMissionStart) {
+					npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
+					if (!horseMissionRunning) {
+						StartCoroutine (Horse_Mission ());
+					}
+				} else {
+					npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0f), Time.deltaTime);
 				}
-			} else {
-				npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0f), Time.deltaTime);
 			}
-			//	}
 
 		}
 
@@ -155,8 +162,17 @@ namespace NPC
 	
 		void TurnOnLights (Transform obj)
 		{
-		
-		
+			for (int child = 0; child < obj.childCount; child++) {
+				if (obj.GetChild (child).childCount > 0) {
+					TurnOnLights (obj.GetChild (child).transform);
+				} else {
+					if (obj.GetChild (child).GetComponent<Light> ()) {
+						if (!obj.GetChild (child).GetComponent<Light> ().isActiveAndEnabled) {
+							obj.GetChild (child).GetComponent<Light> ().enabled = true;
+						}
+					}
+				}
+			}
 		}
 
 		IEnumerator Horse_Mission ()
@@ -227,6 +243,7 @@ namespace NPC
 						yield return null;
 					}
 					break;
+
 				case 3:
 					
 					jumpAround = false;

@@ -49,7 +49,7 @@ namespace NPC
 		}
 
 		//ends the mission
-		private bool boxesMissionFinished = false;
+		public bool boxesMissionFinished = false;
 		/// <summary>
 		/// Allows other scripts to know when the tutorial mission has been completed
 		/// </summary>
@@ -80,14 +80,14 @@ namespace NPC
 		private Text npc_Talking; //text box
 		private Image npc_TalkingBox; //background image
 		private NPC_Interaction npc_Interact; //used to call the mission when the player talks to an NPC
-		public bool proceed = false; // used to prevent spamming of continue button. As well as allow continue button to work
+		private bool proceed = false; // used to prevent spamming of continue button. As well as allow continue button to work
 
 		// Would be awesome if I could workout a way to have this seperate by paragraphs
 		// Create a list that fills up when ever there is an enter break "\n"
 		// split string
 		
 		//		public List<string> npc_Message_Array = new List<string> (); //supposed to allow for blocks of text to be entered and seperated out automatically
-		public string npc_Message = ""; // holds the current message that needs to be displayed
+		private string npc_Message = ""; // holds the current message that needs to be displayed
 		//------------------------------------------------------------------------------//
 		private int x = 0; // for the case state **I wonder if using number's is the best way to cycle through each case
 		/// <summary>
@@ -193,11 +193,6 @@ namespace NPC
 						obj.GetChild(child).GetComponent<Light> ().enabled = true;
 						}
 					}
-//					else{
-//						print ("Parent: " + obj.transform.parent.name );
-//						print ("Child: " + obj.name + " # " + child);
-//						TurnOnLights (obj.transform.GetChild (child).gameObject);
-//					}
 				}
 			}
 		}
