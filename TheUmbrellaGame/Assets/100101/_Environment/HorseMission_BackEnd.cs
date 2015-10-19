@@ -102,10 +102,11 @@ namespace NPC
 			overHereLight = horseGuy.transform.FindChild ("Sphere").transform.FindChild ("Activate").GetComponent<Light> ();
 			overHereLight.enabled = false;
 			npc_Interact = horseGuy.GetComponent<NPC_Interaction> ();
-
-			npc_Animator = horseGuy.GetComponent<Animator> ();
-			if (!npc_Animator.isActiveAndEnabled) {
-				npc_Animator.enabled = true;
+			if (horseGuy.GetComponent<Animator> ()) {
+				npc_Animator = horseGuy.GetComponent<Animator> ();
+				if (!npc_Animator.isActiveAndEnabled) {
+					npc_Animator.enabled = true;
+				}
 			}
 
 			horses = GameObject.Find ("Horses").transform;
@@ -115,7 +116,7 @@ namespace NPC
 					npc_Animator.enabled = true;
 				}
 			}
-			catMissionStuff = GameObject.Find("Missions").GetComponent<NPC_CatMission>();
+			catMissionStuff = GameObject.Find ("Missions").GetComponent<NPC_CatMission> ();
 
 		}
 	
