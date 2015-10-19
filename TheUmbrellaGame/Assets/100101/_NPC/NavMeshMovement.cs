@@ -8,18 +8,16 @@ public class NavMeshMovement : MonoBehaviour
 	public Transform destination2;
 	private Transform finalDestination;
 	private NavMeshAgent agent;
-<<<<<<< HEAD
+
 	public bool isThere;
 	public bool thereAgain;
 	public Animator mover;
 
 
 	public Transform BridgeDestination;
-=======
-	private bool isThere;
-	private bool thereAgain;
+
 //	public Animator mover;
->>>>>>> origin/master
+
 
 	private static bool finalMission;
 
@@ -28,7 +26,7 @@ public class NavMeshMovement : MonoBehaviour
 			finalMission = value;
 		}
 	}
-<<<<<<< HEAD
+
 
 
 
@@ -37,10 +35,9 @@ public class NavMeshMovement : MonoBehaviour
 
 
 	
-=======
 
 
->>>>>>> origin/master
+
 	void Start ()
 	{
 		agent = gameObject.GetComponent<NavMeshAgent> ();
@@ -59,7 +56,7 @@ public class NavMeshMovement : MonoBehaviour
 				isThere = true;
 			}
 		} else {
-			agent.SetDestination (finalDestination.position);
+//			agent.SetDestination (finalDestination.position);
 			if(Vector3.Distance (agent.transform.position, finalDestination.position) <= 4f){
 				agent.Stop();
 			}
