@@ -295,7 +295,7 @@ public class GmaeManage : MonoBehaviour
 			if (umbrella == null) {
 				umbrella = GameObject.Find ("main_Sphere");
 			}
-			if (umbrella == null) {
+			if (umbrella != null) {
 				umbrellaRb = umbrella.GetComponent<Rigidbody> ();
 			}
 			if (PlayerPrefs.GetFloat ("PlayerX") != 0 || PlayerPrefs.GetFloat ("PlayerY") != 0 || PlayerPrefs.GetFloat ("PlayerZ") != 0) {
