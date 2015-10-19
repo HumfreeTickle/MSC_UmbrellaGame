@@ -6,19 +6,12 @@ public class NavMeshMovement : MonoBehaviour
 
 	public Transform destination;
 	public Transform destination2;
-	public Transform finalDestination;
+	private Transform finalDestination;
 	private NavMeshAgent agent;
-	public bool isThere;
-	public bool thereAgain;
-	public Animator mover;
-<<<<<<< HEAD
+	private bool isThere;
+	private bool thereAgain;
+//	public Animator mover;
 
-	public Transform BridgeDestination;
-
-
-=======
-	public Transform BridgeDestination;
->>>>>>> origin/master
 	private static bool finalMission;
 
 	public bool FinalMission {
@@ -26,15 +19,8 @@ public class NavMeshMovement : MonoBehaviour
 			finalMission = value;
 		}
 	}
-<<<<<<< HEAD
 
 
-
-	// Use this for initialization
-	void Start () {
-=======
->>>>>>> origin/master
-	
 	void Start ()
 	{
 		agent = gameObject.GetComponent<NavMeshAgent> ();
