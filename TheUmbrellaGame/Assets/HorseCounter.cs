@@ -28,7 +28,7 @@ public class HorseCounter : MonoBehaviour
 	void OnTriggerEnter (Collider other){
 
 		if (other.gameObject.tag == "Horsey") {
-			//other.tag = "Untagged";
+
 			numberOfHorseHome +=1;
 			Debug.Log ("HorseHome");
 		}
