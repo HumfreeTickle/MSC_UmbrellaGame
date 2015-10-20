@@ -23,7 +23,7 @@ namespace Player
 		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
 
 		private bool thrown;
-		private bool pickup;
+		public bool pickup;
 
 		void Start ()
 		{
@@ -70,6 +70,14 @@ namespace Player
 
 		void Pickup ()
 		{
+			if (pickupObject.GetComponent<BoxCollider> ()) {
+				pickupObject.GetComponent<BoxCollider> ().enabled = false;
+			} else if (pickupObject.GetComponent<MeshCollider> ()) {
+				pickupObject.GetComponent<MeshCollider> ().enabled = false;
+			} else if (pickupObject.GetComponent<SphereCollider> ()) {
+				pickupObject.GetComponent<SphereCollider> ().enabled = false;
+			}
+
 
 			pickupObject.transform.parent = transform;
 			pickupObject.transform.localPosition = Vector3.zero - new Vector3 (0, 0, z);
@@ -92,13 +100,13 @@ namespace Player
 		{
 			TurnOnColliders (pickupObject.transform);
 
-//			if (pickupObject.GetComponent<BoxCollider> ()) {
-//				pickupObject.GetComponent<BoxCollider> ().enabled = true;
-//			} else if (pickupObject.GetComponent<MeshCollider> ()) {
-//				pickupObject.GetComponent<MeshCollider> ().enabled = true;
-//			} else if (pickupObject.GetComponent<SphereCollider> ()) {
-//				pickupObject.GetComponent<SphereCollider> ().enabled = true;
-//			}
+			if (pickupObject.GetComponent<BoxCollider> ()) {
+				pickupObject.GetComponent<BoxCollider> ().enabled = true;
+			} else if (pickupObject.GetComponent<MeshCollider> ()) {
+				pickupObject.GetComponent<MeshCollider> ().enabled = true;
+			} else if (pickupObject.GetComponent<SphereCollider> ()) {
+				pickupObject.GetComponent<SphereCollider> ().enabled = true;
+			}
 	
 			transform.DetachChildren ();
 			pickupObject.transform.parent = originalParent;

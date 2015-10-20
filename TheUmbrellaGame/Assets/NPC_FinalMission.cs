@@ -132,6 +132,7 @@ namespace NPC
 		private LightOnRotate lighthouseRotate;
 		private GameObject LightHouseKeep_DropOff;
 
+		private GameObject NPC_worker;
 		//--------------------------------------------//
 		
 		void Start ()
@@ -153,6 +154,7 @@ namespace NPC
 			moveTo = GameObject.Find ("lighthouseMove").transform.position;
 			robbingPoint = GameObject.Find ("Robbing_Point").transform.position;
 
+			NPC_worker = GameObject.Find("NPC_Worker");
 			pickupTool = GameObject.Find ("Pickaxe");
 
 			lighthouseLookAt = GameObject.Find ("Lighthouse_Look").transform.position;
@@ -208,6 +210,9 @@ namespace NPC
 
 				if (pickupTool.transform.parent == GameObject.Find ("handle").transform) {
 					toolPickedup = true;
+					NPC_worker.transform.FindChild("Hand_R").GetComponent<Animator>().SetBool("MIssing", true);
+				}else{
+					toolPickedup = false;
 				}
 			}
 		}
@@ -252,7 +257,7 @@ namespace NPC
 					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					currentPerson = bridge_npc;
 					
-					overHereLight.enabled = false;
+					jumpAround = false;
 					npc_Animator = bridge_npc.GetComponent<Animator> ();
 					
 					if (!npc_Animator.isActiveAndEnabled) {
@@ -366,6 +371,9 @@ namespace NPC
 							npc_Animator = priest.GetComponent<Animator> ();
 							npc_Animator.SetBool ("GoOutside", true);
 
+							overHereLight = priest.transform.FindChild("Sphere").transform.GetChild(0).GetComponent<Light>();
+							overHereLight.enabled = true;
+
 							finalMissionStart = false;
 							finalMissionRunning = false;
 
@@ -387,7 +395,10 @@ namespace NPC
 					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 //					npc_Animator.SetBool ("Outside", false);
+					overHereLight.enabled = false;
 
+					overHereLight = lightHouseKeeper.transform.FindChild("Sphere").transform.GetChild(0).GetComponent<Light>();
+					overHereLight.enabled = true;
 					
 					while (i <= npc_Message.Length) {
 						npc_Message = "This is bad. The lighthouse keeper is the only one who can fix this.";
@@ -469,7 +480,11 @@ namespace NPC
 					//-------- talking code ------------//
 					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
-					
+					overHereLight.enabled = false;
+
+					overHereLight = NPC_worker.transform.FindChild("Sphere").transform.GetChild(0).GetComponent<Light>();
+					overHereLight.enabled = true;
+
 					while (i <= npc_Message.Length) {
 						npc_Message = "What do you want? Fix the bridge ayyy! Alrigh' but you gotta do something for me first.";
 						npc_Talking.text = (npc_Message.Substring (0, i));
