@@ -597,7 +597,7 @@ ModelImporter:
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMeshForGPU: 1
+    optimizeMeshForGPU: 0
     keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
@@ -606,8 +606,8 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
   tangentSpace:
-    normalSmoothAngle: 3
-    splitTangentsAcrossUV: 1
+    normalSmoothAngle: 180
+    splitTangentsAcrossUV: 0
     normalImportMode: 1
     tangentImportMode: 1
   importAnimation: 1

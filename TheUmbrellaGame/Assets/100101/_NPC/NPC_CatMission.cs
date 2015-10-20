@@ -112,6 +112,8 @@ namespace NPC
 		private bool playParticles = true;
 
 		private MeshRenderer catDropOff;
+
+		private bool proceedTalk;
 		void Start ()
 		{
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
@@ -143,6 +145,8 @@ namespace NPC
 		{	
 			if (tutorialMissionStuff.TutorialMisssionFinished) {
 				talkingSpeed = gameManager.TextSpeed;
+
+				npc_TalkingBox.transform.GetChild(0).GetComponent<Animator>().SetBool("proceed", proceedTalk);
 
 				npc_Animator.SetBool ("Play", jumpAround);
 				overHereLight.enabled = jumpAround;
@@ -201,6 +205,10 @@ namespace NPC
 						
 					}
 					while (i >= npc_Message.Length) {
+						if(!proceed){
+							proceedTalk = true;
+						}
+
 						if (Input.GetButtonDown ("Talk")) {
 							if (gameManager.gameState == GameState.MissionEvent) {
 								proceed = true;
@@ -208,6 +216,8 @@ namespace NPC
 						}
 						
 						if (proceed) {
+							proceedTalk = false;
+
 							i = 0;
 							x = 1;
 							proceed = false;
@@ -231,12 +241,18 @@ namespace NPC
 					}
 					while (i >= npc_Message.Length) {
 						if (playTime) {
+							if(!proceed){
+								proceedTalk = true;
+							}
+
 							if (Input.GetButtonDown ("Talk")) {
 								if (gameManager.gameState == GameState.MissionEvent) {
 									proceed = true;
 								}
 							}
 							if (proceed) {
+								proceedTalk = false;
+
 								npc_Message = " ";
 								npc_TalkingBox.enabled = false;
 								npc_Talking.text = npc_Message;
@@ -275,6 +291,10 @@ namespace NPC
 							
 					}
 					while (i >= npc_Message.Length) {
+						if(!proceed){
+							proceedTalk = true;
+						}
+
 
 						if (catMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
@@ -283,6 +303,8 @@ namespace NPC
 								}
 							}
 							if (proceed) {
+								proceedTalk = false;
+
 								npc_Message = "";
 								npc_TalkingBox.enabled = false;
 								npc_Talking.text = npc_Message;
@@ -304,6 +326,8 @@ namespace NPC
 
 				case 4:
 					dropOff.tag = "NPC";
+					proceedTalk = false;
+
 					StopCoroutine (catCoroutine);
 					break;
 				default:

@@ -3,7 +3,13 @@ using System.Collections;
 
 public class DropTheBridge : MonoBehaviour
 {
-	public bool drop;
+	private bool drop;
+	public bool Drop{
+		set{
+			drop = value;
+		}
+	}
+
 	private Animator animator;
 
 	void Awake ()
