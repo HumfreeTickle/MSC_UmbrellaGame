@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using Inheritence;
 
@@ -73,8 +73,8 @@ namespace Player
 			if(gameState == GameState.Intro){
 
 				umbrellaModel.SetBool("GameStart", true);
-				GameObject.Find ("Follow Camera").GetComponent<GmaeManage>().missionState = MissionController.TutorialMission;
-				GameObject.Find ("Follow Camera").GetComponent<GmaeManage>().gameState = GameState.Game;
+				GameObject.Find ("Follow Camera").GetComponent<GmaeManage>().MissionState = MissionController.TutorialMission;
+				GameObject.Find ("Follow Camera").GetComponent<GmaeManage>().GameState = GameState.Game;
 			}
 			yield return new WaitForSeconds(0.5f);
 			umbrellaModel.SetBool ("Hit", false);

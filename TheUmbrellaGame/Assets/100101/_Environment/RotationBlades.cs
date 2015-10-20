@@ -145,7 +145,7 @@ namespace Environment
 		{
 			while (running) {
 				while(zeldafy){
-				gameManager.gameState = GameState.MissionEvent;
+				gameManager.GameState = GameState.MissionEvent;
 				cameraSet = this.gameObject;
 				cmaera.lookAt = cameraSet;
 				cmaera.MoveYerself = false;
@@ -168,7 +168,7 @@ namespace Environment
 				cameraSet = umbrella;
 				cmaera.lookAt = cameraSet;
 				cmaera.MoveYerself = true;
-				gameManager.gameState = GameState.Game;
+				gameManager.GameState = GameState.Game;
 				running = false;
 			}
 

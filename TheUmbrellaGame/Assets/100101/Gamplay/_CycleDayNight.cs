@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -63,7 +63,7 @@ namespace Environment
 		void Initialize ()
 		{  
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
-			missionState = gameManager.missionState;
+			missionState = gameManager.MissionState;
 			mapCentre = GameObject.Find ("Centre of Map").transform;  
 			sun = GetComponent<Light> ();
 
@@ -71,7 +71,7 @@ namespace Environment
 			listOFMissionTesting.Add (MissionController.CatMission);
 			listOFMissionTesting.Add (MissionController.BoxesMission);
 			listOFMissionTesting.Add (MissionController.HorsesMission);
-			listOFMissionTesting.Add (MissionController.BridgeMission);
+			listOFMissionTesting.Add (MissionController.FinalMission);
 
 		}  
 	
@@ -103,13 +103,13 @@ namespace Environment
 				}
 
 				if (Input.GetButtonUp ("Undefined")) {
-					gameManager.missionState = listOFMissionTesting [i];
+					gameManager.MissionState = listOFMissionTesting [i];
 
 				}
 			}
 			//------------------------------------------------------//
 
-			missionState = gameManager.missionState;
+			missionState = gameManager.MissionState;
 
 			switch (missionState) {
 			case MissionController.TutorialMission:
@@ -134,12 +134,13 @@ namespace Environment
 				break;
 
 			case MissionController.HorsesMission:
-				SetDusk (0.3f);  
-				blendRatio = 0;
+				SetDusk (0.6f); //mid afternoon 
+				SetSun (160);
+				blendRatio = 0.7f;
 
 				break;
 
-			case MissionController.BridgeMission:
+			case MissionController.FinalMission:
 				SetNight (); 
 				SetSun (270);
 				blendRatio = 1;

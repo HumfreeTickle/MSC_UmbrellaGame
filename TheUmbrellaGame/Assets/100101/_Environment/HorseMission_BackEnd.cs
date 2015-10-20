@@ -16,7 +16,7 @@ namespace NPC
 		private GameObject cmaera;
 		private GameObject umbrella;
 		private float talkingSpeed;
-		private bool horseMissionRunning;
+		public bool horseMissionRunning;
 
 		public bool HorseMissionRunning {
 			get {
@@ -28,7 +28,7 @@ namespace NPC
 		}
 
 		public GameObject particales;
-		private bool horsesMissionStart;
+		public bool horsesMissionStart;
 	
 		public bool HorseMissionStart {
 			get {
@@ -73,7 +73,7 @@ namespace NPC
 		private string npc_Message = ""; // holds the current message that needs to be displayed
 
 			
-		private int x = 0; // for the case state
+		public int x = 0; // for the case state
 
 		public int Horses_X {
 			set {
@@ -85,9 +85,9 @@ namespace NPC
 		private bool playParticles = true;
 		private Animator npc_Animator;
 		private Light overHereLight;
+		private NPC_BoxesMission boxesMission;
 		private NPC_CatMission catMissionStuff;
 		private Transform horses;
-
 		private bool proceedTalk;
 
 		// Use this for initialization
@@ -118,36 +118,37 @@ namespace NPC
 					npc_Animator.enabled = true;
 				}
 			}
-			catMissionStuff = GameObject.Find ("Missions").GetComponent<NPC_CatMission> ();
-
+			catMissionStuff = GetComponent<NPC_CatMission> ();
+			boxesMission = GetComponent<NPC_BoxesMission> ();
 		}
 	
 		// Update is called once per frame
 		void Update ()
 		{
+			if (!horseMissionFinished) {
+				if (boxesMission.BoxesMisssionFinished) {
 
-			if (catMissionStuff.CatMissionFinished) {
+					horseGuy.tag = "NPC_talk";
+					talkingSpeed = gameManager.TextSpeed;
+					overHereLight.enabled = jumpAround;
 
-				npc_TalkingBox.transform.GetChild(0).GetComponent<Animator>().SetBool("proceed", proceedTalk);
-
-				horseGuy.tag = "NPC_talk";
-				talkingSpeed = gameManager.TextSpeed;
-				
-//				npc_Animator.SetBool ("Play", jumpAround);
-				overHereLight.enabled = jumpAround;
-				npc_Interact.MissionDelegate = StartHorsesMission;
-
-
-//				npc_Animator.SetBool ("Play", jumpAround);
-
-
-				if (horsesMissionStart) {
-					npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
-					if (!horseMissionRunning) {
-						StartCoroutine (Horse_Mission ());
+					if (x == 0) {
+						npc_Interact.MissionDelegate = StartHorsesMission;
 					}
-				} else {
-					npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0f), Time.deltaTime);
+
+					if (gameManager.MissionState == MissionController.HorsesMission) {
+
+						npc_TalkingBox.transform.GetChild (0).GetComponent<Animator> ().SetBool ("proceed", proceedTalk);
+
+						if (horsesMissionStart) {
+							npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
+							if (!horseMissionRunning) {
+								StartCoroutine (Horse_Mission ());
+							}
+						} else {
+							npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0f), Time.deltaTime);
+						}
+					}
 				}
 			}
 
@@ -155,14 +156,17 @@ namespace NPC
 
 		void StartHorsesMission ()
 		{
-
-			if (!horsesMissionStart) {
-				horsesMissionStart = true;
+			if (x != 2 || x != 4) {
+				if (!horsesMissionStart) {
+					horsesMissionStart = true;
+					gameManager.MissionState = MissionController.HorsesMission;
+				}
 			}
-
-			if (horseReturned && horseMissionRunning) {
-				x = 3;
-				horseMissionRunning = false;
+			if (x < 3) {
+				if (horseReturned && horseMissionRunning) {
+					x = 3;
+					horseMissionRunning = false;
+				}
 			}
 
 		}
@@ -184,15 +188,15 @@ namespace NPC
 
 		IEnumerator Horse_Mission ()
 		{
-
 			horseMissionRunning = true;
 			int i = 0;
 
 			while (x < 5) {// only allows the first 2 cases to playout
+
 				switch (x) {
 				case 0:
 					jumpAround = false;
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					cmaera.GetComponent<GmaeManage> ().GameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					while (i <= npc_Message.Length) {
 						npc_Message = "My horses have all ran away!! Please round them bup for me. ";
@@ -201,13 +205,13 @@ namespace NPC
 						yield return new WaitForSeconds (talkingSpeed);
 					}
 
-					while (i >= npc_Message.Length + 1) {
-						if(!proceed){
+					while (i >= npc_Message.Length) {
+						if (!proceed) {
 							proceedTalk = true;
 						}
 
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -235,13 +239,14 @@ namespace NPC
 						i += 1;
 						yield return new WaitForSeconds (talkingSpeed);
 					}
+
 					while (i >= npc_Message.Length) {
-						if(!proceed){
+						if (!proceed && gameManager.GameState == GameState.MissionEvent) {
 							proceedTalk = true;
 						}
 
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -256,7 +261,7 @@ namespace NPC
 								i = 0;
 								x = 2;
 								proceed = false;
-								cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+								cmaera.GetComponent<GmaeManage> ().GameState = GameState.Game;
 							}
 						}
 						yield return null;
@@ -266,7 +271,7 @@ namespace NPC
 				case 3:
 					
 					jumpAround = false;
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					cmaera.GetComponent<GmaeManage> ().GameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					
 					while (i <= npc_Message.Length) {
@@ -285,13 +290,13 @@ namespace NPC
 					}
 					
 					while (i >= npc_Message.Length) {
-						if(!proceed){
+						if (!proceed) {
 							proceedTalk = true;
 						}
 
-						if (horseMissionFinished) {
+						if (horseMissionFinished && gameManager.GameState == GameState.MissionEvent) {
 							if (Input.GetButtonDown ("Talk")) {
-								if (gameManager.gameState == GameState.MissionEvent) {
+								if (gameManager.GameState == GameState.MissionEvent) {
 									proceed = true;
 								}
 							}
@@ -304,12 +309,20 @@ namespace NPC
 								
 								i = 0;
 								x = 4;
-								
-								gameManager.gameState = GameState.Game;
+
+								gameManager.GameState = GameState.Game;
 								horsesMissionStart = false;
-								
+								horseMissionRunning = false;
+
 								proceed = false;
-								yield break;
+
+								if (!boxesMission.BoxesMisssionFinished) {
+									gameManager.missionState = MissionController.BoxesMission;
+								}
+
+
+								yield return null;
+
 							}
 						}
 						yield return null;
@@ -317,9 +330,23 @@ namespace NPC
 					}
 					break;
 
+				case 4:
+					print ("horseMission done");
+
+					yield break;
+
+
+
+				default:
+					yield break;
+
 				}
+				yield return null;
+
+				
 			}
-		
+			yield break;
+
 		}
 
 

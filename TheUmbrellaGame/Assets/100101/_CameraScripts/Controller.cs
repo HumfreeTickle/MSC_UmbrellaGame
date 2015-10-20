@@ -88,7 +88,7 @@ namespace CameraScripts
 		void Start ()
 		{
 			GameManager = GetComponent<GmaeManage> ();
-			gameState = GameManager.gameState;
+			gameState = GameManager.GameState;
 			camrea = GetComponent<Camera> ();
 
 			lookAt = GameObject.Find ("main_Sphere");
@@ -100,11 +100,11 @@ namespace CameraScripts
 		
 		void Update ()
 		{
-			gameState = GameManager.gameState;
+			gameState = GameManager.GameState;
 			RayCastView ();
 
 			if (gameState == GameState.Pause) {
-				if (GameManager.controllerType != ControllerType.Keyboard) {
+				if (GameManager.ControllerType != ControllerType.Keyboard) {
 					RotateYaw ();
 					RotatePitch ();
 				}

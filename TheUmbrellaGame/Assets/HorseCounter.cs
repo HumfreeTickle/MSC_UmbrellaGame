@@ -16,20 +16,16 @@ public class HorseCounter : MonoBehaviour
 
 		if (numberOfHorseHome >= 2) {
 
-			Debug.Log ("Completed");
 			GateClose.SetBool("Close", true);
-//			horseMission.Horses_X = 3;
 			horseMission.HorseReturned = true;
-
 		}
 	
 	}
 
 	void OnTriggerEnter (Collider other){
 
-		if (other.gameObject.tag == "Horsey") {
+		if (other.gameObject.tag == "Interaction") {
 			numberOfHorseHome +=1;
-			Debug.Log ("HorseHome");
 		}
 	}
 }

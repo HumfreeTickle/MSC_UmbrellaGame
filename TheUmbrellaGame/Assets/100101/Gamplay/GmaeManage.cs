@@ -59,7 +59,7 @@ public enum MissionController
 	CatMission,
 	BoxesMission,
 	HorsesMission,
-	BridgeMission,
+	FinalMission,
 	Default
 }
 
@@ -215,17 +215,38 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	//------------------------------------------ State Checks ------------------------------------------//
-	
-	public GameState gameState { get; set; }
+	public GameState gameState;
+	public GameState GameState {
+		get {
+			return gameState;
+		}
+		set {
+			gameState = value;
+		}
+	}
+	private GameState currentState = GameState.Intro;
 
-	public GameState currentState = GameState.Intro;
-	
-	public ControllerType controllerType { get; set; }
+	public ControllerType controllerType;
+	public ControllerType ControllerType {
+		get {
+			return controllerType;
+		}
+		set {
+			controllerType = value;
+		}
+	}
 
 	private ControllerType currentController = ControllerType.NullState;
 
-	public MissionController missionState { get; set; }
-
+	public MissionController missionState;
+	public MissionController MissionState {
+		get {
+			return missionState;
+		}
+		set {
+			missionState = value;
+		}
+	}
 	private MissionController currentMission = MissionController.Default;
 	
 	//--------------------------------------------------------------------------------------------------//
@@ -242,19 +263,19 @@ public class GmaeManage : MonoBehaviour
 
 		//-------------------- For the different controllers ---------------------------------
 		if (Input.GetJoystickNames ().Length > 0) {// checks to see if a controller is connected
-			controllerType = ControllerType.ConsoleContoller;
+			ControllerType = ControllerType.ConsoleContoller;
 			controllerTypeVertical = "Vertical_L";
 			controllerTypeHorizontal = "Horizontal_L";
 			print ("Player 1: Connected");
 
 
 		} else if (Input.GetJoystickNames ().Length == 0) {
-			controllerType = ControllerType.Keyboard;
+			ControllerType = ControllerType.Keyboard;
 			controllerTypeVertical = "Vertical";
 			controllerTypeHorizontal = "Horizontal";
 
 		} else {
-			controllerType = ControllerType.NullState;
+			ControllerType = ControllerType.NullState;
 			Debug.Log ("Disconnected");
 		}
 
@@ -262,7 +283,7 @@ public class GmaeManage : MonoBehaviour
 
 		if (Application.loadedLevelName == "Start_Screen") { //Start screen
 
-			gameState = GameState.Intro; 
+			GameState = GameState.Intro; 
 			startButton = GameObject.Find ("Start Button").GetComponent<Image> ();
 			umbrellaGame = GameObject.Find ("Umbrella Logo").GetComponent<Image> ();
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
@@ -281,7 +302,7 @@ public class GmaeManage : MonoBehaviour
 		} else if (Application.loadedLevelName == "Boucing") { //Main screen
 
 			Terrain.activeTerrain.detailObjectDensity = 0;
-			gameState = GameState.Intro; 
+			GameState = GameState.Intro; 
 			if (PauseScreen == null) {
 				PauseScreen = GameObject.Find ("Pause Screen").GetComponent<Image> ();
 			}
@@ -313,7 +334,7 @@ public class GmaeManage : MonoBehaviour
 			tutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
 			catMission = GameObject.Find ("Missions").GetComponent<NPC_CatMission> ();
 			boxesMission = GameObject.Find ("Missions").GetComponent<NPC_BoxesMission> ();
-			horseMission =  GameObject.Find ("Missions").GetComponent<HorseMission_BackEnd> ();
+			horseMission = GameObject.Find ("Missions").GetComponent<HorseMission_BackEnd> ();
 
 			if (canopyColour == null) {
 				canopyColour = GameObject.Find ("Canopy_Colours").transform;
@@ -344,16 +365,16 @@ public class GmaeManage : MonoBehaviour
 			Progress ();
 		}
 
-		if (gameState == GameState.Intro) {
+		if (GameState == GameState.Intro) {
 			StartGame ();
 			Terrain.activeTerrain.detailObjectDensity = Mathf.Lerp (Terrain.activeTerrain.detailObjectDensity, 1, Time.deltaTime);
-			missionState = MissionController.Default;
+			MissionState = MissionController.Default;
 
-		} else if (gameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
+		} else if (GameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
 
 			RestartGame ();
 
-			if (gameState != GameState.GameOver) {//so the player can't pause when they die
+			if (GameState != GameState.GameOver) {//so the player can't pause when they die
 				PauseGame ();
 			}
 			EndGame ();
@@ -405,7 +426,7 @@ public class GmaeManage : MonoBehaviour
 	void RestartGame ()
 	{
 		if (Input.GetKeyDown (KeyCode.R)) {
-			gameState = GameState.GameOver;
+			GameState = GameState.GameOver;
 		}
 	}
 
@@ -415,25 +436,25 @@ public class GmaeManage : MonoBehaviour
 	{
 		if (Input.GetButtonDown ("Submit")) {
 
-			if (gameState == GameState.Game) {
-				gameState = GameState.Pause;
+			if (GameState == GameState.Game) {
+				GameState = GameState.Pause;
 				PausedSnapShot.TransitionTo (0);
 
-			} else if (gameState == GameState.Pause) {
-				gameState = GameState.Game;
+			} else if (GameState == GameState.Pause) {
+				GameState = GameState.Game;
 				autoPauseTimer = 0;
 				NotPaused ();
 				InGameSnapShot.TransitionTo (0);
 			}
 		}
 
-		if (gameState == GameState.Pause) {
+		if (GameState == GameState.Pause) {
 			Paused ();
-		} else if (gameState != GameState.Pause) {
+		} else if (GameState != GameState.Pause) {
 			NotPaused ();
 		}
 
-		if (gameState == GameState.Game) {
+		if (GameState == GameState.Game) {
 			FixedPause ();	
 		}
 	}
@@ -443,10 +464,10 @@ public class GmaeManage : MonoBehaviour
 	void EndGame ()
 	{
 		if (_charge < 1) {
-			gameState = GameState.GameOver;
+			GameState = GameState.GameOver;
 		}
 
-		if (gameState == GameState.GameOver) {
+		if (GameState == GameState.GameOver) {
 
 
 			_gameOverTimer += Time.deltaTime;
@@ -457,21 +478,21 @@ public class GmaeManage : MonoBehaviour
 //-------------------------------------- State Checking ---------------------------------------------------------------------------
 	void CheckStates ()
 	{
-		if (controllerType != currentController) {
-			Debug.Log (controllerType);
+		if (ControllerType != currentController) {
+			Debug.Log (ControllerType);
 		}
 		
-		if (gameState != currentState) {
-			Debug.Log (gameState);
+		if (GameState != currentState) {
+			Debug.Log (GameState);
 		}
 
-		if (missionState != currentMission) {
-			Debug.Log (missionState);
+		if (MissionState != currentMission) {
+			Debug.Log (MissionState);
 		}
 		
-		currentState = gameState;
-		currentController = controllerType;
-		currentMission = missionState;
+		currentState = GameState;
+		currentController = ControllerType;
+		currentMission = MissionState;
 	}
 	
 //----------------------------------------------- Other Funcitons ------------------------------------------
@@ -528,7 +549,7 @@ public class GmaeManage : MonoBehaviour
 			}
 			
 			if (autoPauseTimer >= 45) {
-				gameState = GameState.Pause;//when the timer reaches 0 then the pause screen will activate
+				GameState = GameState.Pause;//when the timer reaches 0 then the pause screen will activate
 			}
 			
 		} else if (umbrellaRb.velocity.magnitude > 2) {
@@ -541,10 +562,10 @@ public class GmaeManage : MonoBehaviour
 	//-------------------------------------- White Screen Stuff -----------------------------------------------------------------
 	void WhiteScreenTransisitions ()
 	{
-		if (gameState == GameState.Intro) {
+		if (GameState == GameState.Intro) {
 			fading.FadeOUT (WhiteScreen, 3);
 			
-		} else if (gameState == GameState.GameOver) {
+		} else if (GameState == GameState.GameOver) {
 			if (_gameOverTimer > 2) {
 				fading.FadeIN (WhiteScreen, 1);
 
@@ -574,6 +595,8 @@ public class GmaeManage : MonoBehaviour
 		if (progression < 6) {
 			umbrellaColour = allTheColoursOfTheUmbrella [progression - 2];
 			ChangeColours (canopyColour);
+		}else{
+			GameState = GameState.GameOver;
 		}
 	}
 
@@ -604,9 +627,6 @@ public class GmaeManage : MonoBehaviour
 								break;
 							case 5:
 								horseMission.HorseMisssionFinished = true;
-								break;
-							case 6:
-								gameState = GameState.GameOver;
 								break;
 							default:
 								break;
