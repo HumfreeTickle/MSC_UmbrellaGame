@@ -64,7 +64,7 @@ namespace CameraScripts
 		public Material transparent;
 		public Material backupMaterial;
 		private Tutuorial tutorialObject;
-		private bool moveYerself = true;
+		public bool moveYerself = true;
 		public bool MoveYerself{
 			get{
 				return moveYerself;

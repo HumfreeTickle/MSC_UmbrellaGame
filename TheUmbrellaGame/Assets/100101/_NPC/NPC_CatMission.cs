@@ -111,6 +111,7 @@ namespace NPC
 		private IEnumerator catCoroutine;
 		private bool playParticles = true;
 
+		private MeshRenderer catDropOff;
 		void Start ()
 		{
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
@@ -130,6 +131,8 @@ namespace NPC
 
 			cameraSet = cmaera.GetComponent<Controller> ().lookAt;
 			npc_Interact = dropOff.GetComponent<NPC_Interaction> ();
+
+			catDropOff = GameObject.Find("Drop-Off Zone (Cat)").GetComponent<MeshRenderer>();
 
 			catCoroutine = Cat_Mission ();
 			//doesn't quite work
@@ -181,6 +184,8 @@ namespace NPC
 
 					gameManager.gameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
+
+					catDropOff.enabled = true;
 
 					while (i <= npc_Message.Length) {
 						

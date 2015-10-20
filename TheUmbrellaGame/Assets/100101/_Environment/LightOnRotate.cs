@@ -4,22 +4,28 @@ using Environment;
 
 public class LightOnRotate : MonoBehaviour {
 
-	public _CycleDayNight sun;
-	public DayPhase currentPhase;
+	private bool lightHerUp;
+	public bool LightHerUp{
+		get{
+			return lightHerUp;
+		}
+
+		set{
+			lightHerUp = value;
+		}
+	}
+
+	public Material lighting;
 
 	void Update () {
 
-		if(!sun){
-			return;
-		}
-
-		currentPhase = sun.CurrentPhase;
-
-		if(currentPhase == DayPhase.Night){
+		if(lightHerUp){
 			transform.GetChild(0).gameObject.SetActive (true);// = true;
+			transform.Rotate(0, 15* Time.deltaTime, 0);
+			GetComponent<MeshRenderer>().material = lighting;
+
 		}else{
 			transform.GetChild(0).gameObject.SetActive (false);
 		}
-		transform.Rotate(0, 15* Time.deltaTime, 0);
 	}
 }
