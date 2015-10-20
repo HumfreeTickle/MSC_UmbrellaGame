@@ -88,6 +88,8 @@ namespace NPC
 		private NPC_CatMission catMissionStuff;
 		private Transform horses;
 
+		private bool proceedTalk;
+
 		// Use this for initialization
 		void Start ()
 		{
@@ -125,6 +127,9 @@ namespace NPC
 		{
 
 			if (catMissionStuff.CatMissionFinished) {
+
+				npc_TalkingBox.transform.GetChild(0).GetComponent<Animator>().SetBool("proceed", proceedTalk);
+
 				horseGuy.tag = "NPC_talk";
 				talkingSpeed = gameManager.TextSpeed;
 				
@@ -197,12 +202,18 @@ namespace NPC
 					}
 
 					while (i >= npc_Message.Length + 1) {
+						if(!proceed){
+							proceedTalk = true;
+						}
+
 						if (Input.GetButtonDown ("Talk")) {
 							if (gameManager.gameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
 						if (proceed) {
+							proceedTalk = false;
+
 							TurnOnLights (horses);
 						
 							i = 0;
@@ -225,6 +236,10 @@ namespace NPC
 						yield return new WaitForSeconds (talkingSpeed);
 					}
 					while (i >= npc_Message.Length) {
+						if(!proceed){
+							proceedTalk = true;
+						}
+
 						if (Input.GetButtonDown ("Talk")) {
 							if (gameManager.gameState == GameState.MissionEvent) {
 								proceed = true;
@@ -233,6 +248,8 @@ namespace NPC
 							
 						if (proceed) {
 							if (!horseReturned) {
+								proceedTalk = false;
+
 								npc_Message = "";
 								npc_TalkingBox.enabled = false;
 								npc_Talking.text = npc_Message;
@@ -254,13 +271,13 @@ namespace NPC
 					
 					while (i <= npc_Message.Length) {
 						
-						cmaera.GetComponent<GmaeManage> ().Progression = 4;
+						cmaera.GetComponent<GmaeManage> ().Progression = 5;
 						if (playParticles) {
 							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
 							playParticles = false;
 							
 						}
-						npc_Message = "You are a saint of an umbrella. Thank you so very much.";
+						npc_Message = "Thanks.";
 						npc_Talking.text = (npc_Message.Substring (0, i));
 						i += 1;
 						yield return new WaitForSeconds (talkingSpeed);
@@ -268,6 +285,10 @@ namespace NPC
 					}
 					
 					while (i >= npc_Message.Length) {
+						if(!proceed){
+							proceedTalk = true;
+						}
+
 						if (horseMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
 								if (gameManager.gameState == GameState.MissionEvent) {
@@ -275,6 +296,8 @@ namespace NPC
 								}
 							}
 							if (proceed) {
+								proceedTalk = false;
+
 								npc_Message = "";
 								npc_Talking.text = npc_Message;
 								npc_TalkingBox.enabled = false;
@@ -282,13 +305,9 @@ namespace NPC
 								i = 0;
 								x = 4;
 								
-								missionStates = MissionController.BridgeMission;
-								gameManager.missionState = missionStates;
 								gameManager.gameState = GameState.Game;
 								horsesMissionStart = false;
 								
-								// Temp final stuff
-								GameObject.FindWithTag ("Final").GetComponent<Light> ().enabled = true;
 								proceed = false;
 								yield break;
 							}

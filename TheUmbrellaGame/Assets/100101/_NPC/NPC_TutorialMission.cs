@@ -110,7 +110,7 @@ namespace NPC
 		private Animator npc_Animator;
 		private Light overHereLight;
 		private IEnumerator tutorialCoroutine;
-
+		private bool proceedTalk;
 		//--------------------------------------------//
 
 		void Start ()
@@ -145,8 +145,10 @@ namespace NPC
 			overHereLight.enabled = jumpAround;
 			playTime = cmaera.GetComponent<Controller> ().PlayTime;
 			talkingSpeed = gameManager.TextSpeed;
+			npc_TalkingBox.transform.GetChild (0).GetComponent<Animator> ().SetBool ("proceed", proceedTalk);
 
 			if (tutorialMission) {
+
 				npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
 				if (!tutorialRunning) {
 					StartCoroutine (Tutotial_Mission ());
@@ -185,6 +187,13 @@ namespace NPC
 					}
 				//-------------------------------- all this stuff --------------------------------//
 					while (i >= npc_Message.Length + 1) {
+						if (!proceed) {
+							if (gameManager.gameState == GameState.MissionEvent) {
+								proceedTalk = true;
+							}
+						}
+
+
 						if (Input.GetButtonDown ("Talk")) {
 							if (gameManager.gameState == GameState.MissionEvent) {
 								proceed = true;
@@ -192,6 +201,8 @@ namespace NPC
 						}
 
 						if (proceed) {
+							proceedTalk = false;
+
 							i = 0;
 							x = 1;
 							proceed = false;
@@ -217,6 +228,12 @@ namespace NPC
 					}
 
 					while (i >= npc_Message.Length) {
+						if (!proceed) {
+							if (gameManager.gameState == GameState.MissionEvent) {
+								proceedTalk = true;
+							}
+						}
+
 						windmill.GetComponent<RotationBlades> ().LightsOn = false;
 						if (Input.GetButtonDown ("Talk")) {
 							if (gameManager.gameState == GameState.MissionEvent) {
@@ -225,6 +242,8 @@ namespace NPC
 						}
 
 						if (proceed) {
+							proceedTalk = false;
+
 							npc_Message = "";
 							npc_TalkingBox.enabled = false;
 							npc_Talking.text = npc_Message;
@@ -234,6 +253,8 @@ namespace NPC
 
 							yield return new WaitForSeconds (0.5f);
 							if (playTime) {
+								proceedTalk = false;
+
 								gameManager.gameState = GameState.Game;
 								tutorialMission = false; 
 								i = 0;
@@ -266,6 +287,13 @@ namespace NPC
 
 					}
 					while (i >= npc_Message.Length) {
+						if (!proceed) {
+							if (gameManager.gameState == GameState.MissionEvent) {
+
+								proceedTalk = true;
+							}
+						}
+
 						if (tutorialMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
 								if (gameManager.gameState == GameState.MissionEvent) {
@@ -273,6 +301,9 @@ namespace NPC
 								}
 							}
 							if (proceed) {
+
+								proceedTalk = false;
+
 								umbrella.GetComponent<CreateWind> ().Barriers = false;
 								gameManager.missionState = MissionController.CatMission;
 								npc_Tutorial.tag = "NPC";
@@ -290,6 +321,8 @@ namespace NPC
 						
 				case 4:
 					npc_Message = "";
+					proceedTalk = false;
+
 					npc_Talking.text = npc_Message;
 					GetComponent<NPC_CatMission> ().CatMissionStart = true;
 					npc_Tutorial.tag = "NPC";

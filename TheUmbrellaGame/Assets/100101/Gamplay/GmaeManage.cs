@@ -179,6 +179,7 @@ public class GmaeManage : MonoBehaviour
 	private NPC_TutorialMission tutorialMission;
 	private NPC_CatMission catMission;
 	private NPC_BoxesMission boxesMission;
+	private HorseMission_BackEnd horseMission;
 	
 //------------------------------------ Getters and Setters ------------------------------------------------------------
 
@@ -312,6 +313,8 @@ public class GmaeManage : MonoBehaviour
 			tutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
 			catMission = GameObject.Find ("Missions").GetComponent<NPC_CatMission> ();
 			boxesMission = GameObject.Find ("Missions").GetComponent<NPC_BoxesMission> ();
+			horseMission =  GameObject.Find ("Missions").GetComponent<HorseMission_BackEnd> ();
+
 			if (canopyColour == null) {
 				canopyColour = GameObject.Find ("Canopy_Colours").transform;
 			}
@@ -600,6 +603,9 @@ public class GmaeManage : MonoBehaviour
 								boxesMission.BoxesMisssionFinished = true;
 								break;
 							case 5:
+								horseMission.HorseMisssionFinished = true;
+								break;
+							case 6:
 								gameState = GameState.GameOver;
 								break;
 							default:

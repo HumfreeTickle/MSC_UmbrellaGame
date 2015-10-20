@@ -120,6 +120,7 @@ namespace NPC
 		private NPC_CatMission catMissionStuff;
 		private Transform boxes;
 
+		private bool proceedTalk;
 
 		//--------------------------------------------//
 		
@@ -151,6 +152,9 @@ namespace NPC
 		void Update ()
 		{
 			if (catMissionStuff.CatMissionFinished) {
+
+				npc_TalkingBox.transform.GetChild(0).GetComponent<Animator>().SetBool("proceed", proceedTalk);
+
 				boxesGuy.tag = "NPC_talk";
 				talkingSpeed = gameManager.TextSpeed;
 
@@ -218,6 +222,11 @@ namespace NPC
 					}
 					//-------------------------------- all this stuff --------------------------------//
 					while (i >= npc_Message.Length + 1) {
+						if(!proceed){
+							proceedTalk = true;
+						}
+
+
 						if (Input.GetButtonDown ("Talk")) {
 							if (gameManager.gameState == GameState.MissionEvent) {
 								proceed = true;
@@ -225,6 +234,8 @@ namespace NPC
 						}
 						
 						if (proceed) {
+							proceedTalk = false;
+
 							TurnOnLights (boxes);
 
 							i = 0;
@@ -247,6 +258,11 @@ namespace NPC
 					}
 					
 					while (i >= npc_Message.Length) {
+						if(!proceed){
+							proceedTalk = true;
+						}
+
+
 						if (Input.GetButtonDown ("Talk")) {
 							if (gameManager.gameState == GameState.MissionEvent) {
 								proceed = true;
@@ -255,6 +271,8 @@ namespace NPC
 						
 						if (proceed) {
 							if (!boxesDropped) {
+								proceedTalk = false;
+
 								npc_Message = "";
 								npc_TalkingBox.enabled = false;
 								npc_Talking.text = npc_Message;
@@ -291,6 +309,11 @@ namespace NPC
 					}
 
 					while (i >= npc_Message.Length) {
+						if(!proceed){
+							proceedTalk = true;
+						}
+
+
 						if (boxesMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
 								if (gameManager.gameState == GameState.MissionEvent) {
@@ -298,6 +321,8 @@ namespace NPC
 								}
 							}
 							if (proceed) {
+								proceedTalk = false;
+
 								npc_Message = "";
 								npc_Talking.text = npc_Message;
 								npc_TalkingBox.enabled = false;
@@ -305,13 +330,9 @@ namespace NPC
 								i = 0;
 								x = 4;
 
-								missionStates = MissionController.BridgeMission;
-								gameManager.missionState = missionStates;
 								gameManager.gameState = GameState.Game;
 								boxesMissionStart = false;
 
-								// Temp final stuff
-								GameObject.FindWithTag("Final").GetComponent<Light>().enabled = true;
 								proceed = false;
 								yield break;
 							}
