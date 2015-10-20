@@ -7,6 +7,7 @@ public class HorseCounter : MonoBehaviour
 	public int numberOfHorseHome;
 	public Animator GateClose;
 
+
 	// Use this for initialization
 	void Start (){
 	
@@ -27,9 +28,9 @@ public class HorseCounter : MonoBehaviour
 
 	void OnTriggerEnter (Collider other){
 
-		if (other.gameObject.tag == "Horsey") {
+		if (other.gameObject.tag == "Interaction") {
 
-			numberOfHorseHome +=1;
+			numberOfHorseHome ++;
 			Debug.Log ("HorseHome");
 		}
 	}
