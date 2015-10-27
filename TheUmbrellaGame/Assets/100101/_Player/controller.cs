@@ -66,7 +66,7 @@ namespace Player
 		
 		void FixedUpdate ()
 		{
-			if (gameManager.gameState == GameState.Game) {
+			if (gameManager.GameState == GameState.Game) {
 				handle.GetComponent<CapsuleCollider> ().enabled = true;
 				rb.useGravity = true;
 				rb.angularDrag = 5;
@@ -80,14 +80,14 @@ namespace Player
 				TheDescent ();
 
 
-			} else if (gameManager.gameState == GameState.GameOver) {
+			} else if (gameManager.GameState == GameState.GameOver) {
 				GetComponent<upwardForce> ().enabled = false;
 				Physics.gravity = new Vector3 (0, -50.0f, 0);
 				rb.mass = 10000;
 				umbrellaAnim.SetBool ("Falling", true);
 				rotate = false;
 
-			} else if (gameManager.gameState == GameState.MissionEvent) {
+			} else if (gameManager.GameState == GameState.MissionEvent) {
 				Stabilize ();
 			}
 		}

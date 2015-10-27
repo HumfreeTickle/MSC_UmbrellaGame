@@ -21,7 +21,6 @@ namespace NPC
 		private GameObject lightHouse;
 		private GameObject lightHouseKeeper;
 		private GameObject pickupTool;
-
 		private DropTheBridge bridgeDrop;
 		
 		//------------- Talking variables -----------------//
@@ -120,7 +119,7 @@ namespace NPC
 			}
 		}
 
-		private bool toolPickedup;
+		public bool toolPickedup;
 		
 		public bool ToolPickedup {
 			set {
@@ -135,12 +134,9 @@ namespace NPC
 		private Vector3 lighthouseLookAt;
 		private LightOnRotate lighthouseRotate;
 		private GameObject LightHouseKeep_DropOff;
-
 		private GameObject NPC_worker;
-
 		private NavMeshAgent agent;
 		private Transform fixingPoint;
-
 		private bool fixeding;
 		//--------------------------------------------//
 		
@@ -163,33 +159,50 @@ namespace NPC
 			moveTo = GameObject.Find ("lighthouseMove").transform.position;
 			robbingPoint = GameObject.Find ("Robbing_Point").transform.position;
 
-			NPC_worker = GameObject.Find("NPC_Worker");
+			NPC_worker = GameObject.Find ("NPC_Worker");
 			pickupTool = GameObject.Find ("Pickaxe");
 
 			lighthouseLookAt = GameObject.Find ("Lighthouse_Look").transform.position;
 			lighthouseRotate = GameObject.Find ("LigthHouse_Glass").GetComponent<LightOnRotate> ();
 
-			LightHouseKeep_DropOff = GameObject.Find("LightHouseKeep_DropOff");
+			LightHouseKeep_DropOff = GameObject.Find ("LightHouseKeep_DropOff");
 
 			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
 			npc_TalkingBox = GameObject.Find ("NPC_TalkBox").GetComponent<Image> ();
 
-			fixingPoint = GameObject.Find("FixingPoint").transform;
+			fixingPoint = GameObject.Find ("FixingPoint").transform;
 
 			//doesn't quite work
 			npc_Message.Split (new[] { "/n" }, StringSplitOptions.None);
 
-			bridgeDrop = GameObject.Find("Walkway-Bridge_C-Basic").GetComponent<DropTheBridge>();
+			bridgeDrop = GameObject.Find ("Walkway-Bridge_C-Basic").GetComponent<DropTheBridge> ();
 		}
 		
 		void Update ()
 		{
 			playTime = cmaera.GetComponent<Controller> ().PlayTime;
 
+			if (gameManager.MissionState != MissionController.FinalMission) {
+				if (catMissionStuff.CatMissionFinished && boxesMissionStuff.BoxesMisssionFinished && horseMissionStuff.HorseMisssionFinished) {
+					gameManager.MissionState = MissionController.FinalMission;
+				}
+			}
 
-			if (catMissionStuff.CatMissionFinished && boxesMissionStuff.BoxesMisssionFinished && horseMissionStuff.HorseMisssionFinished) {
+			if (gameManager.MissionState == MissionController.FinalMission) {
+				if(catMissionStuff.isActiveAndEnabled){
+					catMissionStuff.enabled = false;
+				}
 
-				npc_TalkingBox.transform.GetChild(0).GetComponent<Animator>().SetBool("proceed", proceedTalk);
+				if(boxesMissionStuff.isActiveAndEnabled){
+					boxesMissionStuff.enabled = false;
+				}
+
+				if(horseMissionStuff.isActiveAndEnabled){
+					horseMissionStuff.enabled = false;
+				}
+
+
+				npc_TalkingBox.transform.GetChild (0).GetComponent<Animator> ().SetBool ("proceed", proceedTalk);
 
 				talkingSpeed = gameManager.TextSpeed;
 
@@ -220,13 +233,14 @@ namespace NPC
 					npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0f), Time.deltaTime);
 				}
 
-				if (pickupTool.transform.parent == GameObject.Find ("handle").transform) {
+				if (pickupTool.transform.parent == GameObject.Find ("handle").transform || pickupTool.transform.parent ==  lightHouseKeeper.transform.FindChild ("Hand_R").transform) {
 					toolPickedup = true;
-					NPC_worker.transform.FindChild("Hand_R").GetComponent<Animator>().SetBool("MIssing", true);
-				}else{
+					NPC_worker.transform.FindChild ("Hand_R").GetComponent<Animator> ().SetBool ("MIssing", true);
+				} else {
 					toolPickedup = false;
 				}
 			}
+		
 		}
 		
 		void StartFinalMission () // Allows the mission to actually start. Nothing happens if it isn't here
@@ -266,7 +280,7 @@ namespace NPC
 				switch (x) {
 					
 				case 0:
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					cmaera.GetComponent<GmaeManage> ().GameState = GameState.MissionEvent;
 					currentPerson = bridge_npc;
 					
 					jumpAround = false;
@@ -299,12 +313,12 @@ namespace NPC
 					}
 					
 					while (i >= npc_Message.Length) {
-						if(!proceed){
+						if (!proceed) {
 							proceedTalk = true;
 						}
 
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -319,13 +333,15 @@ namespace NPC
 							npc_Interact.MissionDelegate = StartFinalMission;
 
 							priest.tag = "NPC_talk";
+							overHereLight = priest.transform.FindChild ("Sphere").transform.GetChild (0).GetComponent<Light> ();
+							overHereLight.enabled = true;
 
 							npc_Message = "";
 							npc_TalkingBox.enabled = false;
 							npc_Talking.text = npc_Message;
 							bridge_npc.tag = "NPC";
 
-							yield return new WaitForSeconds (0.5f);
+							yield return new WaitForSeconds (0.1f);
 							if (playTime) {
 								i = 0;
 								x = 2;
@@ -334,7 +350,9 @@ namespace NPC
 								finalMissionRunning = false;
 
 								currentPerson = priest;
-								cmaera.GetComponent<GmaeManage> ().gameState = GameState.Game;
+								cmaera.GetComponent<GmaeManage> ().GameState = GameState.Game;
+								playTime = false;
+
 							}
 
 							yield return null;
@@ -350,8 +368,9 @@ namespace NPC
 					
 				case 3:
 				//-------- talking code ------------//
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					cmaera.GetComponent<GmaeManage> ().GameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
+					overHereLight.enabled = false;
 
 					while (i <= npc_Message.Length) {
 
@@ -370,13 +389,13 @@ namespace NPC
 					}
 				
 					while (i >= npc_Message.Length) {
-						if(!proceed){
+						if (!proceed) {
 							proceedTalk = true;
 						}
 
 
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -391,12 +410,11 @@ namespace NPC
 							i = 0;
 							x = 4;
 								
-							gameManager.gameState = GameState.Game;
+							gameManager.GameState = GameState.Game;
 							npc_Animator = priest.GetComponent<Animator> ();
 							npc_Animator.SetBool ("GoOutside", true);
 
-							overHereLight = priest.transform.FindChild("Sphere").transform.GetChild(0).GetComponent<Light>();
-							overHereLight.enabled = true;
+
 
 							finalMissionStart = false;
 							finalMissionRunning = false;
@@ -416,12 +434,12 @@ namespace NPC
 				case 5:
 
 					//-------- talking code ------------//
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					cmaera.GetComponent<GmaeManage> ().GameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 //					npc_Animator.SetBool ("Outside", false);
 					overHereLight.enabled = false;
 
-					overHereLight = lightHouseKeeper.transform.FindChild("Sphere").transform.GetChild(0).GetComponent<Light>();
+					overHereLight = lightHouseKeeper.transform.FindChild ("Sphere").transform.GetChild (0).GetComponent<Light> ();
 					overHereLight.enabled = true;
 					
 					while (i <= npc_Message.Length) {
@@ -454,13 +472,13 @@ namespace NPC
 					// priest points out the light house and tells the player to go see the keeper up on the balcony
 					// warns that he is a very grumpy man
 					while (i >= npc_Message.Length) {
-						if(!proceed){
+						if (!proceed) {
 							proceedTalk = true;
 						}
 
 
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -485,7 +503,7 @@ namespace NPC
 								x = 6;
 								// Delegate needs to be changed to lighthouse keeper
 
-								gameManager.gameState = GameState.Game;
+								gameManager.GameState = GameState.Game;
 
 								finalMissionStart = false;
 								finalMissionRunning = false;
@@ -497,6 +515,8 @@ namespace NPC
 								npc_Interact.MissionDelegate = StartFinalMission;
 
 								proceed = false;
+								playTime = false;
+
 							}
 						}
 
@@ -509,11 +529,11 @@ namespace NPC
 
 				case 7:
 					//-------- talking code ------------//
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					cmaera.GetComponent<GmaeManage> ().GameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					overHereLight.enabled = false;
 
-					overHereLight = NPC_worker.transform.FindChild("Sphere").transform.GetChild(0).GetComponent<Light>();
+					overHereLight = NPC_worker.transform.FindChild ("Sphere").transform.GetChild (0).GetComponent<Light> ();
 					overHereLight.enabled = true;
 
 					while (i <= npc_Message.Length) {
@@ -536,13 +556,13 @@ namespace NPC
 					}
 
 					while (i >= npc_Message.Length) {
-						if(!proceed){
+						if (!proceed) {
 							proceedTalk = true;
 						}
 
 
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -595,13 +615,13 @@ namespace NPC
 					}
 
 					while (i >= npc_Message.Length) {
-						if(!proceed){
+						if (!proceed) {
 							proceedTalk = true;
 						}
 
 
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -623,12 +643,14 @@ namespace NPC
 								i = 0;
 								x = 9;
 
-								gameManager.gameState = GameState.Game;
+								gameManager.GameState = GameState.Game;
 								
 								finalMissionStart = false;
 								finalMissionRunning = false;
 								
 								proceed = false;
+								playTime = false;
+
 								yield return null;
 							}
 
@@ -647,7 +669,7 @@ namespace NPC
 
 				case 10:
 					//-------- talking code ------------//
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					cmaera.GetComponent<GmaeManage> ().GameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					npc_Animator = lightHouseKeeper.GetComponent<Animator> ();
 
@@ -679,13 +701,13 @@ namespace NPC
 					}
 
 					while (i >= npc_Message.Length) {
-						if(!proceed){
+						if (!proceed) {
 							proceedTalk = true;
 						}
 
 
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -713,6 +735,8 @@ namespace NPC
 								finalMissionRunning = false;
 
 								proceed = false;
+								playTime = false;
+
 								yield return null;
 							}
 
@@ -726,7 +750,7 @@ namespace NPC
 					//-------- talking code ------------//
 					npc_TalkingBox.enabled = true;
 					lightHouseKeeper.tag = "Pickup";
-					pickupTool.SetActive(false);
+					pickupTool.SetActive (false);
 
 					if (npc_Animator.isActiveAndEnabled) {
 						npc_Animator.enabled = false;
@@ -742,12 +766,12 @@ namespace NPC
 					}
 
 					while (i >= npc_Message.Length) {
-						if(!proceed){
+						if (!proceed) {
 							proceedTalk = true;
 						}
 
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -762,7 +786,7 @@ namespace NPC
 								LightHouseKeep_DropOff.GetComponent<MeshRenderer> ().enabled = true;
 							}
 
-							gameManager.gameState = GameState.Game;
+							gameManager.GameState = GameState.Game;
 							
 							finalMissionStart = false;
 							finalMissionRunning = false;
@@ -779,21 +803,21 @@ namespace NPC
 				//break in action for transport
 
 				case 12:
-					yield return new WaitForSeconds(1);
+					yield return new WaitForSeconds (1);
 
-					agent = lightHouseKeeper.GetComponent<NavMeshAgent>();
+					agent = lightHouseKeeper.GetComponent<NavMeshAgent> ();
 					agent.enabled = true;
-					agent.SetDestination(fixingPoint.position);
+					agent.SetDestination (fixingPoint.position);
 
 
 
-					yield return new WaitForSeconds(4);
+					yield return new WaitForSeconds (4);
 
 					bridgeDrop.Drop = true;
 					fixeding = true;
 
 
-					if(fixeding){
+					if (fixeding) {
 						x = 13;
 
 						finalMissionRunning = false;
@@ -805,7 +829,7 @@ namespace NPC
 
 				case 13:
 					//-------- talking code ------------//
-					cmaera.GetComponent<GmaeManage> ().gameState = GameState.MissionEvent;
+					cmaera.GetComponent<GmaeManage> ().GameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					
 					while (i <= npc_Message.Length) {
@@ -826,12 +850,12 @@ namespace NPC
 					yield return null;
 
 					while (i >= npc_Message.Length) {
-						if(!proceed){
+						if (!proceed) {
 							proceedTalk = true;
 						}
 						
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -845,7 +869,7 @@ namespace NPC
 							i = 0;
 							x = 14;
 							
-							gameManager.gameState = GameState.Game;
+							gameManager.GameState = GameState.Game;
 							
 							finalMissionStart = false;
 							finalMissionRunning = false;

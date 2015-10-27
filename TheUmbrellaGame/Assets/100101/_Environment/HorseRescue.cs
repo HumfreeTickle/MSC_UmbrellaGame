@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
-public class HorseRescue : MonoBehaviour {
+public class HorseRescue : MonoBehaviour
+{
 
 	public Transform destination0;
 	public Transform destination1;
@@ -11,11 +12,7 @@ public class HorseRescue : MonoBehaviour {
 	public float timer;
 	private Animator anim;
 	private Transform Brolly;
-
 	public bool atdestination;
-	
-
-
 	private float speed;
 	private float run;
 	public bool isMoving;
@@ -29,11 +26,17 @@ public class HorseRescue : MonoBehaviour {
 	public Transform lastDestination;//where was the horse before
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
 		//currentDestination = destination0;//horse will start at 0
-		horse = gameObject.GetComponent<NavMeshAgent>();
-		horse.SetDestination(destination0.position);// make destination 0 its current destination
+		horse = gameObject.GetComponent<NavMeshAgent> ();
+		horse.SetDestination (destination0.position);// make destination 0 its current destination
 		timer = 500;
+<<<<<<< HEAD
+		anim = gameObject.GetComponent<Animator> ();
+		nextDestination = destination1;
+		Brolly = GameObject.Find ("main_Sphere").transform;
+=======
 		anim = gameObject.GetComponent<Animator>();
 		nextDestination= destination1;
 <<<<<<< HEAD
@@ -50,6 +53,7 @@ public class HorseRescue : MonoBehaviour {
 
 
 		Brolly = GameObject.Find("main_Sphere").transform;
+>>>>>>> origin/master
 
 
 
@@ -60,8 +64,15 @@ public class HorseRescue : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 
+<<<<<<< HEAD
+		speed = Mathf.Clamp (speed, 0, Mathf.Infinity);
+		anim.SetFloat ("SPEED", speed);
+
+		anim.SetFloat ("SpeedRun", run);
+=======
 		speed = Mathf.Clamp(speed, 0, Mathf.Infinity);
 		anim.SetFloat("SPEED",speed);
 <<<<<<< HEAD
@@ -78,16 +89,17 @@ public class HorseRescue : MonoBehaviour {
 
 		anim.SetFloat("SpeedRun",run);
 >>>>>>> origin/master
+>>>>>>> origin/master
 
 
-		if (Vector3.Distance(horse.transform.position, destination0.position) <= 5f){
-			nextDestination= destination1;
+		if (Vector3.Distance (horse.transform.position, destination0.position) <= 5f) {
+			nextDestination = destination1;
 			speed--;
 			horse.tag ="Interaction";
 
 		}
 
-		if (Vector3.Distance(horse.transform.position, destination1.position) <= 5f){
+		if (Vector3.Distance (horse.transform.position, destination1.position) <= 5f) {
 			lastDestination = destination0;
 			nextDestination = destination2;
 			speed--;
@@ -96,7 +108,7 @@ public class HorseRescue : MonoBehaviour {
 
 		}
 
-		if (Vector3.Distance(horse.transform.position, destination2.position) <= 5f){
+		if (Vector3.Distance (horse.transform.position, destination2.position) <= 5f) {
 			lastDestination = destination1;
 			nextDestination = destination3;
 			speed--;
@@ -105,28 +117,43 @@ public class HorseRescue : MonoBehaviour {
 
 		}
 
-		if (Vector3.Distance(horse.transform.position, destination3.position) <= 5f){
+		if (Vector3.Distance (horse.transform.position, destination3.position) <= 5f) {
 			//lastDestination = destination2;
 			speed = 0;
 		}
 
+<<<<<<< HEAD
+
+=======
 		if((Input.GetButton("Interact")) & (Vector3.Distance(horse.transform.position, Brolly.position) <= 20f)){
 			timer=500;
 			horse.SetDestination(nextDestination.position);
 			speed = 80;
 			horse.tag = "Horsey";
 			}
+>>>>>>> origin/master
 
 //		if(Vector3.Distance(horse.transform.position, nextDestination.position) >= 15f){
 //			run = 200;
 //		}
 
-		if(timer == 0){
-			horse.SetDestination(lastDestination.position);
-			timer=500;
-			speed=80;
+		if (timer == 0) {
+			horse.SetDestination (lastDestination.position);
+			timer = 500;
+			speed = 80;
 		}
+	}
 
+	void OnTriggerStay (Collider col)
+	{
+		if (col.gameObject.tag == "Player") {
+			if ((Input.GetButton ("Interact")) & (Vector3.Distance (horse.transform.position, Brolly.position) <= 20f)) {
+				timer = 500;
+				horse.SetDestination (nextDestination.position);
+				speed = 80;
+			}
+		}
+	}
 
 ////------------------------The horse will begin at destination point zero which will be its current destination-----------------------
 //		if (Vector3.Distance(horse.transform.position, destination0.position) <= 9f){
@@ -203,9 +230,9 @@ public class HorseRescue : MonoBehaviour {
 //
 //			Debug.Log("Go back to zero!!!!!");
 //        
-     		}
-		}
-	//}
+
+}
+//}
 //}
 ////----------This is what happens when the horse arrives at the second desitination------------------------------------
 ////----------The timer will start and if it reaches 0 the horse will return to previous spot---------------------
@@ -234,7 +261,7 @@ public class HorseRescue : MonoBehaviour {
 //			timer = 500;
 //     		}
 
-		//}
+//}
 //-----------------arrived at destination 3..... last destination------------------------
 
 //		if (Vector3.Distance(horse.transform.position, destination3.position) <= 10f){
@@ -248,5 +275,5 @@ public class HorseRescue : MonoBehaviour {
 
 //}
 //}
-	//}
+//}
 //}

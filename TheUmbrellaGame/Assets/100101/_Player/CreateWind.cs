@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using CameraScripts;
@@ -70,7 +70,7 @@ namespace Player.PhysicsStuff
 		void Start ()
 		{
 			GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
-			gameState = GameManager.gameState;
+			gameState = GameManager.GameState;
 			umbrella = GameObject.Find ("Umbrella");
 			umbrellaRb = gameObject.GetComponent<Rigidbody> ();
 			tutorialAnim = GameObject.Find ("Tutorial").GetComponent<Animator> ();
@@ -89,7 +89,7 @@ namespace Player.PhysicsStuff
 			}
 
 			bounceBack = Mathf.Clamp (bounceBack, 0, Mathf.Infinity);
-			gameState = GameManager.gameState;
+			gameState = GameManager.GameState;
 
 			if (gameState != GameState.Pause || gameState != GameState.GameOver || gameState != GameState.MissionEvent) {
 				if (Input.GetAxis ("Vertical_R") >= 0.1f && charge >= 1) {

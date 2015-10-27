@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 namespace Player
@@ -20,8 +20,8 @@ namespace Player
 	
 		void FixedUpdate ()
 		{
-			if (gameManager.gameState != GameState.Pause){
-				if(gameManager.gameState != GameState.Intro) {
+			if (gameManager.GameState != GameState.Pause){
+				if(gameManager.GameState != GameState.Intro) {
 				SineWave ();
 				Vector3 force = Vector3.up * upwardsforce;
 				rb.AddForce (force);

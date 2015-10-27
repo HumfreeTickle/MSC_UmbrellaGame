@@ -48,16 +48,16 @@ public class Tutuorial : MonoBehaviour
 		if (GameManager == null) {
 			return;
 		}
-		if (GameManager.controllerType == ControllerType.ConsoleContoller) {
+		if (GameManager.ControllerType == ControllerType.ConsoleContoller) {
 
 
 			//----------------- Changes the tutorial animation ----------------//
-			if (GameManager.gameState == GameState.Intro) {
+			if (GameManager.GameState == GameState.Intro) {
 				if (!inTheBeginning) {
 					Invoke ("StartingPositions", secondsToStart);
 					inTheBeginning = true;
 				}
-			} else if (GameManager.gameState == GameState.Game) {
+			} else if (GameManager.GameState == GameState.Game) {
 				animator.SetBool ("Wind", false);
 				if (!started) {
 					StartCoroutine (PressButtons ());
@@ -65,7 +65,7 @@ public class Tutuorial : MonoBehaviour
 			}
 
 			//------------- Removes tutorial if game is paused or character is dead ---------------------//
-			if (GameManager.gameState == GameState.Pause || GameManager.gameState == GameState.GameOver || GameManager.gameState == GameState.MissionEvent) {
+			if (GameManager.GameState == GameState.Pause || GameManager.GameState == GameState.GameOver || GameManager.GameState == GameState.MissionEvent) {
 				GetComponent<Image> ().enabled = false;
 				for(int i = 0; i < transform.childCount; i++){
 					transform.GetChild(i).gameObject.SetActive(false);

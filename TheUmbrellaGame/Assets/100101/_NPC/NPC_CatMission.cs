@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using CameraScripts;
@@ -143,7 +143,7 @@ namespace NPC
 	
 		void Update ()
 		{	
-			if (tutorialMissionStuff.TutorialMisssionFinished) {
+			if (tutorialMissionStuff.TutorialMisssionFinished && gameManager.MissionState == MissionController.CatMission) {
 				talkingSpeed = gameManager.TextSpeed;
 
 				npc_TalkingBox.transform.GetChild(0).GetComponent<Animator>().SetBool("proceed", proceedTalk);
@@ -168,6 +168,7 @@ namespace NPC
 		/// Called when the player drops off the cat on the 2nd island
 		/// Ends the cat mission
 		/// </summary>
+
 		void StartCatMission ()
 		{
 			if (catDroppedOff && !catMissionFinished) {
@@ -186,7 +187,7 @@ namespace NPC
 					
 				case 0:
 
-					gameManager.gameState = GameState.MissionEvent;
+					gameManager.GameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 
 					catDropOff.enabled = true;
@@ -210,7 +211,7 @@ namespace NPC
 						}
 
 						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.gameState == GameState.MissionEvent) {
+							if (gameManager.GameState == GameState.MissionEvent) {
 								proceed = true;
 							}
 						}
@@ -246,7 +247,7 @@ namespace NPC
 							}
 
 							if (Input.GetButtonDown ("Talk")) {
-								if (gameManager.gameState == GameState.MissionEvent) {
+								if (gameManager.GameState == GameState.MissionEvent) {
 									proceed = true;
 								}
 							}
@@ -256,7 +257,7 @@ namespace NPC
 								npc_Message = " ";
 								npc_TalkingBox.enabled = false;
 								npc_Talking.text = npc_Message;
-								gameManager.gameState = GameState.Game;
+								gameManager.GameState = GameState.Game;
 								catMissionStart = false; 
 
 								i = 0;
@@ -272,7 +273,7 @@ namespace NPC
 
 
 				case 3:
-					gameManager.gameState = GameState.MissionEvent;
+					gameManager.GameState = GameState.MissionEvent;
 					npc_TalkingBox.enabled = true;
 					jumpAround = false;
 
@@ -298,7 +299,7 @@ namespace NPC
 
 						if (catMissionFinished) {
 							if (Input.GetButtonDown ("Talk")) {
-								if (gameManager.gameState == GameState.MissionEvent) {
+								if (gameManager.GameState == GameState.MissionEvent) {
 									proceed = true;
 								}
 							}
@@ -308,8 +309,8 @@ namespace NPC
 								npc_Message = "";
 								npc_TalkingBox.enabled = false;
 								npc_Talking.text = npc_Message;
-								gameManager.missionState = MissionController.BoxesMission;
-								gameManager.gameState = GameState.Game;
+								gameManager.MissionState = MissionController.BoxesMission;
+								gameManager.GameState = GameState.Game;
 								i = 0;
 								x = 4;
 								catMissionStart = false; //might have to be moved to case 5
