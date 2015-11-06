@@ -9,28 +9,20 @@ namespace Environment
 	{
 		public bool rotation;//this is the blades turning
 		private Light activeLight;//the halo pointing where to interact with the windmill
-		private GameObject caughtPieceofWood;
+		private GameObject caughtPiece;
 		private GameObject windParticles;
 		private NPC_TutorialMission npc_TutorialMission;
 		private Tutuorial tutorial;
 		public float blowforce;//the force that will be applied to the blowback from the windmill
 		public float speed;
-//		public GameObject windEffect;
-//		private GameObject windPushEffect;
-
+		public GameObject windEffect;
+		private GameObject windPushEffect;
 		private bool turning;
-		private bool tutorialRunning;
 		private NPCManage npcManager = new NPCManage ();
 		public GameObject lineOne;
 		public GameObject lineTwo;
 		private Color transparentStart = Color.white;
-		private bool lightsOn;
-
-		public bool LightsOn {
-			set {
-				lightsOn = value;
-			}
-		}
+		public bool lightsOn{private get; set;}
 
 		private Transform handle;
 		private GameObject umbrella;
@@ -45,10 +37,10 @@ namespace Environment
 		{
 			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
 			npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
-			caughtPieceofWood = transform.FindChild ("Caught_Wood").gameObject;
+			caughtPiece = transform.FindChild ("Caught_Wood").gameObject;
 
-			activeLight = caughtPieceofWood.transform.FindChild ("Activate").GetComponent<Light> ();
-			windParticles = activeLight.gameObject.transform.GetChild (0).gameObject;
+			activeLight = caughtPiece.transform.FindChild ("Activate").GetComponent<Light> (); //finds the light attahed to the caughtpiece
+			windParticles = activeLight.gameObject.transform.GetChild (0).gameObject; // not sure what this is used for
 
 			handle = GameObject.Find ("handle").transform;
 
@@ -61,16 +53,21 @@ namespace Environment
 
 		void Update ()
 		{
-			tutorialRunning = npc_TutorialMission.TutorialRunning;
-			if (tutorialRunning) {
-				if (lightsOn) {
-					activeLight.enabled = true;
-				}
+			if (lightsOn) {
+				activeLight.enabled = true;
+			}else{
+				activeLight.enabled = false;
+
 			}
+
 			if (rotation) {
 				onRotation ();
 				StartCoroutine (cameraMove ());
 			}
+
+//			if (caughtPiece.transform.parent == handle.transform) {
+////				npc_TutorialMission.DropWood = true;
+//			}
 		}
 
 		void onRotation ()
@@ -96,69 +93,57 @@ namespace Environment
 					if (col.GetComponent<Rigidbody> ()) {
 						col.GetComponent<Rigidbody> ().AddForce (col.GetComponent<Rigidbody> ().velocity * -1 * blowforce);//blow back the umbrella
 					}
+					if (windEffect != null) {
+						windPushEffect = Instantiate (windEffect, col.transform.position, Quaternion.identity) as GameObject;
+						windPushEffect.transform.parent = transform;
+					} else {
+						return;
+					}
 				}
 			}
-		}
-
-		void OnTriggerStay (Collider col)
-		{
-//			if (rotation) {
-//				if (col.tag == "Player") {
-//					if (col.GetComponent<Rigidbody> ()) {
-//						col.GetComponent<Rigidbody> ().AddForce (col.GetComponent<Rigidbody>().velocity * blowforce);//blow back the umbrella
-//					}
-//				}
-//			}
-//
-//			if (col.gameObject.name == caughtPieceofWood.name) {
-//				print ("still here");
-//			}
-
 		}
 
 		void OnTriggerExit (Collider col)
 		{
 			if (col.tag == "Player") {//if the umbrella interacts with the windmill
-				if (handle.FindChild (caughtPieceofWood.name)) {
+				if (caughtPiece.transform.parent == handle) {
 					rotation = true;//turn on the windmill
 					running = true;
 
-					tutorial.ObjectTag = "";
+					tutorial.objectTag = "";
 					this.tag = "Untagged";
-					//						col.GetComponent<Rigidbody> ().AddForce (col.transform.forward * -1 * blowforce);//blow back the umbrella
-					//						windPushEffect = Instantiate(windEffect, transform.position, Quaternion.identity) as GameObject;
-					//						windPushEffect.transform.parent = this.transform;
+
 					//----------------------------------//
 					npcManager.WindmillMission = true;
 					//----------------------------------//
-					npc_TutorialMission.NPC_Tutorial.tag = "NPC_talk";
-					npc_TutorialMission.Tut_X = 3;
-					npc_TutorialMission.TutorialRunning = false;
-					npc_TutorialMission.JumpAround_Tut = true;
-					//camera change needs to be added into a coroutine 
-
+					npc_TutorialMission.npc_Tutorial.tag = "NPC_talk";
+					npc_TutorialMission.tut_X = 2;
+					npc_TutorialMission.jumpAround_Tut = true;
 				}
 			}
 		}
 
+// sweet I already worked out a way to move the camera independently from the missions
+// just gotta make it generic and move it out of here
+
 		IEnumerator cameraMove ()
 		{
 			while (running) {
-				while(zeldafy){
-				gameManager.GameState = GameState.MissionEvent;
-				cameraSet = this.gameObject;
-				cmaera.lookAt = cameraSet;
-				cmaera.MoveYerself = false;
+				while (zeldafy) {
+					gameManager.GameState = GameState.MissionEvent;
+					cameraSet = this.gameObject;
+					cmaera.lookAt = cameraSet;
+					cmaera.MoveYerself = false;
 
-				while (Vector3.Distance(cmaera.transform.position, moveTo) > 10 && cameraSet ==  this.gameObject) {
-					if (!cmaera.MoveYerself) {
-						cmaera.transform.position = Vector3.Lerp (cmaera.transform.position, moveTo, Time.deltaTime/2);
+					while (Vector3.Distance(cmaera.transform.position, moveTo) > 10 && cameraSet ==  this.gameObject) {
+						if (!cmaera.MoveYerself) {
+							cmaera.transform.position = Vector3.Lerp (cmaera.transform.position, moveTo, Time.deltaTime / 2);
 
-						yield return null;
-					}
+							yield return null;
+						}
 						zeldafy = false;
 
-					yield return null;
+						yield return null;
 
 					}
 					yield return null;

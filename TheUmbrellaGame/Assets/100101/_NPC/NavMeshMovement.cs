@@ -8,13 +8,17 @@ public class NavMeshMovement : MonoBehaviour
 	public Transform destination2;
 	private Transform finalDestination;
 	private NavMeshAgent agent;
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
 
 	public bool isThere;
 	public bool thereAgain;
 	//public Animator mover;
 
 
+<<<<<<< HEAD
 	//public Transform BridgeDestination;
 
 
@@ -26,6 +30,10 @@ public class NavMeshMovement : MonoBehaviour
 
 
 
+=======
+	public Transform BridgeDestination;
+	
+>>>>>>> origin/master
 	private static bool finalMission;
 
 	public bool FinalMission {
@@ -33,6 +41,7 @@ public class NavMeshMovement : MonoBehaviour
 			finalMission = value;
 		}
 	}
+<<<<<<< HEAD
 
 
 
@@ -44,6 +53,10 @@ public class NavMeshMovement : MonoBehaviour
 
 
 
+=======
+
+
+>>>>>>> origin/master
 	void Start ()
 	{
 		agent = gameObject.GetComponent<NavMeshAgent> ();

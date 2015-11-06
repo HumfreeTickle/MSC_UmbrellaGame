@@ -17,12 +17,13 @@ public class PriestOutside : MonoBehaviour {
 	void OnTriggerEnter(Collider other){
 
 		if(other.gameObject.tag == "ChurchExit"){
-
+			this.gameObject.tag = "NPC_talk";
+			finalMission.jumpAround_Final = true;
 			anim.SetBool("GoOutside", false);
 			anim.enabled = false;
 			transform.position = spawnPoint.position;
-			finalMission.Outside = true;
-			finalMission.X = 5;
+			finalMission.outside = true;
+			finalMission.final_X = 4;
 
 		}
 	}

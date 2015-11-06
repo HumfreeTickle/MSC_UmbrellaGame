@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -26,7 +26,7 @@ namespace Useless
 		{
 			startWhite ();
 			_image.color = whiteIN;
-			if (gmeaOVer.GetComponent<GmaeManage> ().Timer > 2) {
+			if (gmeaOVer.GetComponent<GmaeManage> ().gameOver_Timer > 2) {
 				endWhite ();
 			}
 		} //Update

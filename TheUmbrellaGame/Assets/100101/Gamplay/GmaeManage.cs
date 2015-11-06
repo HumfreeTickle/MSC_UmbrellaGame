@@ -118,7 +118,6 @@ public class GmaeManage : MonoBehaviour
 	public float autoPauseTimer; // idle timer till game auto pauses
 	public float transitionSpeed; // speed of transitions
 	public float _gameOverTimer; // 
-	public float _charge; // the umbrella's energy charge
 
 	//---------------- Progression ------------------//
 
@@ -176,30 +175,15 @@ public class GmaeManage : MonoBehaviour
 		}
 	}
 
-	private NPC_TutorialMission tutorialMission;
-	private NPC_CatMission catMission;
-	private NPC_BoxesMission boxesMission;
-	private HorseMission_BackEnd horseMission;
-	
+
 //------------------------------------ Getters and Setters ------------------------------------------------------------
 
 	//Needs to be renamed to gameOverTimer
-	public float Timer { //timer used elsewhere to end the game
+	public float gameOver_Timer { //timer used elsewhere to end the game
 		get {
 			return _gameOverTimer;
 		}
 	}
-
-	// The total charge left in the umbrella
-	public float UmbrellaCharge {
-		get {
-			return _charge;
-		}
-		set {
-			_charge = value;
-		}
-	}
-
 
 	//
 	public string ControllerTypesHorizontal {
@@ -216,6 +200,7 @@ public class GmaeManage : MonoBehaviour
 
 	//------------------------------------------ State Checks ------------------------------------------//
 	public GameState gameState;
+
 	public GameState GameState {
 		get {
 			return gameState;
@@ -224,9 +209,10 @@ public class GmaeManage : MonoBehaviour
 			gameState = value;
 		}
 	}
-	private GameState currentState = GameState.Intro;
 
+	private GameState currentState = GameState.Intro;
 	public ControllerType controllerType;
+
 	public ControllerType ControllerType {
 		get {
 			return controllerType;
@@ -237,8 +223,8 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	private ControllerType currentController = ControllerType.NullState;
-
 	public MissionController missionState;
+
 	public MissionController MissionState {
 		get {
 			return missionState;
@@ -247,6 +233,7 @@ public class GmaeManage : MonoBehaviour
 			missionState = value;
 		}
 	}
+
 	private MissionController currentMission = MissionController.Default;
 	
 	//--------------------------------------------------------------------------------------------------//
@@ -254,6 +241,8 @@ public class GmaeManage : MonoBehaviour
 
 	//------Presentation Stuff-------//
 	public string umbrellaObject;
+	private bool playParticles = true;
+	public GameObject particales;
 
 //-------------------------------------- The Setup -----------------------------------------------------------------
 
@@ -325,22 +314,17 @@ public class GmaeManage : MonoBehaviour
 			} else {
 				startingPos = umbrella.transform.localPosition;
 			}
-			umbrella.transform.localPosition = startingPos;
+//			umbrella.transform.localPosition = startingPos;
 
 //			backgroundMusic = GameObject.Find ("Music");
 //			npcManager = GetComponent<NPCManage> ();
-
-			//----------------- Missions Complete Stuff --------------------//
-			tutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
-			catMission = GameObject.Find ("Missions").GetComponent<NPC_CatMission> ();
-			boxesMission = GameObject.Find ("Missions").GetComponent<NPC_BoxesMission> ();
-			horseMission = GameObject.Find ("Missions").GetComponent<HorseMission_BackEnd> ();
 
 			if (canopyColour == null) {
 				canopyColour = GameObject.Find ("Canopy_Colours").transform;
 			}
 
 			if (!PauseScreen || !WhiteScreen) {
+				Debug.LogError ("Check Screen Changes");
 				return;
 			}
 		}
@@ -350,36 +334,37 @@ public class GmaeManage : MonoBehaviour
 
 	void Update ()
 	{
+		if (Application.loadedLevelName == "Start_Screen") {
+			StartGame ();
+		}
+
 		if (Application.loadedLevelName == "Boucing") {
-
-
-
 			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
 				_oldWidth = Screen.width;
 				_oldHeight = Screen.height;
 				npc_Talking.fontSize = Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / Ratio);
 			}
-		}
 
-		if (progression > currentProgress) {
-			Progress ();
-		}
-
-		if (GameState == GameState.Intro) {
-			StartGame ();
-			Terrain.activeTerrain.detailObjectDensity = Mathf.Lerp (Terrain.activeTerrain.detailObjectDensity, 1, Time.deltaTime);
-			MissionState = MissionController.Default;
-
-		} else if (GameState != GameState.Intro) {//gameState == GameState.Game || gameState == GameState.Pause || gameState == GameState.GameOver ) {
-
-			RestartGame ();
-
-			if (GameState != GameState.GameOver) {//so the player can't pause when they die
-				PauseGame ();
+			if (progression > currentProgress) {
+				Progress ();
+				playParticles = true;
 			}
-			EndGame ();
+
+			if (GameState == GameState.Intro) {
+				StartGame ();
+				Terrain.activeTerrain.detailObjectDensity = Mathf.Lerp (Terrain.activeTerrain.detailObjectDensity, 1, Time.deltaTime);// what is this ???
+				MissionState = MissionController.Default;
+
+			} else if (GameState != GameState.Intro) {
+				RestartGame ();
+
+				if (GameState != GameState.GameOver) {//so the player can't pause when they die
+					PauseGame ();
+				}
+				EndGame ();
+			}
+			CheckStates ();
 		}
-		CheckStates ();
 	}
 
 //-------------------------------------- Start Game is elsewhere for some reason -----------------------------------------------------------------
@@ -390,6 +375,7 @@ public class GmaeManage : MonoBehaviour
 
 			if (Input.GetButtonDown ("Submit")) {
 				if (!startButton) {
+					Debug.LogError("No start button");
 					return;
 				}
 				
@@ -425,8 +411,9 @@ public class GmaeManage : MonoBehaviour
 	
 	void RestartGame ()
 	{
-		if (Input.GetKeyDown (KeyCode.R)) {
+		if (Input.GetKeyDown (KeyCode.R) || umbrella.transform.position.y <= -200f) {
 			GameState = GameState.GameOver;
+			print ("Reset");
 		}
 	}
 
@@ -458,19 +445,67 @@ public class GmaeManage : MonoBehaviour
 			FixedPause ();	
 		}
 	}
+	//------------------------------------- Pause State Calls ------------------------------------------------------------
+	
+	void Paused ()
+	{
+		GetComponent<BlurOptimized> ().enabled = true;
+		
+		Time.timeScale = 0; //game paused
+		
+		fading.FadeIN (PauseScreen, transitionSpeed);
+		
+		//		if (backgroundMusic.transform.childCount > 0) {
+		//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
+		//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = -1;
+		//			}
+		//		}else{
+		//			backgroundMusic.GetComponent<AudioSource>().pitch = -1;
+		//		}
+	}
+	
+	void NotPaused ()
+	{
+		GetComponent<BlurOptimized> ().enabled = false;
+		
+		Time.timeScale = 1f; //runs at regular time
+		fading.FadeOUT (PauseScreen, transitionSpeed);
+		
+		//		if (backgroundMusic.transform.childCount > 0) {
+		//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
+		//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = 1;
+		//			}
+		//		}else{
+		//			backgroundMusic.GetComponent<AudioSource>().pitch = 1;
+		//		}
+		//		backgroundMusic.pitch = 1;
+	}
+	
+	void FixedPause ()
+	{
+		if (umbrellaRb.velocity.magnitude <= 2) {
+			{
+				autoPauseTimer += Time.deltaTime;
+			}
+			
+			if (autoPauseTimer >= 45) {
+				GameState = GameState.Pause;
+			}
+			
+		} else if (umbrellaRb.velocity.magnitude > 2) {
+			autoPauseTimer = 0;
+		}
+	}
+
 	
 //-------------------------------------- Ending the game is here (sort of) -----------------------------------------------------------------
 	
 	void EndGame ()
 	{
-		if (_charge < 1) {
-			GameState = GameState.GameOver;
-		}
-
 		if (GameState == GameState.GameOver) {
 
-
 			_gameOverTimer += Time.deltaTime;
+			PauseScreen.enabled = false;
 			WhiteScreenTransisitions ();
 		}
 	}
@@ -501,64 +536,8 @@ public class GmaeManage : MonoBehaviour
 	{
 		umbrellaRb.AddForce (1, 2.5f, 0);
 	}
-
-
-	//------------------------------------- Pause State Calls ------------------------------------------------------------
-
-	// using fixed Delta Time is not a good solution - Fabrizio
-
-
-	void Paused ()
-	{
-		GetComponent<BlurOptimized> ().enabled = true;
-		
-		Time.timeScale = 0; //game paused
-
-		fading.FadeIN (PauseScreen, transitionSpeed);
-
-//		if (backgroundMusic.transform.childCount > 0) {
-//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
-//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = -1;
-//			}
-//		}else{
-//			backgroundMusic.GetComponent<AudioSource>().pitch = -1;
-//		}
-	}
 	
-	void NotPaused ()
-	{
-		GetComponent<BlurOptimized> ().enabled = false;
-		
-		Time.timeScale = 1f; //runs at regular time
-		fading.FadeOUT (PauseScreen, transitionSpeed);
-//		if (backgroundMusic.transform.childCount > 0) {
-//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
-//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = 1;
-//			}
-//		}else{
-//			backgroundMusic.GetComponent<AudioSource>().pitch = 1;
-//		}
-//		backgroundMusic.pitch = 1;
-	}
-	
-	void FixedPause ()
-	{
-		if (umbrellaRb.velocity.magnitude <= 2) {
-			{
-				autoPauseTimer += Time.deltaTime;
-			}
-			
-			if (autoPauseTimer >= 45) {
-				GameState = GameState.Pause;//when the timer reaches 0 then the pause screen will activate
-			}
-			
-		} else if (umbrellaRb.velocity.magnitude > 2) {
-			autoPauseTimer = 0;//once a key is pressed the timer should revert back to 0
-		}
-	}
-	
-	
-	
+
 	//-------------------------------------- White Screen Stuff -----------------------------------------------------------------
 	void WhiteScreenTransisitions ()
 	{
@@ -573,11 +552,12 @@ public class GmaeManage : MonoBehaviour
 					if (Application.loadedLevelName == "Start_Screen") {
 						Application.LoadLevel ("Boucing");
 					} else if (Application.loadedLevelName == "Boucing") {
+
+						Application.LoadLevel ("Boucing");
+						//------------- No longer used stuff --------------//
 //						PlayerPrefs.SetFloat ("PlayerX", lastKnownPosition.x);
 //						PlayerPrefs.SetFloat ("PlayerY", lastKnownPosition.y);
 //						PlayerPrefs.SetFloat ("PlayerZ", lastKnownPosition.z);
-						Application.LoadLevel ("Boucing");
-
 //						Application.LoadLevel ("Start_Screen");
 					}
 				}
@@ -595,7 +575,7 @@ public class GmaeManage : MonoBehaviour
 		if (progression < 6) {
 			umbrellaColour = allTheColoursOfTheUmbrella [progression - 2];
 			ChangeColours (canopyColour);
-		}else{
+		} else {
 			GameState = GameState.GameOver;
 		}
 	}
@@ -611,26 +591,12 @@ public class GmaeManage : MonoBehaviour
 						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
 						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime / 2);
 
+						if (playParticles) {
+							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.Euler (new Vector3 (270, 0, 0)));
+							playParticles = false;
+						}
 						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
 							currentProgress = progression;
-
-							switch (progression) {
-
-							case 2:
-								tutorialMission.TutorialMisssionFinished = true;
-								break;
-							case 3:
-								catMission.CatMissionFinished = true;
-								break;
-							case 4:
-								boxesMission.BoxesMisssionFinished = true;
-								break;
-							case 5:
-								horseMission.HorseMisssionFinished = true;
-								break;
-							default:
-								break;
-							}
 						}
 					}
 				}
@@ -638,10 +604,11 @@ public class GmaeManage : MonoBehaviour
 		}
 	}
 
-	void OnApplicationQuit ()
-	{
-		PlayerPrefs.DeleteAll ();
-	}
-	
+//	void OnApplicationQuit ()
+//	{
+//		PlayerPrefs.DeleteAll ();
+//	}
+
+
 }//End of Class
 

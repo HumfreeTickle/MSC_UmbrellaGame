@@ -6,29 +6,40 @@ public class Boxes_dropOff : MonoBehaviour
 {
 
 	private int numberOfBoxesCollected;
-	private Transform boxCount;
+	private int boxCount;
 	private NPC_BoxesMission boxMission;
+	private GmaeManage gameManager;
+	public GameObject dropParticle;
 
+	
 	void Start ()
 	{
-		boxCount = GameObject.Find("CratePickupCollection").transform;
+		boxCount = GameObject.Find ("CratePickupCollection").transform.childCount; // the number of boxes in the mission
 		boxMission = GameObject.Find ("Missions").GetComponent<NPC_BoxesMission> ();
+		gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
+		if(!dropParticle){
+			Debug.LogError("No Particles - Boxes");
+		}
 	}
 
 	void Update ()
 	{
-		if (boxMission.BoxesMissionStart) {
-			if (!boxMission.BoxesMisssionFinished) {
+		if (gameManager.MissionState == MissionController.BoxesMission) {
+			if (boxMission.boxesMission && boxMission.boxes_X == 0) {
 				GetComponent<MeshRenderer> ().enabled = true;
-			} else {
+			} 
+
+
+			if (numberOfBoxesCollected >= boxCount && !boxMission.boxesDropped) {
+				boxMission.boxesDropped = true;
+				boxMission.jumpAround_Boxes = true;
+				boxMission.boxesGuy.tag = "NPC_talk";
 				GetComponent<MeshRenderer> ().enabled = false;
 
 			}
-		}
+		} else {
+			GetComponent<MeshRenderer> ().enabled = false;
 
-		if (numberOfBoxesCollected >= boxCount.childCount  && !boxMission.BoxesDropped) {
-			boxMission.JumpAround_Boxes = true;			
-			boxMission.BoxesDropped = true;
 		}
 	}
 	
@@ -37,10 +48,11 @@ public class Boxes_dropOff : MonoBehaviour
 		if (col.name == "Pickup_Crate" && col.tag == "Pickup") {
 			col.tag = "Untagged";
 			numberOfBoxesCollected += 1;
+			Instantiate(dropParticle,col.gameObject.transform.position, Quaternion.identity);
 
-			if(col.transform.childCount >0){
-				for(int i = 0; i > col.transform.childCount; i++){
-					col.transform.GetChild(i).GetComponent<Light>().enabled = false;
+			if (col.transform.childCount > 0) {
+				for (int i = 0; i > col.transform.childCount; i++) {
+					col.transform.GetChild (i).GetComponent<Light> ().enabled = false;
 				}
 			}
 		}

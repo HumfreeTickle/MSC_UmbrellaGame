@@ -13,6 +13,9 @@ public class Cat_DropOff : MonoBehaviour {
 	{
 		catGuy = GameObject.Find("NPC_Cat").GetComponent<SphereCollider>();
 		missions = GameObject.Find ("Missions").GetComponent<NPC_CatMission>();
+		if(!dropParticle){
+			Debug.LogError("No Particles - Cat");
+		}
 	}
 	
 	void OnTriggerEnter(Collider col) 
@@ -23,11 +26,12 @@ public class Cat_DropOff : MonoBehaviour {
 				Instantiate(dropParticle,col.gameObject.transform.position, Quaternion.identity);
 				GetComponent<MeshRenderer>().enabled = false;
 				droppedOff = true;
+				missions.jumpAround_Cat = true;
 			}
+
 			catGuy.enabled = true;
-			missions.DropOff.tag = "NPC_talk";
-			missions.CatDroppedOff = true;
-			col.gameObject.tag = "Untagged";
+			missions.NPC_DropOff.tag = "NPC_talk";
+			missions.catDroppedOff = true;
 		}
 	}
 }
