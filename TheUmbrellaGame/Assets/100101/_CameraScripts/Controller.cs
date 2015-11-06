@@ -215,7 +215,7 @@ namespace CameraScripts
 				
 				else if (gameState == GameState.GameOver) {
 
-				if (GameManager.Timer > 2) {
+				if (GameManager.gameOver_Timer > 2) {
 					transform.position = transform.position + new Vector3 (xAway, yAway, zAway);
 					transform.LookAt (lookAtTr);
 				} else {

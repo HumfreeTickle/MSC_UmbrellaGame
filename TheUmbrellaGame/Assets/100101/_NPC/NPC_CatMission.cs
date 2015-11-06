@@ -11,72 +11,22 @@ namespace NPC
 	{
 		private GmaeManage gameManager;
 
-		//------------- Talking variables -----------------//
-		private float talkingSpeed;
-		private bool proceed = false;
-		private bool playTime; //used for a camera state change
+		public bool catMission{ private get; set; }
 
-		//-------------- Tutorial Conditions ---------------//
-		public bool catMissionFinished;
 
-		public bool CatMissionFinished {
-			get {
-				return catMissionFinished;
-			}
-
-			set {
-				catMissionFinished = value;
-			}
-		}
-
-		private bool catMissionStart;
-
-		public bool CatMissionStart {
-			set {
-				catMissionStart = value;
-			}
-		}
-
-		private bool catMissionRunning;
-
-		public bool CatMissionRunning {
-			get {
-				return catMissionRunning;
-			}
-
-			set {
-				catMissionRunning = value;
-			}
-		}
-
-		private bool catDroppedOff;
-
-		public bool CatDroppedOff {
-			set {
-				catDroppedOff = value;
-			}
-
-		}
 		
 		//--------------------------------------------------// 
 		public GameObject particales;
-		private GameObject cat;
-		private GameObject umbrella;
 		private GameObject cmaera;
-		private GameObject cameraSet;
-		private GameObject dropOff;
-
-		public GameObject DropOff {
+		private GameObject NPC_dropoff;
+		public GameObject NPC_DropOff {
 			get {
-				return dropOff;
+				return NPC_dropoff;
 			}
 		}
 
-		private NPC_TutorialMission tutorialMissionStuff;
-		
-		//-------------- Talking Stuff ---------------//
-		private Text npc_Talking;
-		private Image npc_TalkingBox;
+		public bool catDroppedOff{get; set;}
+
 		private NPC_Interaction npc_Interact;
 
 		//------------------------------------------------------------------------------//
@@ -84,83 +34,65 @@ namespace NPC
 		// Create a list that fills up when ever there is an enter break "\n"
 		// split string
 //		public List<string> npc_Message_Array = new List<string> ();
-		private string npc_Message = "";
 		//------------------------------------------------------------------------------//
-		private int x = 0;
+		private int cat_X = 0;
 		
 		public int Cat_X {
 			set {
-				x = value;
+				cat_X = value;
 			}
 		}
-
-		private bool jumpAround = true;
-		
 		/// <summary>
 		/// Used to animate the NPC_Cat.
 		/// </summary>
 		/// <value><c>true</c> if jump around; otherwise, <c>false</c>.</value>
-		public bool JumpAround_Cat {
-			set {
-				jumpAround = value;
+		public bool jumpAround_Cat{ private get; set; }
+
+		private Animator npc_Animator;
+		private GameObject overHereLight;
+		private IEnumerator catCoroutine;
+
+		public IEnumerator CatCoroutine {
+			get {
+				return catCoroutine;
 			}
 		}
 
-		private Animator npc_Animator;
-		private Light overHereLight;
-		private IEnumerator catCoroutine;
-		private bool playParticles = true;
-
+		private Talk talkCoroutine;
 		private MeshRenderer catDropOff;
 
-		private bool proceedTalk;
 		void Start ()
 		{
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
-
-			cat = GameObject.Find ("kitten"); //kitten to look at
 			cmaera = GameObject.Find ("Follow Camera"); 
-			umbrella = cmaera.GetComponent<Controller> ().lookAt; //let's the camera look at different things
-			tutorialMissionStuff = GetComponent<NPC_TutorialMission> ();
-			//This can probably be moved into the new inheritence class(NPC_Class)
-			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
-			npc_TalkingBox = GameObject.Find ("NPC_TalkBox").GetComponent<Image> ();
-
-			dropOff = GameObject.Find ("NPC_Cat");
-			npc_Animator = dropOff.GetComponent<Animator> ();
-			overHereLight = dropOff.transform.FindChild ("Sphere").transform.FindChild ("Activate").GetComponent<Light> ();//where ever the light is on the NPC_Talk characters. I think it's a child of the 'head'.
-			overHereLight.enabled = false;
-
-			cameraSet = cmaera.GetComponent<Controller> ().lookAt;
-			npc_Interact = dropOff.GetComponent<NPC_Interaction> ();
-
-			catDropOff = GameObject.Find("Drop-Off Zone (Cat)").GetComponent<MeshRenderer>();
-
-			catCoroutine = Cat_Mission ();
-			//doesn't quite work
-//			npc_Message.Split (new[] { "/n" }, StringSplitOptions.None);
+		
+			NPC_dropoff = GameObject.Find ("NPC_Cat");
+			npc_Animator = NPC_dropoff.GetComponent<Animator> ();
+			overHereLight = NPC_dropoff.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;//where ever the light is on the NPC_Talk characters. I think it's a child of the 'head'.
+			npc_Interact = NPC_dropoff.GetComponent<NPC_Interaction> ();
+			catDropOff = GameObject.Find ("Drop-Off Zone (Cat)").GetComponent<MeshRenderer> ();
+		
+			talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
+			jumpAround_Cat = true;
+			catMission = true;
 		}
 	
 		void Update ()
-		{	
-			if (tutorialMissionStuff.TutorialMisssionFinished && gameManager.MissionState == MissionController.CatMission) {
-				talkingSpeed = gameManager.TextSpeed;
+		{
+			if (gameManager.MissionState == MissionController.CatMission) {
+				npc_Animator.SetBool ("Play", jumpAround_Cat);
+				overHereLight.SetActive(jumpAround_Cat);
 
-				npc_TalkingBox.transform.GetChild(0).GetComponent<Animator>().SetBool("proceed", proceedTalk);
-
-				npc_Animator.SetBool ("Play", jumpAround);
-				overHereLight.enabled = jumpAround;
-				playTime = cmaera.GetComponent<Controller> ().PlayTime;
-				npc_Interact.MissionDelegate = StartCatMission;
-
-				if (catMissionStart) {
-					npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
-					if (!catMissionRunning) {
-						StartCoroutine (Cat_Mission ());
-					}
-				} else {
-					npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0f), Time.deltaTime);
-				}
+				if (catMission) {
+					NPC_dropoff.tag = "NPC_talk";
+					CatMission ();
+				} 
+			} 
+			else if(gameManager.MissionState == MissionController.BoxesMission) {
+				jumpAround_Cat = false;
+				NPC_dropoff.tag = "NPC";
+				catMission = false;
+				npc_Interact.MissionDelegate = null;
 			}
 		}
 
@@ -171,177 +103,53 @@ namespace NPC
 
 		void StartCatMission ()
 		{
-			if (catDroppedOff && !catMissionFinished) {
-//				dropOff.GetComponent<NPC_Interaction>().MissionDelegate = null;
-				x = 3;
+			if (catDroppedOff) {
+				jumpAround_Cat = false;
+				catMission = true;
+				cat_X = 1;
 			}
 		}
 
-		IEnumerator Cat_Mission ()
+		void CatMission ()
 		{
-			int i = 0;
-			catMissionRunning = true;
+			switch (cat_X) {
+			// each switchstatement should call talking and/or cameraMove coroutines.
+			// using an int for the switch might not be the best.
+				
+			case 0:
+				catMission = false;
+				catDropOff.enabled = true;
+				npc_Interact.MissionDelegate = StartCatMission;
 
-			while (x < 4) {
-				switch (x) {
-					
-				case 0:
-
-					gameManager.GameState = GameState.MissionEvent;
-					npc_TalkingBox.enabled = true;
-
-					catDropOff.enabled = true;
-
-					while (i <= npc_Message.Length) {
-						
-						npc_Message = "Can I ask you for one more favour? My friend's cat is stuck in a tree.";
-						npc_Talking.text = (npc_Message.Substring (0, i));
-						cameraSet = cat;
-						cat.transform.Find ("Activate").GetComponent<Light> ().enabled = true;
-						cat.tag = "Pickup";
-						
-						cmaera.GetComponent<Controller> ().lookAt = cameraSet;
-						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
-						
-					}
-					while (i >= npc_Message.Length) {
-						if(!proceed){
-							proceedTalk = true;
-						}
-
-						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.GameState == GameState.MissionEvent) {
-								proceed = true;
-							}
-						}
-						
-						if (proceed) {
-							proceedTalk = false;
-
-							i = 0;
-							x = 1;
-							proceed = false;
-						}
-						yield return null;
-						
-					}
-					break; //end of case 0
-					
-				case 1:
-					while (i <= npc_Message.Length) {
-						
-						npc_Message = "Can you grab it and bring it to my friend on the next island?";
-						npc_Talking.text = (npc_Message.Substring (0, i));
-						cameraSet = umbrella;
-						
-						cmaera.GetComponent<Controller> ().lookAt = cameraSet;
-						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
-						
-					}
-					while (i >= npc_Message.Length) {
-						if (playTime) {
-							if(!proceed){
-								proceedTalk = true;
-							}
-
-							if (Input.GetButtonDown ("Talk")) {
-								if (gameManager.GameState == GameState.MissionEvent) {
-									proceed = true;
-								}
-							}
-							if (proceed) {
-								proceedTalk = false;
-
-								npc_Message = " ";
-								npc_TalkingBox.enabled = false;
-								npc_Talking.text = npc_Message;
-								gameManager.GameState = GameState.Game;
-								catMissionStart = false; 
-
-								i = 0;
-								x = 2;
-								proceed = false;
-//								StopCoroutine (catCoroutine);
-							}
-						}
-						yield return null;
-						
-					}
-					break; //end of case 1
+				break;
+				
+			case 1:
 
 
-				case 3:
-					gameManager.GameState = GameState.MissionEvent;
-					npc_TalkingBox.enabled = true;
-					jumpAround = false;
-
-					while (i <= npc_Message.Length) {
-							
-						cmaera.GetComponent<GmaeManage> ().Progression = 3;
-						if (playParticles) {
-							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
-							playParticles = false;
-						}
-
-						npc_Message = "Thank you so much.";
-						npc_Talking.text = (npc_Message.Substring (0, i));
-						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
-							
-					}
-					while (i >= npc_Message.Length) {
-						if(!proceed){
-							proceedTalk = true;
-						}
-
-
-						if (catMissionFinished) {
-							if (Input.GetButtonDown ("Talk")) {
-								if (gameManager.GameState == GameState.MissionEvent) {
-									proceed = true;
-								}
-							}
-							if (proceed) {
-								proceedTalk = false;
-
-								npc_Message = "";
-								npc_TalkingBox.enabled = false;
-								npc_Talking.text = npc_Message;
-								gameManager.MissionState = MissionController.BoxesMission;
-								gameManager.GameState = GameState.Game;
-								i = 0;
-								x = 4;
-								catMissionStart = false; //might have to be moved to case 5
-								proceed = false;
-
-								yield break;
-							}
-						}
-
-						yield return null;
-							
-					}
-					break; //end of case 3
-
-				case 4:
-					dropOff.tag = "NPC";
-					proceedTalk = false;
-
-					StopCoroutine (catCoroutine);
+				if (talkCoroutine.StartCoroutine)
 					break;
-				default:
-					yield return null;
-
-					break;
+				System.Action catDialogue2 = () => {
+					cat_X = 2;};
+				catCoroutine = talkCoroutine.Talking ("Thank you so much.", catDialogue2);
+				StartCoroutine (catCoroutine);
+				
+				if (gameManager.gameState == GameState.MissionEvent) {
+					
+					cmaera.GetComponent<GmaeManage> ().Progression = 3;
 				}
-
-				yield return null;
-
+				break;
+				
+				
+			case 2:
+				gameManager.MissionState = MissionController.BoxesMission;
+				jumpAround_Cat = false; 
+				catMission = false;
+				break;
+				
+			default:
+				Debug.LogError ("Cat Mission messed up >:(");
+				break;
 			}
-			yield break;
-
 		}
 	}
 }

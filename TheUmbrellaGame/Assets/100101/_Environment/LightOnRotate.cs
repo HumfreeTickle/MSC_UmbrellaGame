@@ -4,17 +4,7 @@ using Environment;
 
 public class LightOnRotate : MonoBehaviour {
 
-	private bool lightHerUp;
-	public bool LightHerUp{
-		get{
-			return lightHerUp;
-		}
-
-		set{
-			lightHerUp = value;
-		}
-	}
-
+	public bool lightHerUp{get; set;}
 	public Material lighting;
 
 	void Update () {

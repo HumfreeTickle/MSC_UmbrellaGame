@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using CameraScripts;
@@ -11,191 +11,97 @@ namespace NPC
 	{
 		private GmaeManage gameManager;
 		private MissionController missionStates;
-		private GameObject boxesGuy;
-		private GameObject cmaera;
-		private GameObject umbrella;
+		public GameObject boxesGuy{get; private set;}
 
-
-		//------------- Talking variables -----------------//
-		
-		private float talkingSpeed;
-		public bool boxesMissionRunning;
-		
-		/// <summary>
-		/// States whether the mission has been complete or not
-		/// </summary>
-		/// <value><c>true</c> if tutorial running; otherwise, <c>false</c>.</value>
-		public bool BoxesMissionRunning {
-			get {
-				return boxesMissionRunning;
-			}
-			set {
-				boxesMissionRunning = value;
-			}
-		}
-		
 		//--------------------------------------------------// 
-		public GameObject particales;
-		public bool boxesMissionStart;
-
-		public bool BoxesMissionStart {
-			get {
-				return boxesMissionStart;
-			}
-
-			set {
-				boxesMissionStart = value;
-			}
-		}
-
-		//ends the mission
-		public bool boxesMissionFinished = false;
-		/// <summary>
-		/// Allows other scripts to know when the tutorial mission has been completed
-		/// </summary>
-		/// <value><c>true</c> if misssion finished; otherwise, <c>false</c>.</value>
-		public bool BoxesMisssionFinished {
-			get {
-				return boxesMissionFinished;
-			}
-			set {
-				boxesMissionFinished = value;
-			}
-		}
-
-		private bool boxesDropped;
-
-		public bool BoxesDropped {
-			get {
-				return boxesDropped;
-			}
-
-			set {
-				boxesDropped = value;
-			}
-
-		}
+		public bool boxesMission{ get; set; }
+		public bool boxesDropped{ get; set; }
 		
 		//-------------- Talking Stuff ---------------//
-		private Text npc_Talking; //text box
-		private Image npc_TalkingBox; //background image
 		private NPC_Interaction npc_Interact; //used to call the mission when the player talks to an NPC
-		private bool proceed = false; // used to prevent spamming of continue button. As well as allow continue button to work
 
-		// Would be awesome if I could workout a way to have this seperate by paragraphs
-		// Create a list that fills up when ever there is an enter break "\n"
-		// split string
-		
-		//		public List<string> npc_Message_Array = new List<string> (); //supposed to allow for blocks of text to be entered and seperated out automatically
-		private string npc_Message = ""; // holds the current message that needs to be displayed
-		//------------------------------------------------------------------------------//
-		private int x = 0; // for the case state **I wonder if using number's is the best way to cycle through each case
-		/// <summary>
-		/// allows other scripts to increase the case state
-		/// </summary>
-		/// <value>The tut_ x.</value>
+		public int boxes_X{get; set; }
 
-		public int Boxes_X {
-			set {
-				x = value;
-			}
-		}
-		
-		private bool jumpAround = true;
-		
-		/// <summary>
-		/// Used to animate the NPC_Tut.
-		/// </summary>
-		/// <value><c>true</c> if jump around; otherwise, <c>false</c>.</value>
-		public bool JumpAround_Boxes {
-			set {
-				jumpAround = value;
-			}
-		}
-		
-		private bool playParticles = true;
+		public bool jumpAround_Boxes{ private get; set; }
+
 		private Animator npc_Animator;
-		private Light overHereLight;
-		private IEnumerator boxesCoroutine;
-		private NPC_CatMission catMissionStuff;
-		private HorseMission_BackEnd horseMission;
+		private GameObject overHereLight;
+
+		public IEnumerator boxesCoroutine;
+
 		private Transform boxes;
-		private bool proceedTalk;
-
-
+		private Talk talkCoroutine;
+		private string[] boxesMissionDialogue1 = 
+		{
+			"My boxes!!! ",
+			"Someone has stolen them and haphazardly placed them around the town.", 
+			"Can you please retrive them from their unusual locales?"
+		};
+		private string[] boxesMissionDialogue2 = 
+		{
+			"You are a saint of an umbrella.",
+			"Thank you so very much."
+		};
+		
 		//--------------------------------------------//
 		
 		void Start ()
 		{
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
-			cmaera = GameObject.Find ("Follow Camera"); 
-			umbrella = cmaera.GetComponent<Controller> ().lookAt; //let's the camera look at different things
-			catMissionStuff = GetComponent<NPC_CatMission> ();
-			horseMission = GetComponent<HorseMission_BackEnd> ();
 			boxesGuy = GameObject.Find ("NPC_Boxes");
-			npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
-			npc_TalkingBox = GameObject.Find ("NPC_TalkBox").GetComponent<Image> ();
+			;
+		
 			npc_Animator = boxesGuy.GetComponent<Animator> ();
 			if (!npc_Animator.isActiveAndEnabled) {
 				npc_Animator.enabled = true;
 			}
-			overHereLight = boxesGuy.transform.FindChild ("Sphere").transform.FindChild ("Activate").GetComponent<Light> ();//where ever the light is on the NPC_Talk characters. 
-			overHereLight.enabled = false;
+			overHereLight = boxesGuy.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;//where ever the light is on the NPC_Talk characters. 
+			overHereLight.SetActive(false);
 
 			npc_Interact = boxesGuy.GetComponent<NPC_Interaction> (); // 
-			boxesCoroutine = Boxes_Mission ();
 
 			boxes = GameObject.Find ("CratePickupCollection").transform;
-			
-			//doesn't quite work
-			npc_Message.Split (new[] { "/n" }, StringSplitOptions.None);
+			talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
+			boxes_X = 0;
+			jumpAround_Boxes = false;
 		}
 		
 		void Update ()
 		{
-			if (!boxesMissionFinished) {
-				if (catMissionStuff.CatMissionFinished) {
+			npc_Animator.SetBool ("Play", jumpAround_Boxes);
+			overHereLight.SetActive(jumpAround_Boxes);
+
+			if (gameManager.MissionState == MissionController.BoxesMission) {
+
+				if (boxes_X == 0) {
 					boxesGuy.tag = "NPC_talk";
-					talkingSpeed = gameManager.TextSpeed;
-
-					npc_Animator.SetBool ("Play", jumpAround);
-					overHereLight.enabled = jumpAround;
-
-					if (x == 0) {
-						npc_Interact.MissionDelegate = StartBoxesMission;
-					}
-
-					if (gameManager.MissionState == MissionController.BoxesMission) {
-						npc_TalkingBox.transform.GetChild (0).GetComponent<Animator> ().SetBool ("proceed", proceedTalk);
-
-						if (boxesMissionStart) {
-							npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0.5f), Time.deltaTime);
-							if (!boxesMissionRunning) {
-								StartCoroutine (Boxes_Mission ());
-							}
-						} else {
-							npc_TalkingBox.color = Vector4.Lerp (npc_TalkingBox.color, new Vector4 (npc_TalkingBox.color.r, npc_TalkingBox.color.g, npc_TalkingBox.color.b, 0f), Time.deltaTime);
-						}
-					}
+					npc_Interact.MissionDelegate = StartBoxesMission;
+					jumpAround_Boxes = true;
 				}
+
+				if (boxesMission) {
+					boxesGuy.tag = "NPC";
+					BoxesMission ();
+				}
+
+			} else if (gameManager.MissionState == MissionController.HorsesMission) {
+				jumpAround_Boxes = false;
+				boxesGuy.tag = "NPC";
+				boxesMission = false;
+				npc_Interact.MissionDelegate = null;
 			}
 		}
 		
 		void StartBoxesMission ()//Allows the mission to actually start. Nothing happens if it isn't here
 		{
-			if (x != 2 || x != 4) {
-				if (!boxesMissionStart) {
-					boxesMissionStart = true;
-					gameManager.MissionState = MissionController.BoxesMission;
-				}
+			if (!boxesMission) {
+				boxesMission = true;
 			}
 
-			if (x < 3) {
-				if (boxesDropped && boxesMissionRunning) {
-					x = 3;
-					boxesMissionRunning = false;
-				}
+			if (boxesDropped) {
+				boxes_X = 2;
 			}
+
 		}
 
 		void TurnOnLights (Transform obj)
@@ -212,171 +118,65 @@ namespace NPC
 				}
 			}
 		}
-		
-		//------------------------------------------ Mission Coroutine ------------------------------------------------//
-		IEnumerator Boxes_Mission ()
+
+		void BoxesMission ()
 		{
-			boxesMissionRunning = true;
-			int i = 0;
+			jumpAround_Boxes = false;
+
 			
-			while (x < 6) {// only allows the first 2 cases to playout
-				switch (x) {
-					
-				case 0:
-					jumpAround = false;
-
-					cmaera.GetComponent<GmaeManage> ().GameState = GameState.MissionEvent;
-					npc_TalkingBox.enabled = true;
-
-					while (i <= npc_Message.Length) {
-						npc_Message = "My boxes!!! Someone has stolen them and haphazardly placed them around the town.";
-						npc_Talking.text = (npc_Message.Substring (0, i));
-						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
-					}
-					//-------------------------------- all this stuff --------------------------------//
-					while (i >= npc_Message.Length) {
-						if (!proceed) {
-							proceedTalk = true;
-						}
-
-
-						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.GameState == GameState.MissionEvent) {
-								proceed = true;
-							}
-						}
-						
-						if (proceed) {
-							proceedTalk = false;
-
-							TurnOnLights (boxes);
-
-							i = 0;
-							x = 1;
-							proceed = false;
-						}
-						yield return null;
-					}
-					
-					break;
-					
-					
-				case 1:
-					while (i <= npc_Message.Length) {
-						npc_Message = "Can you please retrive them from their unusual locals?";
-						npc_Talking.text = (npc_Message.Substring (0, i));
-						
-						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
-					}
-					
-					while (i >= npc_Message.Length) {
-						if (!proceed && gameManager.GameState == GameState.MissionEvent) {
-							proceedTalk = true;
-						}
-
-
-						if (Input.GetButtonDown ("Talk")) {
-							if (gameManager.GameState == GameState.MissionEvent) {
-								proceed = true;
-							}
-						}
-						
-						if (proceed) {
-							if (!boxesDropped) {
-								proceedTalk = false;
-
-								npc_Message = "";
-								npc_TalkingBox.enabled = false;
-								npc_Talking.text = npc_Message;
-								i = 0;
-								x = 2;
-								proceed = false;
-//								boxesMissionRunning = false;
-								cmaera.GetComponent<GmaeManage> ().GameState = GameState.Game;
-							}
-						}
-						yield return null;
-					}
-					break;
-			
-					
-				case 3:
-
-					jumpAround = false;
-					cmaera.GetComponent<GmaeManage> ().GameState = GameState.MissionEvent;
-					npc_TalkingBox.enabled = true;
-					
-					while (i <= npc_Message.Length) {
-						
-						cmaera.GetComponent<GmaeManage> ().Progression = 4;
-						if (playParticles) {
-							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.identity);
-							playParticles = false;
-							
-						}
-						npc_Message = "You are a saint of an umbrella. Thank you so very much.";
-						npc_Talking.text = (npc_Message.Substring (0, i));
-						i += 1;
-						yield return new WaitForSeconds (talkingSpeed);
-						
-					}
-
-					while (i >= npc_Message.Length) {
-						if (!proceed && gameManager.GameState == GameState.MissionEvent) {
-							proceedTalk = true;
-						}
-
-
-						if (boxesMissionFinished && gameManager.GameState == GameState.MissionEvent) {
-							if (Input.GetButtonDown ("Talk")) {
-								if (gameManager.GameState == GameState.MissionEvent) {
-									proceed = true;
-								}
-							}
-							if (proceed) {
-								proceedTalk = false;
-
-								npc_Message = "";
-								npc_Talking.text = npc_Message;
-								npc_TalkingBox.enabled = false;
-
-								i = 0;
-								x = 4;
-
-								gameManager.GameState = GameState.Game;
-								boxesMissionStart = false;
-								boxesMissionRunning = false; 
-
-								if (!horseMission.HorseMisssionFinished) {
-									gameManager.missionState = MissionController.HorsesMission;
-								}
-
-								proceed = false;
-								yield break;
-							}
-						}
-						yield return null;
-						
-					}
-					break;
-					
-				case 4:
-					boxesGuy.tag = "NPC";
-					print ("boxes");
-					yield break;
-					
-				default:
-					Debug.Log ("Default");
-					yield return new WaitForSeconds (10);
-
+			switch (boxes_X) {
+			// each switchstatement should call talking and/or cameraMove coroutines.
+			// using an int for the switch might not be the best.
+				
+			case 0:
+				//prevents multiple calls
+				if (talkCoroutine.StartCoroutine) {
 					break;
 				}
-				yield return null;
+	
+				// used to change the switch case once dialogue has ended
+				// the action equals a function with no parameters,
+				// through the lambda expersion, this then call x = 1;
+				System.Action tutorialDialogue1 = (/*parameters*/) /*lambda*/ => {
+					boxes_X = 1; /*code to be run*/};
+				
+				// assigns and calls the talking coroutine 
+				boxesCoroutine = talkCoroutine.Talking (boxesMissionDialogue1, tutorialDialogue1);
+				StartCoroutine (boxesCoroutine);
+				TurnOnLights(boxes);
+				break;
+				
+			case 1:
+				boxesMission = false;
+				break;
+				
+			case 2:
+				
+				if (talkCoroutine.StartCoroutine)
+					break;
+				System.Action tutorialDialogue2 = () => {
+					boxes_X = 3;};
+				boxesCoroutine = talkCoroutine.Talking (boxesMissionDialogue2, tutorialDialogue2);
+				StartCoroutine (boxesCoroutine);
+				
+				if (gameManager.gameState == GameState.MissionEvent) {
+					gameManager.Progression = 4;
+				}
+				
+				break;
+				
+				
+			case 3:
+				gameManager.MissionState = MissionController.HorsesMission;
+				boxesMission = false;
+				break;
+				
+			default:
+				Debug.LogError ("Boxes Mission messed up >:(");
+				break;
 			}
-			yield break;
 		}
-		
+
+
 	}//end
 }

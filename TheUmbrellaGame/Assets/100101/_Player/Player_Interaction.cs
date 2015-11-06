@@ -7,7 +7,6 @@ namespace Player
 	{
 		private Tutuorial tutorial;
 		public bool helloTutorial = true; //stops the L1 tutorial from constantly activating
-		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
 
 		void Start ()
 		{
@@ -16,29 +15,28 @@ namespace Player
 	
 		void OnTriggerStay (Collider col)
 		{
-			if (helloTutorial) {
-				if (col.gameObject.tag == "NPC_talk") {
-					tutorial.ObjectTag = col.gameObject.tag;
+			if (col.gameObject.tag == "NPC_talk") {
+				if (helloTutorial) {
+					tutorial.objectTag = col.gameObject.tag;
 					helloTutorial = false;
-				} 
+				}
 
+				// I have a feeling this will be a problem with interactions
+			} else if (col.gameObject.tag == "NPC") {
+				tutorial.objectTag = "";
 			}
-
-//			if (interactTutorial) {
-//
-//				if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "Pickup") {
-//					tutorial.ObjectTag = "Interaction";
-//					interactTutorial = false;
-//				}
-//			} 
 		}
 
 		void OnTriggerExit (Collider col)
 		{ //failsafe incase they leave the trigger without finishing the tutorial.
-			if (col.gameObject.tag == "Interaction" || col.gameObject.tag == "NPC_talk" || col.gameObject.tag == "NPC" || col.gameObject.tag == "Pickup") {
-				tutorial.ObjectTag = "";
+			if (col.gameObject.tag == "Interaction" 
+			    || col.gameObject.tag == "NPC_talk" 
+			    || col.gameObject.tag == "NPC" 
+			    || col.gameObject.tag == "Pickup" 
+			    || col.gameObject.tag == "") {
+
+				tutorial.objectTag = "";
 				helloTutorial = true;
-//				interactTutorial = true;
 			}
 		}
 	}

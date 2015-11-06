@@ -20,20 +20,7 @@ public class Tutuorial : MonoBehaviour
 		}
 
 	}
-	public string objectTag;
-
-	/// <summary>
-	/// Used for the tutorial for button commands
-	/// Based on what tag is attached to the object
-	/// </summary>
-	/// <value>The object tag.</value>
-
-	public string ObjectTag {
-		set {
-			objectTag = value;
-		}
-
-	}
+	public string objectTag{get;set;}
 	
 	void Awake ()
 	{
@@ -57,6 +44,7 @@ public class Tutuorial : MonoBehaviour
 					Invoke ("StartingPositions", secondsToStart);
 					inTheBeginning = true;
 				}
+
 			} else if (GameManager.GameState == GameState.Game) {
 				animator.SetBool ("Wind", false);
 				if (!started) {
@@ -116,7 +104,6 @@ public class Tutuorial : MonoBehaviour
 			}
 
 			yield return null;
-
 		}
 
 	}

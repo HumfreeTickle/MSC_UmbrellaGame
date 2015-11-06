@@ -10,7 +10,6 @@ namespace Player
 	{
 		public DestroyObject destroyStuff = new Inheritence.DestroyObject ();
 		private GmaeManage gameManager;
-
 		private Controller cameraController;
 //	------------------------------------
 
@@ -25,6 +24,7 @@ namespace Player
 		public float speed;
 		public float turningSpeed;
 		public float slowDownSpeed = 1.2f;
+		public float physicsClamp = 100f;
 		private float defaultUpForce;
 //	------------------------------------
 		private string controllerTypeVertical;
@@ -39,18 +39,16 @@ namespace Player
 		private bool tooLow;
 		public GameObject leftside;
 		public GameObject rightside;
-
 		private Color transparentColorStart = Color.white;
-		private Color transparentColorEnd = new Color(1,1,1, 0.5f);
-
+		private Color transparentColorEnd = new Color (1, 1, 1, 0.5f);
 		public float distanceFromTerrain;
 
 		void Start ()
 		{
 			rb = GetComponent<Rigidbody> ();
 			handle = GameObject.Find ("handle");
-			gameManager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>();
-			cameraController = GameObject.Find("Follow Camera").GetComponent<Controller>();
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
+			cameraController = GameObject.Find ("Follow Camera").GetComponent<Controller> ();
 			upForce = GetComponent<upwardForce> ();
 			controllerTypeVertical = gameManager.ControllerTypeVertical;
 			controllerTypeHorizontal = gameManager.ControllerTypesHorizontal;
@@ -66,13 +64,16 @@ namespace Player
 		
 		void FixedUpdate ()
 		{
+			ClampPhysics();
+
 			if (gameManager.GameState == GameState.Game) {
 				handle.GetComponent<CapsuleCollider> ().enabled = true;
 				rb.useGravity = true;
 				rb.angularDrag = 5;
 		
 				Movement ();
-				hitTerrain = GetComponent<CreateWind> ().HitTerrain;
+
+				hitTerrain = GetComponent<CreateWind> ().hitTerrain;
 				if (hitTerrain) {
 					hit = GetComponent<CreateWind> ().RaycastingInfo;
 				}
@@ -114,7 +115,7 @@ namespace Player
 				
 			if (Mathf.Abs (Input.GetAxis (controllerTypeHorizontal)) > 0) { //This shoould rotate the player rather than move sideways
 				rb.AddTorque (transform.up * Input.GetAxis (controllerTypeHorizontal) * turningSpeed);
-				cameraController.LastHorizontalInput = Input.GetAxis(controllerTypeHorizontal);
+				cameraController.LastHorizontalInput = Input.GetAxis (controllerTypeHorizontal);
 			}
 
 			if (!Input.anyKeyDown) {
@@ -126,7 +127,7 @@ namespace Player
 		void TheDescent () //allow the umbrella to go down
 		{
 			// ------------ Standard on/off for the descent ---------------
-			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < Mathf.Clamp(distanceFromTerrain, 0, Mathf.Infinity)) { 
+			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < Mathf.Clamp (distanceFromTerrain, 0, Mathf.Infinity) && !GetComponent<CreateWind> ().tooHigh) { 
 				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce * 1.25f, Time.deltaTime * 5);
 				upForce.enabled = true;
 
@@ -138,25 +139,29 @@ namespace Player
 					rightside.GetComponent<LineRenderer> ().enabled = true;
 					//-----------------------//
 
-				} else if (Input.GetAxis ("Vertical_R") <= -0.01f) {
+				} else if (Input.GetAxis ("Vertical_R") <= -0.1f) {
 					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 0, Time.deltaTime);
 				} else {
-					upForce.enabled = true;
-					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
+					if (!GetComponent<CreateWind> ().tooHigh) {
+						upForce.enabled = true;
+						upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
+					}
 				}
 			}
+
+
 
 			if (!upForce.isActiveAndEnabled) {
 				Physics.gravity = new Vector3 (0, -gravityDrop, 0);
 				rb.mass = 10000;
 				umbrellaAnim.SetBool ("Falling", true);
 				rotationAnim.SetBool ("Input_H", true);
-				GetComponent<CapsuleCollider> ().radius = Mathf.Lerp(GetComponent<CapsuleCollider> ().radius, 0.25f, Time.fixedDeltaTime* 2);
+				GetComponent<CapsuleCollider> ().radius = Mathf.Lerp (GetComponent<CapsuleCollider> ().radius, 0.25f, Time.fixedDeltaTime * 2);
 
 				transparentColorStart = Color.white;
-				transparentColorEnd = new Color(1,1,1, 0.5f);
-				leftside.GetComponent<LineRenderer> ().SetColors(transparentColorStart, transparentColorEnd );
-				rightside.GetComponent<LineRenderer> ().SetColors(transparentColorStart, transparentColorEnd );
+				transparentColorEnd = new Color (1, 1, 1, 0.5f);
+				leftside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
+				rightside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
 
 
 			} else {
@@ -165,14 +170,14 @@ namespace Player
 				umbrellaAnim.SetBool ("Falling", false);
 				rotationAnim.SetBool ("Input_H", false);
 				
-				GetComponent<CapsuleCollider> ().radius = Mathf.Lerp(GetComponent<CapsuleCollider> ().radius, 0.5f, Time.fixedDeltaTime * 2);
+				GetComponent<CapsuleCollider> ().radius = Mathf.Lerp (GetComponent<CapsuleCollider> ().radius, 0.5f, Time.fixedDeltaTime * 2);
 
 
 
-				transparentColorStart = Color.Lerp (transparentColorStart, new Color (1, 1, 1, 0), Time.deltaTime*5);
-				transparentColorEnd = Color.Lerp (transparentColorEnd, new Color (1, 1, 1, 0), Time.deltaTime*5);
-				leftside.GetComponent<LineRenderer> ().SetColors(transparentColorStart, transparentColorEnd );
-				rightside.GetComponent<LineRenderer> ().SetColors(transparentColorStart, transparentColorEnd );
+				transparentColorStart = Color.Lerp (transparentColorStart, new Color (1, 1, 1, 0), Time.deltaTime * 5);
+				transparentColorEnd = Color.Lerp (transparentColorEnd, new Color (1, 1, 1, 0), Time.deltaTime * 5);
+				leftside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
+				rightside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
 				if (transparentColorStart.a < 0.1f) {
 					leftside.GetComponent<LineRenderer> ().enabled = false;
 					rightside.GetComponent<LineRenderer> ().enabled = false;
@@ -180,7 +185,6 @@ namespace Player
 			}
 		}
 
-		//stops the umbrella from drifting away when she's chatting
 		void Stabilize ()
 		{
 			rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * 10);
@@ -193,6 +197,13 @@ namespace Player
 
 			upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
 			upForce.enabled = true;
+		}
+
+		void ClampPhysics(){
+			rb.velocity = Vector3.ClampMagnitude(rb.velocity, physicsClamp);
+			if(rb.velocity.magnitude > physicsClamp){
+				Debug.LogError("Velocity exceeded");
+			}
 		}
 	}
 }
