@@ -33,7 +33,7 @@ public class HorseRescue : MonoBehaviour
 		horse = gameObject.GetComponent<NavMeshAgent> ();
 		horse.SetDestination (destination0.position);// make destination 0 its current destination
 		timer = 500;
-<<<<<<< HEAD
+
 
 		anim = gameObject.GetComponent<Animator> ();
 		nextDestination = destination1;
@@ -42,30 +42,16 @@ public class HorseRescue : MonoBehaviour
 		anim = gameObject.GetComponent<Animator>();
 		nextDestination= destination1;
 
-
-
-
-
-	
-
 		Brolly = GameObject.Find("main_Sphere").transform;
 
 
 
-
-
-=======
-		anim = gameObject.GetComponent<Animator> ();
-		nextDestination = destination1;
-		Brolly = GameObject.Find ("main_Sphere").transform;
->>>>>>> origin/master
-	}
-	
+		}
 	// Update is called once per frame
 	void Update ()
 	{
 
-<<<<<<< HEAD
+
 	//	print (Vector3.Distance (horse.transform.position, nextDestination.transform.position));
 
 		speed = Mathf.Clamp (speed, 0, Mathf.Infinity);
@@ -76,9 +62,8 @@ public class HorseRescue : MonoBehaviour
 		run = Mathf.Clamp(run, 0, Mathf.Infinity);
 		anim.SetFloat("SpeedRun",run);
 
-=======
-		speed = Mathf.Clamp (speed, 0, Mathf.Infinity);
-		anim.SetFloat ("SPEED", speed);
+
+
 
 		anim.SetFloat ("SpeedRun", run);
 
@@ -87,7 +72,7 @@ public class HorseRescue : MonoBehaviour
 
 
 		}
->>>>>>> origin/master
+
 
 
 		if (Vector3.Distance (horse.transform.position, destination0.position) <= 5f) {
@@ -123,7 +108,7 @@ public class HorseRescue : MonoBehaviour
 			speed = 0;
 		}
 
-<<<<<<< HEAD
+
 //
 //		if((Input.GetButton("Interact")) & (Vector3.Distance(horse.transform.position, Brolly.position) >= 25f)){
 //
@@ -152,8 +137,7 @@ public class HorseRescue : MonoBehaviour
 ////			horse.tag = "Horsey";
 //			}
 
-=======
->>>>>>> origin/master
+
 
 //		if(Vector3.Distance(horse.transform.position, nextDestination.position) >= 15f){
 //			run = 200;

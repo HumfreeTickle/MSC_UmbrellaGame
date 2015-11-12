@@ -2,12 +2,7 @@ using UnityEngine;
 using System.Collections;
 using Inheritence;
 
-<<<<<<< HEAD
 
-
-
-=======
->>>>>>> origin/master
 namespace Player
 {
 	public class wind : MonoBehaviour

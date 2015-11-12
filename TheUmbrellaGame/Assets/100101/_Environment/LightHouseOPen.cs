@@ -6,19 +6,12 @@ public class LightHouseOPen : MonoBehaviour {
 	public Animator Door;
 
 	// Use this for initialization
-	void Start () {
-	
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-		}
 	void OnTriggerEnter(Collider other){
 
 		if(other.gameObject.tag == "NPC" ){
 
+			Debug.Log("Open");
 			Door.SetBool ("DoorOpen", true);
 		}
 
@@ -28,6 +21,8 @@ public class LightHouseOPen : MonoBehaviour {
 		if(other.gameObject.tag == "NPC" ){
 			
 			Door.SetBool ("DoorOpen", false);
+
     }
 	}
 }
+
