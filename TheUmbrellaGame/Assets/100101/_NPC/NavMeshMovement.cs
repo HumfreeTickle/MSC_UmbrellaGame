@@ -7,11 +7,22 @@ public class NavMeshMovement : MonoBehaviour
 	public Transform destination2;
 	private Transform finalDestination;
 	private NavMeshAgent agent;
+<<<<<<< HEAD
 
 	public bool isThere;
 	public bool thereAgain;
 	public Transform BridgeDestination;
 
+=======
+
+
+	public bool isThere;
+	public bool thereAgain;
+
+	public Transform BridgeDestination;
+
+
+>>>>>>> origin/master
 	private static bool finalMission;
 
 	public bool FinalMission {
@@ -19,6 +30,20 @@ public class NavMeshMovement : MonoBehaviour
 			finalMission = value;
 		}
 	}
+<<<<<<< HEAD
+=======
+
+
+
+
+
+
+
+	// Use this for initialization
+
+
+
+>>>>>>> origin/master
 
 	void Start ()
 	{

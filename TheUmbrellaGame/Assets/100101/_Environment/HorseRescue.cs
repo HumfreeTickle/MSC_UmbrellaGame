@@ -27,6 +27,10 @@ public class HorseRescue : MonoBehaviour
 		horse = gameObject.GetComponent<NavMeshAgent> ();
 		horse.SetDestination (destination0.position);// make destination 0 its current destination
 		timer = 500;
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/master
 
 		anim = gameObject.GetComponent<Animator> ();
 		nextDestination = destination1;
@@ -34,11 +38,27 @@ public class HorseRescue : MonoBehaviour
 
 		anim = gameObject.GetComponent<Animator>();
 		nextDestination= destination1;
+<<<<<<< HEAD
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
+=======
+
+		Brolly = GameObject.Find("main_Sphere").transform;
+
+
+
+		}
+	// Update is called once per frame
+	void Update ()
+	{
+
+
+	//	print (Vector3.Distance (horse.transform.position, nextDestination.transform.position));
+
+>>>>>>> origin/master
 		speed = Mathf.Clamp (speed, 0, Mathf.Infinity);
 		anim.SetFloat ("SPEED", speed);
 
@@ -47,6 +67,22 @@ public class HorseRescue : MonoBehaviour
 		run = Mathf.Clamp(run, 0, Mathf.Infinity);
 		anim.SetFloat("SpeedRun",run);
 
+<<<<<<< HEAD
+=======
+
+
+
+		anim.SetFloat ("SpeedRun", run);
+
+
+		if(Vector3.Distance(horse.transform.position, nextDestination.position) <= 25f){
+
+
+		}
+
+
+
+>>>>>>> origin/master
 		if (Vector3.Distance (horse.transform.position, destination0.position) <= 5f) {
 			nextDestination = destination1;
 			speed--;
@@ -79,6 +115,43 @@ public class HorseRescue : MonoBehaviour
 			speed = 0;
 		}
 
+<<<<<<< HEAD
+=======
+
+//
+//		if((Input.GetButton("Interact")) & (Vector3.Distance(horse.transform.position, Brolly.position) >= 25f)){
+//
+//			if(Vector3.Distance(horse.transform.position, nextDestination.position) <= 25f){
+//
+//				speed = 0;
+//				run = 80;
+//				timer=500;
+//				horse.SetDestination(nextDestination.position);
+//				horse.tag = "Horsey";
+//			}
+//			
+//			if(Vector3.Distance(horse.transform.position, nextDestination.position) >= 25f){
+//
+//				run = 0;
+//				speed = 80;
+//				timer=500;
+//				horse.SetDestination(nextDestination.position);
+//				horse.tag = "Horsey";
+//			}
+//
+//
+////			timer=500;
+////			horse.SetDestination(nextDestination.position);
+////			speed = 80;
+////			horse.tag = "Horsey";
+//			}
+
+
+
+//		if(Vector3.Distance(horse.transform.position, nextDestination.position) >= 15f){
+//			run = 200;
+//		}
+>>>>>>> origin/master
 
 		if (timer == 0) {
 			horse.SetDestination (lastDestination.position);
