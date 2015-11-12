@@ -21,6 +21,7 @@ public class HorseRescue : MonoBehaviour
 
 
 
+
 	//public Transform currentDestination;// where is the horse now
 	public Transform nextDestination;//where is the horse going next if moving forward
 	public Transform lastDestination;//where was the horse before
@@ -32,15 +33,50 @@ public class HorseRescue : MonoBehaviour
 		horse = gameObject.GetComponent<NavMeshAgent> ();
 		horse.SetDestination (destination0.position);// make destination 0 its current destination
 		timer = 500;
+<<<<<<< HEAD
+
 		anim = gameObject.GetComponent<Animator> ();
 		nextDestination = destination1;
 		Brolly = GameObject.Find ("main_Sphere").transform;
+
+		anim = gameObject.GetComponent<Animator>();
+		nextDestination= destination1;
+
+
+
+
+
+	
+
+		Brolly = GameObject.Find("main_Sphere").transform;
+
+
+
+
+
+=======
+		anim = gameObject.GetComponent<Animator> ();
+		nextDestination = destination1;
+		Brolly = GameObject.Find ("main_Sphere").transform;
+>>>>>>> origin/master
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
 
+<<<<<<< HEAD
+	//	print (Vector3.Distance (horse.transform.position, nextDestination.transform.position));
+
+		speed = Mathf.Clamp (speed, 0, Mathf.Infinity);
+		anim.SetFloat ("SPEED", speed);
+
+		//anim.SetFloat ("SpeedRun", run);
+
+		run = Mathf.Clamp(run, 0, Mathf.Infinity);
+		anim.SetFloat("SpeedRun",run);
+
+=======
 		speed = Mathf.Clamp (speed, 0, Mathf.Infinity);
 		anim.SetFloat ("SPEED", speed);
 
@@ -51,11 +87,13 @@ public class HorseRescue : MonoBehaviour
 
 
 		}
+>>>>>>> origin/master
 
 
 		if (Vector3.Distance (horse.transform.position, destination0.position) <= 5f) {
 			nextDestination = destination1;
 			speed--;
+			run--;
 			horse.tag ="Interaction";
 
 		}
@@ -64,6 +102,7 @@ public class HorseRescue : MonoBehaviour
 			lastDestination = destination0;
 			nextDestination = destination2;
 			speed--;
+			run--;
 			timer--;
 			horse.tag ="Interaction";
 
@@ -73,6 +112,7 @@ public class HorseRescue : MonoBehaviour
 			lastDestination = destination1;
 			nextDestination = destination3;
 			speed--;
+			run--;
 			timer--;
 			horse.tag ="Interaction";
 
@@ -83,6 +123,37 @@ public class HorseRescue : MonoBehaviour
 			speed = 0;
 		}
 
+<<<<<<< HEAD
+//
+//		if((Input.GetButton("Interact")) & (Vector3.Distance(horse.transform.position, Brolly.position) >= 25f)){
+//
+//			if(Vector3.Distance(horse.transform.position, nextDestination.position) <= 25f){
+//
+//				speed = 0;
+//				run = 80;
+//				timer=500;
+//				horse.SetDestination(nextDestination.position);
+//				horse.tag = "Horsey";
+//			}
+//			
+//			if(Vector3.Distance(horse.transform.position, nextDestination.position) >= 25f){
+//
+//				run = 0;
+//				speed = 80;
+//				timer=500;
+//				horse.SetDestination(nextDestination.position);
+//				horse.tag = "Horsey";
+//			}
+//
+//
+////			timer=500;
+////			horse.SetDestination(nextDestination.position);
+////			speed = 80;
+////			horse.tag = "Horsey";
+//			}
+
+=======
+>>>>>>> origin/master
 
 //		if(Vector3.Distance(horse.transform.position, nextDestination.position) >= 15f){
 //			run = 200;
@@ -91,17 +162,39 @@ public class HorseRescue : MonoBehaviour
 		if (timer == 0) {
 			horse.SetDestination (lastDestination.position);
 			timer = 500;
-			speed = 80;
+			speed = 0;
+			run = 80;
+			horse.speed = 25;
+
+			if(Vector3.Distance(horse.transform.position, lastDestination.position) <= 35f){
+
+				run=0;
+				speed = 10;
+				horse.speed = 10;
+
+			}
+		}
+
+		if(Vector3.Distance(horse.transform.position, nextDestination.position) <= 35f){
+		
+			Debug.Log("Start to walk");
+			run=0;
+			speed = 10;
+			horse.speed = 10;
 		}
 	}
 
-	void OnTriggerStay (Collider col)
+	void OnTriggerStay (Collider col)    
 	{
 		if (col.gameObject.tag == "Player") {
-			if ((Input.GetButton ("Interact")) & (Vector3.Distance (horse.transform.position, Brolly.position) <= 20f)) {
+			if ((Input.GetButton ("Interact")) & (Vector3.Distance (horse.transform.position, Brolly.position) >= 5f)) {
 				timer = 500;
 				horse.SetDestination (nextDestination.position);
-				speed = 80;
+				run = 80;
+				horse.speed= 35;
+
+
+
 			}
 		}
 	}
@@ -182,7 +275,7 @@ public class HorseRescue : MonoBehaviour
 //			Debug.Log("Go back to zero!!!!!");
 //        
 
-}
+//}
 //}
 //}
 ////----------This is what happens when the horse arrives at the second desitination------------------------------------
@@ -227,4 +320,4 @@ public class HorseRescue : MonoBehaviour
 //}
 //}
 //}
-//}
+}
