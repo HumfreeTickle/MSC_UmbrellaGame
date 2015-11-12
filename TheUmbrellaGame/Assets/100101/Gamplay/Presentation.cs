@@ -292,8 +292,8 @@ public class Presentation : MonoBehaviour
 					umbrellaAnim.enabled = false;
 				}
 
-				float umbrellaX = Mathf.Lerp (umbrellaTr.position.x, scenePlacements [4].position.x, Time.deltaTime / (speed * 2));
-				float umbrellaY = Mathf.Lerp (umbrellaTr.position.y, scenePlacements [4].position.y, Time.deltaTime / (speed * 2));
+				float umbrellaX = Mathf.Lerp (umbrellaTr.position.x, scenePlacements [4].position.x, Time.deltaTime / (speed));
+				float umbrellaY = Mathf.Lerp (umbrellaTr.position.y, scenePlacements [4].position.y, Time.deltaTime / (speed ));
 				umbrellaTr.position = new Vector3 (umbrellaX, umbrellaY, umbrellaTr.position.z);
 				umbrellaTr.rotation = Quaternion.Euler (new Vector3 (0, 90, 0));
 
@@ -325,10 +325,12 @@ public class Presentation : MonoBehaviour
 				}
 				yield return new WaitForSeconds (speed);
 				umbrellaTr.parent = GameObject.Find ("Hand_L").transform;
-				umbrellaTr.localPosition = new Vector3(0,umbrellaTr.localPosition.y,0);
+				umbrellaTr.localPosition = new Vector3(0,-3.8f,0);
+
 				yield return new WaitForSeconds (speed/2);
-				npcTR.rotation = Quaternion.Slerp(npcTR.rotation, Quaternion.Euler(new Vector3(0,180,0)), Time.deltaTime);
 				npcHands.SetBool("EndWalk", true);
+				npcTR.rotation = Quaternion.Slerp(npcTR.rotation, Quaternion.Euler(new Vector3(0,180,0)), Time.deltaTime);
+
 
 				yield return new WaitForSeconds (speed);
 				npcTR.localScale = Vector3.Lerp(npcTR.lossyScale, new Vector3(7,7,7), Time.deltaTime/(speed* 2));

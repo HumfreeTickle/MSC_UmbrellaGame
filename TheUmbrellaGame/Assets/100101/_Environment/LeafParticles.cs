@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Audio;
 
 namespace Environment
 {
@@ -8,6 +9,7 @@ namespace Environment
 	public class LeafParticles : MonoBehaviour
 	{
 		private ParticleSystem leafParticle;
+		private AudioSource leafSound;
 		public GameObject leafParticleSystem;
 		private GameObject particleChild;
 		private GameObject treeTrunk;
@@ -42,13 +44,15 @@ namespace Environment
 
 		void Start ()
 		{
-			leafParticle = this.gameObject.transform.GetChild(0).GetComponent<ParticleSystem> ();		
+			leafParticle = this.gameObject.transform.GetChild(0).GetComponent<ParticleSystem> ();	
+			leafSound = this.gameObject.transform.GetChild(0).GetComponent<AudioSource> ();
 		}
 	
 		void OnTriggerEnter (Collider col)
 		{
 			if (col.gameObject.tag == "Player") {
 				leafParticle.Play ();
+				leafSound.PlayOneShot(leafSound.clip);
 			}
 		}
 

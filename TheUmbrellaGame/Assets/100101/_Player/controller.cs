@@ -3,6 +3,7 @@ using System.Collections;
 using Player.PhysicsStuff;
 using Inheritence;
 using CameraScripts;
+using UnityEngine.Audio;
 
 namespace Player
 {
@@ -64,7 +65,7 @@ namespace Player
 		
 		void FixedUpdate ()
 		{
-			ClampPhysics();
+			ClampPhysics ();
 
 			if (gameManager.GameState == GameState.Game) {
 				handle.GetComponent<CapsuleCollider> ().enabled = true;
@@ -162,6 +163,8 @@ namespace Player
 				transparentColorEnd = new Color (1, 1, 1, 0.5f);
 				leftside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
 				rightside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
+					leftside.GetComponent<AudioSource> ().enabled = true;
+
 
 
 			} else {
@@ -178,6 +181,9 @@ namespace Player
 				transparentColorEnd = Color.Lerp (transparentColorEnd, new Color (1, 1, 1, 0), Time.deltaTime * 5);
 				leftside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
 				rightside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
+
+				leftside.GetComponent<AudioSource> ().enabled = false;
+
 				if (transparentColorStart.a < 0.1f) {
 					leftside.GetComponent<LineRenderer> ().enabled = false;
 					rightside.GetComponent<LineRenderer> ().enabled = false;
@@ -199,10 +205,11 @@ namespace Player
 			upForce.enabled = true;
 		}
 
-		void ClampPhysics(){
-			rb.velocity = Vector3.ClampMagnitude(rb.velocity, physicsClamp);
-			if(rb.velocity.magnitude > physicsClamp){
-				Debug.LogError("Velocity exceeded");
+		void ClampPhysics ()
+		{
+			rb.velocity = Vector3.ClampMagnitude (rb.velocity, physicsClamp);
+			if (rb.velocity.magnitude > physicsClamp) {
+				Debug.LogError ("Velocity exceeded");
 			}
 		}
 	}

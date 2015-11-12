@@ -242,7 +242,12 @@ public class GmaeManage : MonoBehaviour
 	//------Presentation Stuff-------//
 	public string umbrellaObject;
 	private bool playParticles = true;
-	public GameObject particales;
+	private GameObject particales;
+	public List<GameObject> particles;
+	private AudioSource rain;
+	private AudioSource progressionSFX;
+	private AudioClip progressionClip;
+	private bool playSFX;
 
 //-------------------------------------- The Setup -----------------------------------------------------------------
 
@@ -280,6 +285,8 @@ public class GmaeManage : MonoBehaviour
 			harpIntroClip = harpIntroSource.clip;
 			harpIntroSource.pitch = -0.6f;
 
+			rain = GetComponent<AudioSource> ();
+			rain.volume = 0f;
 
 			umbrella = GameObject.Find (umbrellaObject);
 			umbrellaRb = umbrella.GetComponent<Rigidbody> ();
@@ -319,6 +326,9 @@ public class GmaeManage : MonoBehaviour
 //			backgroundMusic = GameObject.Find ("Music");
 //			npcManager = GetComponent<NPCManage> ();
 
+			progressionSFX = GameObject.Find("main_Sphere").GetComponent<AudioSource> ();
+			progressionClip = progressionSFX.clip;
+
 			if (canopyColour == null) {
 				canopyColour = GameObject.Find ("Canopy_Colours").transform;
 			}
@@ -339,6 +349,11 @@ public class GmaeManage : MonoBehaviour
 		}
 
 		if (Application.loadedLevelName == "Boucing") {
+
+			if (Input.GetButtonDown ("Undefined")) {
+				progression += 1;
+			}
+
 			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
 				_oldWidth = Screen.width;
 				_oldHeight = Screen.height;
@@ -348,6 +363,11 @@ public class GmaeManage : MonoBehaviour
 			if (progression > currentProgress) {
 				Progress ();
 				playParticles = true;
+//				if (!playSFX) {
+//					progressionSFX.Play();
+//					playSFX = true;
+//				}
+
 			}
 
 			if (GameState == GameState.Intro) {
@@ -373,9 +393,10 @@ public class GmaeManage : MonoBehaviour
 	{
 		if (Application.loadedLevelName == "Start_Screen") { //Opening screen
 
+
 			if (Input.GetButtonDown ("Submit")) {
 				if (!startButton) {
-					Debug.LogError("No start button");
+					Debug.LogError ("No start button");
 					return;
 				}
 				
@@ -398,6 +419,9 @@ public class GmaeManage : MonoBehaviour
 					fading.FadeIN (WhiteScreen, 1);
 					Invoke ("whichLevel", harpIntroClip.length / 2);
 				}
+			} else {
+				harpIntroSource.volume = Mathf.Lerp (harpIntroSource.volume, 0.5f, Time.deltaTime / 5);
+				rain.volume = Mathf.Lerp (rain.volume, 0.4f, Time.deltaTime / 5);
 			}
 
 		} else if (Application.loadedLevelName == "Boucing") { //Main game screen
@@ -574,6 +598,7 @@ public class GmaeManage : MonoBehaviour
 	{
 		if (progression < 6) {
 			umbrellaColour = allTheColoursOfTheUmbrella [progression - 2];
+			particales = particles [progression - 2];
 			ChangeColours (canopyColour);
 		} else {
 			GameState = GameState.GameOver;
@@ -597,6 +622,7 @@ public class GmaeManage : MonoBehaviour
 						}
 						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
 							currentProgress = progression;
+//							playSFX = false;
 						}
 					}
 				}

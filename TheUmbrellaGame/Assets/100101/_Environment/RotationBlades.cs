@@ -37,7 +37,7 @@ namespace Environment
 		{
 			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
 			npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
-			caughtPiece = transform.FindChild ("Caught_Wood").gameObject;
+			caughtPiece = transform.parent.transform.FindChild ("Caught_Wood").gameObject;
 
 			activeLight = caughtPiece.transform.FindChild ("Activate").GetComponent<Light> (); //finds the light attahed to the caughtpiece
 			windParticles = activeLight.gameObject.transform.GetChild (0).gameObject; // not sure what this is used for
@@ -49,25 +49,38 @@ namespace Environment
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
 			moveTo = GameObject.Find ("MoveTo").transform.position;
+			GetComponent<AudioSource>().enabled = false;
+
 		}
 
 		void Update ()
 		{
-			if (lightsOn) {
-				activeLight.enabled = true;
-			}else{
-				activeLight.enabled = false;
-
-			}
 
 			if (rotation) {
 				onRotation ();
 				StartCoroutine (cameraMove ());
 			}
 
-//			if (caughtPiece.transform.parent == handle.transform) {
-////				npc_TutorialMission.DropWood = true;
-//			}
+			if (caughtPiece.transform.parent == handle.transform) {
+				activeLight.enabled = false;
+				lightsOn = false;
+				rotation = true;//turn on the windmill
+				running = true;
+				
+				tutorial.objectTag = "";
+				this.tag = "Untagged";
+				
+				//----------------------------------//
+				npcManager.WindmillMission = true;
+				//----------------------------------//
+				npc_TutorialMission.npc_Tutorial.tag = "NPC_talk";
+				npc_TutorialMission.tut_X = 2;
+				npc_TutorialMission.jumpAround_Tut = true;
+			}else{
+				if (lightsOn) {
+					activeLight.enabled = true;
+				}
+			}
 		}
 
 		void onRotation ()
@@ -80,7 +93,9 @@ namespace Environment
 			lineOne.GetComponent<LineRenderer> ().material.SetColor ("_Color", transparentStart);
 			lineTwo.GetComponent<LineRenderer> ().material.SetColor ("_Color", transparentStart);
 
+			GetComponent<AudioSource>().enabled = true;
 			activeLight.enabled = false;
+
 			if (windParticles != null) {
 				windParticles.SetActive (true);
 			}
@@ -94,8 +109,10 @@ namespace Environment
 						col.GetComponent<Rigidbody> ().AddForce (col.GetComponent<Rigidbody> ().velocity * -1 * blowforce);//blow back the umbrella
 					}
 					if (windEffect != null) {
-						windPushEffect = Instantiate (windEffect, col.transform.position, Quaternion.identity) as GameObject;
+
+						windPushEffect = Instantiate (windEffect, transform.position, Quaternion.identity) as GameObject;
 						windPushEffect.transform.parent = transform;
+						windPushEffect.transform.LookAt(col.transform);
 					} else {
 						return;
 					}
@@ -103,25 +120,25 @@ namespace Environment
 			}
 		}
 
-		void OnTriggerExit (Collider col)
-		{
-			if (col.tag == "Player") {//if the umbrella interacts with the windmill
-				if (caughtPiece.transform.parent == handle) {
-					rotation = true;//turn on the windmill
-					running = true;
-
-					tutorial.objectTag = "";
-					this.tag = "Untagged";
-
-					//----------------------------------//
-					npcManager.WindmillMission = true;
-					//----------------------------------//
-					npc_TutorialMission.npc_Tutorial.tag = "NPC_talk";
-					npc_TutorialMission.tut_X = 2;
-					npc_TutorialMission.jumpAround_Tut = true;
-				}
-			}
-		}
+//		void OnTriggerExit (Collider col)
+//		{
+//			if (col.tag == "Player") {//if the umbrella interacts with the windmill
+//				if (caughtPiece.transform.parent == handle) {
+//					rotation = true;//turn on the windmill
+//					running = true;
+//
+//					tutorial.objectTag = "";
+//					this.tag = "Untagged";
+//
+//					//----------------------------------//
+//					npcManager.WindmillMission = true;
+//					//----------------------------------//
+//					npc_TutorialMission.npc_Tutorial.tag = "NPC_talk";
+//					npc_TutorialMission.tut_X = 2;
+//					npc_TutorialMission.jumpAround_Tut = true;
+//				}
+//			}
+//		}
 
 // sweet I already worked out a way to move the camera independently from the missions
 // just gotta make it generic and move it out of here

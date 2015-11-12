@@ -18,13 +18,8 @@ namespace Environment
 		private List<MissionController> listOFMissionTesting = new List<MissionController> (); 
 
 		/// current day phase  
-		public DayPhase currentPhase;
+		public DayPhase currentPhase{get;private set;}
 
-		public DayPhase CurrentPhase {
-			get {
-				return currentPhase;
-			}
-		} 
 		/// The scene fog color to use at dawn and dusk.  
 		public Color dawnDuskSun = new Color (133.0f / 255.0f, 124.0f / 255.0f, 102.0f / 255.0f);  
 	
@@ -127,7 +122,7 @@ namespace Environment
 				break;
 
 			case MissionController.BoxesMission:
-				SetDusk (0.6f); //mid afternoon 
+				SetDusk (0.2f); //mid afternoon 
 				SetSun (160);
 				blendRatio = 0.7f;
 
