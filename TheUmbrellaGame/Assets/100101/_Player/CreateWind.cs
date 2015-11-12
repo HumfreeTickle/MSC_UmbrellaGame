@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using CameraScripts;
+using UnityEngine.Audio;
 
 namespace Player.PhysicsStuff
 {
@@ -52,6 +53,10 @@ namespace Player.PhysicsStuff
 		public bool tooHigh{ get; private set; }
 		public float upSpeed = 100;
 
+		public AudioMixerSnapshot defaultSnapShot;
+		public AudioMixerSnapshot offIslandSnapShot;
+		public float snapshotTransitionSpeed;
+
 		void Start ()
 		{
 			GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
@@ -89,7 +94,7 @@ namespace Player.PhysicsStuff
 
 				if (Physics.Raycast (transform.position + baseUmbrella, downRayDown, out hit, Mathf.Infinity, clouds.value)) {
 					//------------- DEBUGGING -----------------------------
-					Debug.DrawRay (transform.position + baseUmbrella, downRayDown, Color.green, 10, false);
+//					Debug.DrawRay (transform.position + baseUmbrella, downRayDown, Color.green, 10, false);
 					hitTerrain = true;
 					//------------- CONDITIONS ----------------------------
 					if (hit.collider.tag == "Terrain") {
@@ -100,13 +105,17 @@ namespace Player.PhysicsStuff
 
 					// Activate falling tutorial
 					if (gameState == GameState.Game) {
+
 						if (hit.collider.tag == "Terrain" && hit.distance > maxTerrainDistance) {
 							if (!onceOnly) {
 								tutorialAnim.SetBool ("Fall", true);
 								onceOnly = true;
+								offIslandSnapShot.TransitionTo(snapshotTransitionSpeed/2);
+
 							}
 
 						} else {
+							defaultSnapShot.TransitionTo(snapshotTransitionSpeed);
 							tutorialAnim.SetBool ("Fall", false);
 						}
 
@@ -131,6 +140,8 @@ namespace Player.PhysicsStuff
 					hitTerrain = false;
 					tooHigh = false;
 
+					offIslandSnapShot.TransitionTo(snapshotTransitionSpeed);
+
 					tutorialAnim.SetBool ("Fall", false);
 
 					if (barriers) {
@@ -147,7 +158,6 @@ namespace Player.PhysicsStuff
 		{
 			if (gameState == GameState.Game) {
 				rb.GetComponent<Rigidbody> ().AddForce (Vector3.up * verticalInput * upSpeed);
-				
 			}
 
 		}

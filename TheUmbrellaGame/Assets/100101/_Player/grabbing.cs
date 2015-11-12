@@ -151,9 +151,9 @@ namespace Player
 
 			if (col.gameObject.tag == "River") {
 				if (rb.velocity.magnitude > 10) {
-					instanWaterParticles = Instantiate (waterParticles, transform.position, Quaternion.identity) as GameObject;
-					instanWaterParticles.GetComponent<ParticleSystem> ().Play ();
-					destroy.DestroyOnTimer (instanWaterParticles, 1f);
+					if (!IsInvoking ("WaterEffects")) {
+						Invoke ("WaterEffects", 0.02f);
+					}
 					if (!achieves.CoroutineInMotion) {
 						if (achieves.achievements.Contains ("Splish. Splash.")) {
 							StartCoroutine (achieves.Notification (achieves.achievements [0]));
@@ -198,6 +198,13 @@ namespace Player
 					obj.GetChild (child).gameObject.layer = layerNumber;
 				}
 			}
+		}
+
+		void WaterEffects ()
+		{
+			instanWaterParticles = Instantiate (waterParticles, transform.position, Quaternion.identity) as GameObject;
+			instanWaterParticles.GetComponent<ParticleSystem> ().Play ();
+			destroy.DestroyOnTimer (instanWaterParticles, 0.5f);
 		}
 
 //		void TurnOnColliders (Transform obj)

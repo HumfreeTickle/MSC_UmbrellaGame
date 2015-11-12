@@ -65,12 +65,13 @@ namespace CameraScripts
 		public Material backupMaterial;
 		private Tutuorial tutorialObject;
 		public bool moveYerself = true;
-		public bool MoveYerself{
-			get{
+
+		public bool MoveYerself {
+			get {
 				return moveYerself;
 			}
 
-			set{
+			set {
 				moveYerself = value;
 			}
 		}
@@ -84,6 +85,8 @@ namespace CameraScripts
 				lastHorizontalInput = value;
 			}
 		}
+
+		private GameObject cameraSet;
 
 		void Start ()
 		{
@@ -101,7 +104,9 @@ namespace CameraScripts
 		void Update ()
 		{
 			gameState = GameManager.GameState;
-			RayCastView ();
+			if (!lookAt.GetComponent<Renderer> ().isVisible) {
+				RayCastView ();
+			}
 
 			if (gameState == GameState.Pause) {
 				if (GameManager.ControllerType != ControllerType.Keyboard) {
@@ -114,6 +119,7 @@ namespace CameraScripts
 				lookAtTr = lookAt.transform;
 			}
 		}
+
 		//-------------------------------------------- Other Function Calls -------------------------------------------------------//
 		
 		void FixedUpdate ()
@@ -136,6 +142,11 @@ namespace CameraScripts
 
 
 			if (gameState != GameState.GameOver) {
+
+				if (Input.GetButtonDown ("ResetCmaera")) {
+					cameraSet = GameObject.Find ("main_Sphere");
+					lookAt = cameraSet;
+				}
 
 				//					 Calculate gameState == GameState.Pausethe current rotation angles (only need quaternion for movement)
 				float wantedRotationAngle = lookAtTr.eulerAngles.y;

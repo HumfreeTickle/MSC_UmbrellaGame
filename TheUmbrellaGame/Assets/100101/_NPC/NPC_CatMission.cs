@@ -16,7 +16,6 @@ namespace NPC
 
 		
 		//--------------------------------------------------// 
-		public GameObject particales;
 		private GameObject cmaera;
 		private GameObject NPC_dropoff;
 		public GameObject NPC_DropOff {
@@ -60,6 +59,7 @@ namespace NPC
 
 		private Talk talkCoroutine;
 		private MeshRenderer catDropOff;
+		private Light cat_Activate;
 
 		void Start ()
 		{
@@ -72,6 +72,8 @@ namespace NPC
 			npc_Interact = NPC_dropoff.GetComponent<NPC_Interaction> ();
 			catDropOff = GameObject.Find ("Drop-Off Zone (Cat)").GetComponent<MeshRenderer> ();
 		
+			cat_Activate = GameObject.Find("kitten").transform.FindChild("Activate").GetComponent<Light>();
+
 			talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
 			jumpAround_Cat = true;
 			catMission = true;
@@ -120,7 +122,7 @@ namespace NPC
 				catMission = false;
 				catDropOff.enabled = true;
 				npc_Interact.MissionDelegate = StartCatMission;
-
+				cat_Activate.enabled = true;
 				break;
 				
 			case 1:

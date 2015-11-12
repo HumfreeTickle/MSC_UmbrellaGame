@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using Environment;
 
 namespace NPC
 {
@@ -43,7 +44,7 @@ namespace NPC
 		private Talk talkCoroutine;
 		private Animator npc_Animator;
 		private GameObject overHereLight;
-
+		private RotationBlades lightherUp;
 		private IEnumerator tutorialCoroutine;
 		private string[] tutorialMissionDialogue = 
 		{
@@ -66,6 +67,7 @@ namespace NPC
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			cmaera = GameObject.Find ("Follow Camera");
 
+			lightherUp = GameObject.Find ("Cylinder").GetComponent<RotationBlades> ();
 			npc_Tutorial = GameObject.Find ("NPC_Tutorial"); //reference to the NPC on the first island
 			npc_Animator = npc_Tutorial.GetComponent<Animator> ();
 			if (!npc_Animator.isActiveAndEnabled) {
@@ -85,14 +87,14 @@ namespace NPC
 		{	
 			// Allows the player to know where the mission is.
 			npc_Animator.SetBool ("PLay", jumpAround_Tut);
-			overHereLight.SetActive(jumpAround_Tut);
+			overHereLight.SetActive (jumpAround_Tut);
 
 			if (gameManager.MissionState == MissionController.TutorialMission || gameManager.MissionState == MissionController.Default) {
 				if (tutorialMission) {
 					npc_Tutorial.tag = "NPC"; // sets the NPC to the blank npc tag so the player can no longer talk to him
 					TutorialMission ();
 				} 
-			} else /*if (gameManager.MissionState == MissionController.CatMission)*/ {
+			} else { /*if (gameManager.MissionState == MissionController.CatMission)*/
 				jumpAround_Tut = false;
 				npc_Tutorial.tag = "NPC";
 				tutorialMission = false;
@@ -126,6 +128,8 @@ namespace NPC
 					tut_X = 1; /*code to be run*/};
 
 				// assigns and calls the talking coroutine 
+
+				lightherUp.lightsOn = true;
 				tutorialCoroutine = talkCoroutine.Talking (tutorialMissionDialogue, dialogue1);
 				StartCoroutine (tutorialCoroutine);
 				break;
@@ -142,10 +146,8 @@ namespace NPC
 					tut_X = 3;};
 				tutorialCoroutine = talkCoroutine.Talking (catMissionDialogue, dialogue2);
 				StartCoroutine (tutorialCoroutine);
+				cmaera.GetComponent<GmaeManage> ().Progression = 2;
 
-				if (gameManager.gameState == GameState.MissionEvent) {
-					cmaera.GetComponent<GmaeManage> ().Progression = 2;
-				}
 
 				break;
 		

@@ -5,7 +5,7 @@ public class Light_Distance : MonoBehaviour
 {
 
 	private Vector3 baseSize = new Vector3 (3, 3, 3);
-	private Vector3 maxSize = new Vector3 (3, 300, 3);
+	private Vector3 maxSize;
 	private Transform umbrella;
 	private Vector3 sizeChagne;
 	private Color mainColour;
@@ -16,6 +16,8 @@ public class Light_Distance : MonoBehaviour
 	{
 		umbrella = GameObject.Find ("main_Sphere").transform;
 		mainColour = GetComponent<MeshRenderer> ().material.color;
+		baseSize = new Vector3(transform.localScale.x, transform.localScale.x, transform.localScale.z);
+		maxSize = new Vector3(baseSize.x, baseSize.y * 100, baseSize.z);
 	}
 	
 	void Update ()

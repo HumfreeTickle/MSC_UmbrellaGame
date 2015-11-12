@@ -12,6 +12,7 @@ namespace Debuggin
 		{
 			if (col.gameObject.layer != playerLayer) {
 				print (col.gameObject.name + " : " + col.gameObject.layer);
+				
 			}
 		}
 	}
