@@ -138,7 +138,7 @@ namespace NPC
 			case 0:
 				
 				//prevents multiple calls
-				if (talkCoroutine.StartCoroutine) {
+				if (talkCoroutine.StartCoroutineTalk) {
 					break;
 				}
 				
@@ -160,7 +160,7 @@ namespace NPC
 				
 			case 2:
 				
-				if (talkCoroutine.StartCoroutine)
+				if (talkCoroutine.StartCoroutineTalk)
 					break;
 				System.Action dialogue2 = () => {
 					horse_X = 3;};

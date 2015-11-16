@@ -6,7 +6,6 @@ public class MoveUp : MonoBehaviour {
 	public GameObject theDestination;
 	public float speed;
 	private Rigidbody rb;
-	private Camera camera;
 
 
 	// Use this for initialization
@@ -15,11 +14,7 @@ public class MoveUp : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();
 		rb.AddForce(transform.up * speed);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 
 	void OnTriggerEnter(Collider other){
 

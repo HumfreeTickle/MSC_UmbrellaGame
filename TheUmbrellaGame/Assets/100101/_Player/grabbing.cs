@@ -9,9 +9,8 @@ namespace Player
 {
 	public class grabbing : MonoBehaviour
 	{
-		private GameObject pickupObject;
+		public GameObject pickupObject;
 		private Transform originalParent;
-		public float z;
 		public float throwingSpeed;
 		public GameObject waterParticles;
 		private GameObject instanWaterParticles;
@@ -22,8 +21,6 @@ namespace Player
 		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
 
 		private Collider umbrella;
-//		public int layer1;
-//		public int layer2;
 		private bool thrown;
 
 		void Start ()
@@ -31,17 +28,16 @@ namespace Player
 			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
 			achieves = GameObject.Find ("Follow Camera").GetComponent<Achievements> ();
 			rb = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
-//			layer1 = 10;
-//			layer2 = 15;
 			umbrella = GameObject.Find ("main_Sphere").GetComponent<Collider> ();
 		}
 
 		void Update ()
 		{
 			if (pickupObject != null) {
-				Physics.IgnoreCollision (umbrella, pickupObject.GetComponent<Collider> ());
+				if (pickupObject.GetComponent<Collider> ()) {
+					Physics.IgnoreCollision (umbrella, pickupObject.GetComponent<Collider> ());
+				}
 			}
-//			Physics.IgnoreLayerCollision (layer1, layer2);
 
 			if (pickupObject != null) {
 				if (Input.GetButtonDown ("Interact")) {
@@ -66,7 +62,7 @@ namespace Player
 		void Pickup ()
 		{
 			pickupObject.transform.parent = transform;
-			pickupObject.transform.localPosition = Vector3.zero - new Vector3 (0, 0, z);
+			pickupObject.transform.localPosition = Vector3.zero - new Vector3 (0, 0, 2);
 			pickupObject.transform.rotation = Quaternion.identity;
 			pickupObject.tag = "Player";
 			pickupObject.layer = 15;

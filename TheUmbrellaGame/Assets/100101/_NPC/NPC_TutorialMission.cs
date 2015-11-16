@@ -52,14 +52,21 @@ namespace NPC
 			"Not sure how you could do it but maybe if you get a closer look.",
 			"When you've fixed it come back to me."
 		};
-		private string[] catMissionDialogue = 
+		private string[] catMissionDialogue1 = 
 		{
-			"Wow. Thank you so much",
+			"Wow. Thank you so much"
+		};
+		private string[] catMissionDialogue2 = 
+		{
 			"Can I ask you for one more favour? My friend's cat is stuck in a tree.",
 			"Don't know how he got over here from the village in the next island.", 
 			"Can you grab it and bring it to my friend on the next island?"
 		};
-
+		private Transform moveTo;
+		private _MoveCamera cmaeraMove;
+		private IEnumerator cameraMoveCoroutine;
+		private bool moveCmarea = true;
+		private GameObject kitten;
 		//--------------------------------------------//
 
 		void Start ()
@@ -78,6 +85,10 @@ namespace NPC
 			npc_Interact.MissionDelegate = StartTutorialMission; // changes the delegate so talking activates that mission.
 
 			talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
+
+			cmaeraMove = cmaera.GetComponent<_MoveCamera> ();
+			kitten = GameObject.Find ("kitten");
+			moveTo = GameObject.Find ("KittenMove").transform;
 
 			jumpAround_Tut = true;
 			tut_X = 0;
@@ -117,13 +128,13 @@ namespace NPC
 			case 0:
 
 				//prevents multiple calls
-				if (talkCoroutine.StartCoroutine) {
+				if (talkCoroutine.StartCoroutineTalk) {
 					break;
 				}
 
 				// used to change the switch case once dialogue has ended
 				// the action equals a function with no parameters,
-				// through the lambda expersion, this then call x = 1;
+				// through the lambda expersion, this then calls x = 1;
 				System.Action dialogue1 = (/*parameters*/) /*lambda*/ => {
 					tut_X = 1; /*code to be run*/};
 
@@ -140,19 +151,35 @@ namespace NPC
 
 			case 2:
 
-				if (talkCoroutine.StartCoroutine)
+				if (talkCoroutine.StartCoroutineTalk) {
 					break;
+				}
 				System.Action dialogue2 = () => {
 					tut_X = 3;};
-				tutorialCoroutine = talkCoroutine.Talking (catMissionDialogue, dialogue2);
+				tutorialCoroutine = talkCoroutine.Talking (catMissionDialogue1, dialogue2);
 				StartCoroutine (tutorialCoroutine);
-				cmaera.GetComponent<GmaeManage> ().Progression = 2;
 
+				gameManager.Progression = 2;
 
 				break;
-		
 
 			case 3:
+				if (talkCoroutine.StartCoroutineTalk) {
+					break;
+				}
+
+				if (moveCmarea) {
+					CameraMove ();
+				}
+
+				System.Action dialogue3 = () => {
+					tut_X = 4;};
+				tutorialCoroutine = talkCoroutine.Talking (catMissionDialogue2, dialogue3);
+				StartCoroutine (tutorialCoroutine);
+
+				break;
+
+			case 4:
 				gameManager.MissionState = MissionController.CatMission;
 				tutorialMission = false;
 				break;
@@ -160,6 +187,17 @@ namespace NPC
 			default:
 				Debug.LogError ("Tutorial Mission messed up >:(");
 				break;
+			}
+		}
+
+		void CameraMove ()
+		{
+			if (!cmaeraMove.StartCoroutineCamera) {
+				System.Action endCoroutine = () => {
+					moveCmarea = false;};
+				
+				cameraMoveCoroutine = cmaeraMove.cameraMove (kitten,endCoroutine, moveTo, 5f);
+				StartCoroutine (cameraMoveCoroutine);
 			}
 		}
 	} //end 

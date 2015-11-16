@@ -32,17 +32,19 @@ namespace Player
 		private string controllerTypeHorizontal;
 
 //  ------------------------------------
-		private RaycastHit hit;
+//		private RaycastHit hit;
 		private upwardForce upForce;
 		private bool rotate;
 		public float gravityDrop = 50f;
-		private bool hitTerrain;
+//		private bool hitTerrain;
 		private bool tooLow;
 		public GameObject leftside;
 		public GameObject rightside;
 		private Color transparentColorStart = Color.white;
 		private Color transparentColorEnd = new Color (1, 1, 1, 0.5f);
 		public float distanceFromTerrain;
+
+		private bool playSFX;
 
 		void Start ()
 		{
@@ -74,10 +76,10 @@ namespace Player
 		
 				Movement ();
 
-				hitTerrain = GetComponent<CreateWind> ().hitTerrain;
-				if (hitTerrain) {
-					hit = GetComponent<CreateWind> ().RaycastingInfo;
-				}
+//				hitTerrain = GetComponent<CreateWind> ().hitTerrain;
+//				if (hitTerrain) {
+//					hit = GetComponent<CreateWind> ().RaycastingInfo;
+//				}
 
 				TheDescent ();
 
@@ -128,27 +130,32 @@ namespace Player
 		void TheDescent () //allow the umbrella to go down
 		{
 			// ------------ Standard on/off for the descent ---------------
-			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < Mathf.Clamp (distanceFromTerrain, 0, Mathf.Infinity) && !GetComponent<CreateWind> ().tooHigh) { 
-				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce * 1.25f, Time.deltaTime * 5);
-				upForce.enabled = true;
+//			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < Mathf.Clamp (distanceFromTerrain, 0, Mathf.Infinity) && !GetComponent<CreateWind> ().tooHigh) { 
+//				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce * 1.25f, Time.deltaTime * 5);
+//				upForce.enabled = true;
+//
+//			} else {
 
+
+			if (Input.GetAxis ("Vertical_R") <= -0.9f) {
+				upForce.enabled = false;
+//				playSFX = true;
+				//-----------------------//
+				leftside.GetComponent<LineRenderer> ().enabled = true;
+				rightside.GetComponent<LineRenderer> ().enabled = true;
+
+
+				//-----------------------//
+
+			} else if (Input.GetAxis ("Vertical_R") <= -0.1f) {
+				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 0, Time.deltaTime);
 			} else {
-				if (Input.GetAxis ("Vertical_R") <= -0.9f) {
-					upForce.enabled = false;
-					//-----------------------//
-					leftside.GetComponent<LineRenderer> ().enabled = true;
-					rightside.GetComponent<LineRenderer> ().enabled = true;
-					//-----------------------//
-
-				} else if (Input.GetAxis ("Vertical_R") <= -0.1f) {
-					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 0, Time.deltaTime);
-				} else {
-					if (!GetComponent<CreateWind> ().tooHigh) {
-						upForce.enabled = true;
-						upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
-					}
+				if (!GetComponent<CreateWind> ().tooHigh) {
+					upForce.enabled = true;
+					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
 				}
 			}
+//			}
 
 
 
@@ -163,10 +170,11 @@ namespace Player
 				transparentColorEnd = new Color (1, 1, 1, 0.5f);
 				leftside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
 				rightside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
-					leftside.GetComponent<AudioSource> ().enabled = true;
 
-
-
+				if(playSFX){
+					playSFX = false;
+					leftside.GetComponent<AudioSource> ().PlayOneShot (leftside.GetComponent<AudioSource> ().clip);
+				}
 			} else {
 				Physics.gravity = new Vector3 (0, -18.36f, 0);
 				rb.mass = 1;
@@ -175,14 +183,10 @@ namespace Player
 				
 				GetComponent<CapsuleCollider> ().radius = Mathf.Lerp (GetComponent<CapsuleCollider> ().radius, 0.5f, Time.fixedDeltaTime * 2);
 
-
-
 				transparentColorStart = Color.Lerp (transparentColorStart, new Color (1, 1, 1, 0), Time.deltaTime * 5);
 				transparentColorEnd = Color.Lerp (transparentColorEnd, new Color (1, 1, 1, 0), Time.deltaTime * 5);
 				leftside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
 				rightside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
-
-				leftside.GetComponent<AudioSource> ().enabled = false;
 
 				if (transparentColorStart.a < 0.1f) {
 					leftside.GetComponent<LineRenderer> ().enabled = false;

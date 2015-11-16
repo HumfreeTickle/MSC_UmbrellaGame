@@ -63,6 +63,12 @@ public enum MissionController
 	Default
 }
 
+public enum UmbrellaType
+{
+	Umbrella,
+	Umbrella_Presentation
+}
+
 public class GmaeManage : MonoBehaviour
 {
 
@@ -235,12 +241,13 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	private MissionController currentMission = MissionController.Default;
-	
+	public UmbrellaType umbrellaType = UmbrellaType.Umbrella;
+
 	//--------------------------------------------------------------------------------------------------//
 
 
 	//------Presentation Stuff-------//
-	public string umbrellaObject;
+	private string umbrellaObject;
 	private bool playParticles = true;
 	private GameObject particales;
 	public List<GameObject> particles;
@@ -248,6 +255,7 @@ public class GmaeManage : MonoBehaviour
 	private AudioSource progressionSFX;
 	private AudioClip progressionClip;
 	private bool playSFX;
+
 
 //-------------------------------------- The Setup -----------------------------------------------------------------
 
@@ -288,6 +296,7 @@ public class GmaeManage : MonoBehaviour
 			rain = GetComponent<AudioSource> ();
 			rain.volume = 0f;
 
+			umbrellaObject = umbrellaType.ToString ();
 			umbrella = GameObject.Find (umbrellaObject);
 			umbrellaRb = umbrella.GetComponent<Rigidbody> ();
 
@@ -326,7 +335,7 @@ public class GmaeManage : MonoBehaviour
 //			backgroundMusic = GameObject.Find ("Music");
 //			npcManager = GetComponent<NPCManage> ();
 
-			progressionSFX = GameObject.Find("main_Sphere").GetComponent<AudioSource> ();
+			progressionSFX = GameObject.Find ("main_Sphere").GetComponent<AudioSource> ();
 			progressionClip = progressionSFX.clip;
 
 			if (canopyColour == null) {
@@ -363,10 +372,10 @@ public class GmaeManage : MonoBehaviour
 			if (progression > currentProgress) {
 				Progress ();
 				playParticles = true;
-//				if (!playSFX) {
-//					progressionSFX.Play();
-//					playSFX = true;
-//				}
+				if (!playSFX) {
+					progressionSFX.PlayOneShot (progressionClip);
+					playSFX = true;
+				}
 
 			}
 
@@ -452,10 +461,12 @@ public class GmaeManage : MonoBehaviour
 				PausedSnapShot.TransitionTo (0);
 
 			} else if (GameState == GameState.Pause) {
+//				if(Button == 0){
 				GameState = GameState.Game;
 				autoPauseTimer = 0;
 				NotPaused ();
 				InGameSnapShot.TransitionTo (0);
+//			}
 			}
 		}
 
@@ -486,6 +497,15 @@ public class GmaeManage : MonoBehaviour
 		//		}else{
 		//			backgroundMusic.GetComponent<AudioSource>().pitch = -1;
 		//		}
+
+		// Movement with
+		if(Input.GetAxisRaw("Vertical_L") > 0){
+			//move up one in the button array
+			//if greater then 2 move to 0
+		}else if(Input.GetAxisRaw("Vertical_L") > 0){
+			//move down one in the button array
+			//if less then 0 move to 2
+		}
 	}
 	
 	void NotPaused ()
@@ -576,8 +596,11 @@ public class GmaeManage : MonoBehaviour
 					if (Application.loadedLevelName == "Start_Screen") {
 						Application.LoadLevel ("Boucing");
 					} else if (Application.loadedLevelName == "Boucing") {
-
-						Application.LoadLevel ("Boucing");
+						if (progression < 6) {
+							Application.LoadLevel ("Boucing");
+						}else{
+							Application.LoadLevel ("Start_Screen");
+						}
 						//------------- No longer used stuff --------------//
 //						PlayerPrefs.SetFloat ("PlayerX", lastKnownPosition.x);
 //						PlayerPrefs.SetFloat ("PlayerY", lastKnownPosition.y);
@@ -622,7 +645,7 @@ public class GmaeManage : MonoBehaviour
 						}
 						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
 							currentProgress = progression;
-//							playSFX = false;
+							playSFX = false;
 						}
 					}
 				}

@@ -7,6 +7,7 @@ namespace Environment
 	public class TurnOnLight : MonoBehaviour
 	{
 		private GmaeManage gameManager;
+		private MissionController currentMission;
 
 		void Awake ()
 		{
@@ -18,8 +19,9 @@ namespace Environment
 
 		void Update ()
 		{
+			currentMission = gameManager.MissionState;
 
-			if (gameManager.MissionState == MissionController.FinalMission) {
+			if (currentMission == MissionController.FinalMission /*|| sun.intensity < 0.5f*/) {
 				GetComponent<Light> ().enabled = true;
 
 			} else {

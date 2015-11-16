@@ -128,7 +128,7 @@ namespace NPC
 			case 1:
 
 
-				if (talkCoroutine.StartCoroutine)
+				if (talkCoroutine.StartCoroutineTalk)
 					break;
 				System.Action catDialogue2 = () => {
 					cat_X = 2;};

@@ -12,15 +12,18 @@ public class KeeperDrop : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider col){
+
 		if(col.gameObject.name == "NPC_LightHouseKeeper"){
 			GetComponent<MeshRenderer>().enabled = false;
+			transform.GetChild(0).gameObject.SetActive(false);
+
 			col.tag = "NPC";
 			col.transform.rotation = Quaternion.identity;
 			if (col.GetComponent<Rigidbody> ()) {
 				col.GetComponent<Rigidbody> ().freezeRotation = true;
 			}
 
-			xChange.final_X = 10;
+			xChange.final_X = 12;
 		}
 	}
 }

@@ -31,12 +31,14 @@ public class Talk : MonoBehaviour
 	/// **The getter is only for testing**
 	/// </summary>
 	/// <value><c>true</c> if start coroutine; otherwise, <c>false</c>.</value>
-	public bool StartCoroutine {
+	public bool StartCoroutineTalk {
 		get {
 			return startCoroutine;
 		}
-		private set{startCoroutine = value;}
+		private set{ startCoroutine = value;}
 	}
+
+	private _MoveCamera cameraMove;
 
 	void Start ()
 	{
@@ -45,6 +47,7 @@ public class Talk : MonoBehaviour
 		npc_TalkBox = GetComponent<Image> ();
 		L1_Click = this.transform.GetChild (0).GetComponent<Animator> ();
 
+		cameraMove = GameObject.Find ("Follow Camera").GetComponent<_MoveCamera> ();
 		colourFadeIN = new Vector4 (npc_TalkBox.color.r, npc_TalkBox.color.g, npc_TalkBox.color.b, 0.5f);
 		colourFadeOUT = new Vector4 (npc_TalkBox.color.r, npc_TalkBox.color.g, npc_TalkBox.color.b, 0f); 
 	}
@@ -56,8 +59,9 @@ public class Talk : MonoBehaviour
 	/// </summary>
 	/// <param name="whatToSay">What to say.</param>
 	/// <param name="finishedCallBack">Action to take at the end of the coroutine.</param>
-	public IEnumerator Talking(string whatToSay, System.Action finishedCallBack = null){
-		return Talking(new string[]{whatToSay}, finishedCallBack);
+	public IEnumerator Talking (string whatToSay, System.Action finishedCallBack = null)
+	{
+		return Talking (new string[]{whatToSay}, finishedCallBack);
 	}
 
 	/// <summary>
@@ -68,13 +72,13 @@ public class Talk : MonoBehaviour
 	public IEnumerator Talking (string[] whatToSay, System.Action finishedCallBack = null)
 	{
 		// Doesn't allow for multiple calls.
-		if(startCoroutine){
-			Debug.LogError("Already Talking");
+		if (startCoroutine) {
+			Debug.LogError ("Already Talking");
 			yield break;
 		}
 
 		i = 0;// resets i
-		StartCoroutine = true;
+		StartCoroutineTalk = true;
 
 		if (gameManager.GameState != GameState.MissionEvent) {
 			gameManager.GameState = GameState.MissionEvent;
@@ -82,12 +86,14 @@ public class Talk : MonoBehaviour
 
 		// 
 		while (Vector4.Distance(npc_TalkBox.color, colourFadeIN) > Mathf.Clamp(talkboxSpeed, 0.001f, Mathf.Infinity)) {
-			npc_TalkBox.color = Vector4.Lerp (npc_TalkBox.color, colourFadeIN, Time.deltaTime * Mathf.Clamp(speed, 1, Mathf.Infinity));
+			npc_TalkBox.color = Vector4.Lerp (npc_TalkBox.color, colourFadeIN, Time.deltaTime * Mathf.Clamp (speed, 1, Mathf.Infinity));
 			yield return null;
 		}
 
 		foreach (string text in whatToSay) {// cycles through the array and out puts a new piece of dialouge after each button press
 			while (i <= text.Length) {
+				L1_Click.SetBool ("proceed", false);
+
 				npc_Message = text;
 				npc_Talking.text = (npc_Message.Substring (0, i)); //adds a new character each cycle
 				i += 1;
@@ -105,16 +111,17 @@ public class Talk : MonoBehaviour
 		npc_Message = "";
 		npc_Talking.text = "";
 		while (Vector4.Distance(npc_TalkBox.color, colourFadeOUT) > Mathf.Clamp(talkboxSpeed, 0.001f, Mathf.Infinity)) {
-			npc_TalkBox.color = Vector4.Lerp (npc_TalkBox.color, colourFadeOUT, Time.deltaTime * Mathf.Clamp(speed, 1, Mathf.Infinity));
+			npc_TalkBox.color = Vector4.Lerp (npc_TalkBox.color, colourFadeOUT, Time.deltaTime * Mathf.Clamp (speed, 1, Mathf.Infinity));
 			yield return null;
 		}
 		npc_TalkBox.color = colourFadeOUT;
 		L1_Click.SetBool ("proceed", false);
 
 		//------------------------------------//
-
-		if (gameManager.GameState == GameState.MissionEvent) {
-			gameManager.GameState = GameState.Game; // default play state
+		if (!cameraMove.StartCoroutineCamera) {
+			if (gameManager.GameState == GameState.MissionEvent) {
+				gameManager.GameState = GameState.Game; // default play state
+			}
 		}
 
 		if (finishedCallBack != null) {
