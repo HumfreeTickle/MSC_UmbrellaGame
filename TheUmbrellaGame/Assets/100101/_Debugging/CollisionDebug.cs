@@ -11,8 +11,7 @@ namespace Debuggin
 		void OnCollisionStay (Collision col)
 		{
 			if (col.gameObject.layer != playerLayer) {
-				print (col.gameObject.name + " : " + col.gameObject.layer);
-				
+//				print (col.gameObject.name + " : " + col.gameObject.layer);
 			}
 		}
 	}

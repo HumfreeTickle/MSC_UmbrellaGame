@@ -359,9 +359,9 @@ public class GmaeManage : MonoBehaviour
 
 		if (Application.loadedLevelName == "Boucing") {
 
-			if (Input.GetButtonDown ("Undefined")) {
-				progression += 1;
-			}
+//			if (Input.GetButtonDown ("Undefined")) {
+//				progression += 1;
+//			}
 
 			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
 				_oldWidth = Screen.width;
@@ -489,7 +489,10 @@ public class GmaeManage : MonoBehaviour
 		Time.timeScale = 0; //game paused
 		
 		fading.FadeIN (PauseScreen, transitionSpeed);
-		
+
+		GameObject.Find("Achievements_Box").GetComponent<Image>().enabled = false;
+		GameObject.Find("Achievemts_text").GetComponent<Text>().enabled = false;
+
 		//		if (backgroundMusic.transform.childCount > 0) {
 		//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
 		//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = -1;
@@ -514,7 +517,9 @@ public class GmaeManage : MonoBehaviour
 		
 		Time.timeScale = 1f; //runs at regular time
 		fading.FadeOUT (PauseScreen, transitionSpeed);
-		
+
+		GameObject.Find("Achievements_Box").GetComponent<Image>().enabled = true;
+		GameObject.Find("Achievemts_text").GetComponent<Text>().enabled = true;
 		//		if (backgroundMusic.transform.childCount > 0) {
 		//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
 		//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = 1;
