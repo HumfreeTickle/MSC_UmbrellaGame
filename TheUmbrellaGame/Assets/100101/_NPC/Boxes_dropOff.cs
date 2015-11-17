@@ -17,6 +17,7 @@ public class Boxes_dropOff : MonoBehaviour
 		boxCount = GameObject.Find ("CratePickupCollection").transform.childCount; // the number of boxes in the mission
 		boxMission = GameObject.Find ("Missions").GetComponent<NPC_BoxesMission> ();
 		gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
+
 		if(!dropParticle){
 			Debug.LogError("No Particles - Boxes");
 		}

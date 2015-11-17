@@ -11,37 +11,46 @@ namespace NPC
 	{
 		private GmaeManage gameManager;
 		private MissionController missionStates;
-		public GameObject boxesGuy{get; private set;}
+
+		public GameObject boxesGuy{ get; private set; }
 
 		//--------------------------------------------------// 
 		public bool boxesMission{ get; set; }
+
 		public bool boxesDropped{ get; set; }
 		
 		//-------------- Talking Stuff ---------------//
 		private NPC_Interaction npc_Interact; //used to call the mission when the player talks to an NPC
 
-		public int boxes_X{get; set; }
+		public int boxes_X{ get; set; }
 
 		public bool jumpAround_Boxes{ private get; set; }
 
 		private Animator npc_Animator;
 		private GameObject overHereLight;
-
 		public IEnumerator boxesCoroutine;
-
 		private Transform boxes;
 		private Talk talkCoroutine;
 		private string[] boxesMissionDialogue1 = 
 		{
-			"My boxes!!! ",
+			"My boxes!!! "
+		};
+
+		private string[] boxesMissionDialogue2 = 
+		{
 			"Someone has stolen them and haphazardly placed them around the town.", 
 			"Can you please retrive them from their unusual locales?"
 		};
-		private string[] boxesMissionDialogue2 = 
+
+		private string[] boxesMissionDialogue3 = 
 		{
 			"You are a saint of an umbrella.",
 			"Thank you so very much."
 		};
+		private _MoveCamera cmaeraMove;
+		private IEnumerator cameraMoveCoroutine;
+		private bool moveCmarea = true;
+		private GameObject box;
 		
 		//--------------------------------------------//
 		
@@ -49,14 +58,13 @@ namespace NPC
 		{
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			boxesGuy = GameObject.Find ("NPC_Boxes");
-			;
 		
 			npc_Animator = boxesGuy.GetComponent<Animator> ();
 			if (!npc_Animator.isActiveAndEnabled) {
 				npc_Animator.enabled = true;
 			}
 			overHereLight = boxesGuy.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;//where ever the light is on the NPC_Talk characters. 
-			overHereLight.SetActive(false);
+			overHereLight.SetActive (false);
 
 			npc_Interact = boxesGuy.GetComponent<NPC_Interaction> (); // 
 
@@ -64,12 +72,16 @@ namespace NPC
 			talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
 			boxes_X = 0;
 			jumpAround_Boxes = false;
+
+			cmaeraMove = GameObject.Find ("Follow Camera").GetComponent<_MoveCamera> ();
+
+			box = GameObject.Find ("Pickup_Crate");
 		}
 		
 		void Update ()
 		{
 			npc_Animator.SetBool ("Play", jumpAround_Boxes);
-			overHereLight.SetActive(jumpAround_Boxes);
+			overHereLight.SetActive (jumpAround_Boxes);
 
 			if (gameManager.MissionState == MissionController.BoxesMission) {
 
@@ -99,7 +111,7 @@ namespace NPC
 			}
 
 			if (boxesDropped) {
-				boxes_X = 2;
+				boxes_X = 3;
 			}
 
 		}
@@ -130,33 +142,52 @@ namespace NPC
 				
 			case 0:
 				//prevents multiple calls
-				if (talkCoroutine.StartCoroutine) {
+				if (talkCoroutine.StartCoroutineTalk) {
 					break;
 				}
 	
 				// used to change the switch case once dialogue has ended
 				// the action equals a function with no parameters,
 				// through the lambda expersion, this then call x = 1;
-				System.Action tutorialDialogue1 = (/*parameters*/) /*lambda*/ => {
+				System.Action endCorutine1 = (/*parameters*/) /*lambda*/ => {
 					boxes_X = 1; /*code to be run*/};
-				
-				// assigns and calls the talking coroutine 
-				boxesCoroutine = talkCoroutine.Talking (boxesMissionDialogue1, tutorialDialogue1);
+
+				boxesCoroutine = talkCoroutine.Talking (boxesMissionDialogue1, endCorutine1);
 				StartCoroutine (boxesCoroutine);
-				TurnOnLights(boxes);
 				break;
-				
+
 			case 1:
-				boxesMission = false;
+				//prevents multiple calls
+				if (talkCoroutine.StartCoroutineTalk) {
+					break;
+				}
+				
+				// used to change the switch case once dialogue has ended
+				// the action equals a function with no parameters,
+				// through the lambda expersion, this then call x = 1;
+				System.Action endCoroutine = (/*parameters*/) /*lambda*/ => {
+					boxes_X = 2; /*code to be run*/};
+
+				// assigns and calls the talking coroutine 
+				boxesCoroutine = talkCoroutine.Talking (boxesMissionDialogue2, endCoroutine);
+				StartCoroutine (boxesCoroutine);
+				TurnOnLights (boxes);
+				if (moveCmarea) {
+					CameraMove ();
+				}
 				break;
 				
 			case 2:
+				boxesMission = false;
+				break;
 				
-				if (talkCoroutine.StartCoroutine)
+			case 3:
+				
+				if (talkCoroutine.StartCoroutineTalk)
 					break;
 				System.Action tutorialDialogue2 = () => {
-					boxes_X = 3;};
-				boxesCoroutine = talkCoroutine.Talking (boxesMissionDialogue2, tutorialDialogue2);
+					boxes_X = 4;};
+				boxesCoroutine = talkCoroutine.Talking (boxesMissionDialogue3, tutorialDialogue2);
 				StartCoroutine (boxesCoroutine);
 				
 				if (gameManager.gameState == GameState.MissionEvent) {
@@ -166,7 +197,7 @@ namespace NPC
 				break;
 				
 				
-			case 3:
+			case 4:
 				gameManager.MissionState = MissionController.HorsesMission;
 				boxesMission = false;
 				break;
@@ -177,6 +208,16 @@ namespace NPC
 			}
 		}
 
+		void CameraMove ()
+		{
+			if (!cmaeraMove.StartCoroutineCamera) {
+				System.Action endCoroutine = () => {
+					moveCmarea = false;};
+				
+				cameraMoveCoroutine = cmaeraMove.cameraMove (box, endCoroutine);
+				StartCoroutine (cameraMoveCoroutine);
+			}
+		}
 
 	}//end
 }

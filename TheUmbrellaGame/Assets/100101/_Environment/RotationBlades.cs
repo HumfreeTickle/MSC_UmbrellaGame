@@ -18,20 +18,19 @@ namespace Environment
 		public GameObject windEffect;
 		private GameObject windPushEffect;
 		private bool turning;
-		private NPCManage npcManager = new NPCManage ();
 		public GameObject lineOne;
 		public GameObject lineTwo;
 		private Color transparentStart = Color.white;
-		public bool lightsOn{private get; set;}
+
+		public bool lightsOn{ private get; set; }
 
 		private Transform handle;
-		private GameObject umbrella;
-		private Controller cmaera;
 		private GameObject cameraSet;
 		private GmaeManage gameManager;
-		private bool running;
-		private bool zeldafy = true;
-		private Vector3 moveTo;
+		private Transform moveTo;
+		private _MoveCamera cmaeraMove;
+		private IEnumerator cameraMoveCoroutine;
+		private bool moveCmarea = true;
 
 		void Start ()
 		{
@@ -44,12 +43,14 @@ namespace Environment
 
 			handle = GameObject.Find ("handle").transform;
 
-			umbrella = GameObject.Find ("main_Sphere");
-			cmaera = GameObject.Find ("Follow Camera").GetComponent<Controller> ();
+//			umbrella = GameObject.Find ("main_Sphere");
+//			cmaera = GameObject.Find ("Follow Camera").GetComponent<Controller> ();
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
-			moveTo = GameObject.Find ("MoveTo").transform.position;
-			GetComponent<AudioSource>().enabled = false;
+			moveTo = GameObject.Find ("MoveTo").transform;
+			GetComponent<AudioSource> ().enabled = false;
+
+			cmaeraMove = GameObject.Find ("Follow Camera").GetComponent<_MoveCamera> ();
 
 		}
 
@@ -58,25 +59,23 @@ namespace Environment
 
 			if (rotation) {
 				onRotation ();
-				StartCoroutine (cameraMove ());
+				if (moveCmarea) {
+					CameraMove ();
+				}
 			}
 
 			if (caughtPiece.transform.parent == handle.transform) {
 				activeLight.enabled = false;
 				lightsOn = false;
 				rotation = true;//turn on the windmill
-				running = true;
-				
+
 				tutorial.objectTag = "";
 				this.tag = "Untagged";
-				
-				//----------------------------------//
-				npcManager.WindmillMission = true;
-				//----------------------------------//
+
 				npc_TutorialMission.npc_Tutorial.tag = "NPC_talk";
 				npc_TutorialMission.tut_X = 2;
 				npc_TutorialMission.jumpAround_Tut = true;
-			}else{
+			} else {
 				if (lightsOn) {
 					activeLight.enabled = true;
 				}
@@ -93,7 +92,7 @@ namespace Environment
 			lineOne.GetComponent<LineRenderer> ().material.SetColor ("_Color", transparentStart);
 			lineTwo.GetComponent<LineRenderer> ().material.SetColor ("_Color", transparentStart);
 
-			GetComponent<AudioSource>().enabled = true;
+			GetComponent<AudioSource> ().enabled = true;
 			activeLight.enabled = false;
 
 			if (windParticles != null) {
@@ -112,7 +111,7 @@ namespace Environment
 
 						windPushEffect = Instantiate (windEffect, transform.position, Quaternion.identity) as GameObject;
 						windPushEffect.transform.parent = transform;
-						windPushEffect.transform.LookAt(col.transform);
+						windPushEffect.transform.LookAt (col.transform);
 					} else {
 						return;
 					}
@@ -120,62 +119,18 @@ namespace Environment
 			}
 		}
 
-//		void OnTriggerExit (Collider col)
-//		{
-//			if (col.tag == "Player") {//if the umbrella interacts with the windmill
-//				if (caughtPiece.transform.parent == handle) {
-//					rotation = true;//turn on the windmill
-//					running = true;
-//
-//					tutorial.objectTag = "";
-//					this.tag = "Untagged";
-//
-//					//----------------------------------//
-//					npcManager.WindmillMission = true;
-//					//----------------------------------//
-//					npc_TutorialMission.npc_Tutorial.tag = "NPC_talk";
-//					npc_TutorialMission.tut_X = 2;
-//					npc_TutorialMission.jumpAround_Tut = true;
-//				}
-//			}
-//		}
-
-// sweet I already worked out a way to move the camera independently from the missions
-// just gotta make it generic and move it out of here
-
-		IEnumerator cameraMove ()
+		void CameraMove ()
 		{
-			while (running) {
-				while (zeldafy) {
-					gameManager.GameState = GameState.MissionEvent;
-					cameraSet = this.gameObject;
-					cmaera.lookAt = cameraSet;
-					cmaera.MoveYerself = false;
-
-					while (Vector3.Distance(cmaera.transform.position, moveTo) > 10 && cameraSet ==  this.gameObject) {
-						if (!cmaera.MoveYerself) {
-							cmaera.transform.position = Vector3.Lerp (cmaera.transform.position, moveTo, Time.deltaTime / 2);
-
-							yield return null;
-						}
-						zeldafy = false;
-
-						yield return null;
-
+			if (!cmaeraMove.StartCoroutineCamera) {
+				System.Action endCoroutine = () => {
+					if (gameManager.GameState == GameState.MissionEvent) {
+						gameManager.GameState = GameState.Game;
 					}
-					yield return null;
-
-				}
-				yield return new WaitForSeconds (5);
-				cameraSet = umbrella;
-				cmaera.lookAt = cameraSet;
-				cmaera.MoveYerself = true;
-				gameManager.GameState = GameState.Game;
-				running = false;
+					moveCmarea = false;};
+				
+				cameraMoveCoroutine = cmaeraMove.cameraMove (this.gameObject,endCoroutine, moveTo, 2f );
+				StartCoroutine (cameraMoveCoroutine);
 			}
-
-			yield break;
-//			look back at the windmill when you've made it start :)
 		}
 	}
 }

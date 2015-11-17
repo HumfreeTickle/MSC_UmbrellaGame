@@ -28,18 +28,6 @@ namespace CameraScripts
 			}
 		}
 
-		public bool playTime;
-
-		/// <summary>
-		/// Used when you need to lerp between two camera points and need a state change when it has arrived
-		/// </summary>
-		/// <value><c>true</c> if play time; otherwise, <c>false</c>.</value>
-		public bool PlayTime {
-			get {
-				return playTime;
-			}
-		}
-
 		public float threshold;
 		private Rigidbody lookAtRb;
 		//-----------------------------------------------//
@@ -104,9 +92,8 @@ namespace CameraScripts
 		void Update ()
 		{
 			gameState = GameManager.GameState;
-			if (!lookAt.GetComponent<Renderer> ().isVisible) {
-				RayCastView ();
-			}
+			RayCastView ();
+
 
 			if (gameState == GameState.Pause) {
 				if (GameManager.ControllerType != ControllerType.Keyboard) {
@@ -139,14 +126,8 @@ namespace CameraScripts
 				height = maxHeight;
 				distance = 2.8f;
 			}
-
-
+		
 			if (gameState != GameState.GameOver) {
-
-				if (Input.GetButtonDown ("ResetCmaera")) {
-					cameraSet = GameObject.Find ("main_Sphere");
-					lookAt = cameraSet;
-				}
 
 				//					 Calculate gameState == GameState.Pausethe current rotation angles (only need quaternion for movement)
 				float wantedRotationAngle = lookAtTr.eulerAngles.y;
@@ -159,6 +140,12 @@ namespace CameraScripts
 
 				if (gameState == GameState.Game || gameState == GameState.Intro) {
 
+					if (cameraSet != GameObject.Find ("main_Sphere")) {
+						cameraSet = GameObject.Find ("main_Sphere");
+						lookAt = cameraSet;
+						lookAtTr = lookAt.transform;
+					}
+					
 					// Damp the rotation around the y-axis
 					currentRotationAngle = Mathf.LerpAngle (currentRotationAngle, wantedRotationAngle, rotationDamping * Time.fixedDeltaTime);
 					
@@ -213,13 +200,6 @@ namespace CameraScripts
 
 					Quaternion rotation = Quaternion.LookRotation (lookAtTr.position - transform.position);
 					transform.rotation = Quaternion.Slerp (transform.rotation, rotation, Time.deltaTime * (speed / 10));
-
-					if (Quaternion.Angle (transform.rotation, rotation) < threshold) {
-						playTime = true;
-					} else {
-						playTime = false;
-					}
-
 				}
 			}
 				//-------------------------------------------- Camera Changes on Death -------------------------------------------------------//

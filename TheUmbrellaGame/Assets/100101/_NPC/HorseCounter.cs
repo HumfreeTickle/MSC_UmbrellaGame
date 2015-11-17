@@ -6,7 +6,7 @@ public class HorseCounter : MonoBehaviour
 {
 	private HorseMission_BackEnd horseMission;
 	private int numberOfHorseHome;
-	public Animator GateClose;
+	private Animator GateClose;
 	public GameObject dropParticle;
 	private GmaeManage gameManager;
 	
@@ -16,7 +16,7 @@ public class HorseCounter : MonoBehaviour
 		if (!dropParticle) {
 			Debug.LogError ("No Particles - Horse");
 		}
-
+		GateClose = GameObject.Find("GateCloser").GetComponent<Animator>();
 		gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 	}
 

@@ -122,14 +122,14 @@ namespace Environment
 				break;
 
 			case MissionController.BoxesMission:
-				SetDusk (0.2f); //mid afternoon 
+				SetDusk (0.6f); //mid afternoon 
 				SetSun (160);
 				blendRatio = 0.7f;
 
 				break;
 
 			case MissionController.HorsesMission:
-				SetDusk (0.6f); //mid afternoon 
+				SetDusk (0.5f); //mid afternoon 
 				SetSun (160);
 				blendRatio = 0.7f;
 
