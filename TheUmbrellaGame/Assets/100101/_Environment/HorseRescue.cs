@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using UnityEngine.Audio;
 
 public class HorseRescue : MonoBehaviour
 {
@@ -16,6 +17,8 @@ public class HorseRescue : MonoBehaviour
 	private float speed;
 	private float run;
 	public bool isMoving;
+	private AudioClip Neigh;
+	private AudioSource audio2;
 	
 	//public Transform currentDestination;// where is the horse now
 	public Transform nextDestination;//where is the horse going next if moving forward
@@ -27,7 +30,8 @@ public class HorseRescue : MonoBehaviour
 		horse = gameObject.GetComponent<NavMeshAgent> ();
 		horse.SetDestination (destination0.position);// make destination 0 its current destination
 		timer = 500;
-
+		audio2 = GetComponent<AudioSource>();
+		Neigh = audio2.clip;
 		anim = gameObject.GetComponent<Animator> ();
 		nextDestination = destination1;
 		Brolly = GameObject.Find ("main_Sphere").transform;
@@ -52,6 +56,8 @@ public class HorseRescue : MonoBehaviour
 			speed--;
 			run--;
 			horse.tag ="Interaction";
+			audio2.Stop();
+
 
 		}
 
@@ -62,6 +68,7 @@ public class HorseRescue : MonoBehaviour
 			run--;
 			timer--;
 			horse.tag ="Interaction";
+			audio2.Stop();
 
 		}
 
@@ -72,11 +79,13 @@ public class HorseRescue : MonoBehaviour
 			run--;
 			timer--;
 			horse.tag ="Interaction";
+			audio2.Stop();
 
 		}
 
 		if (Vector3.Distance (horse.transform.position, destination3.position) <= 5f) {
 			speed = 0;
+
 		}
 
 
@@ -85,7 +94,8 @@ public class HorseRescue : MonoBehaviour
 			timer = 500;
 			speed = 0;
 			run = 80;
-			horse.speed = 25;
+			horse.speed = 35;
+			audio2.PlayOneShot(Neigh);
 
 			if(Vector3.Distance(horse.transform.position, lastDestination.position) <= 35f){
 
@@ -111,6 +121,7 @@ public class HorseRescue : MonoBehaviour
 				horse.SetDestination (nextDestination.position);
 				run = 80;
 				horse.speed= 35;
+				audio2.PlayOneShot(Neigh);
 			}
 		}
 	}

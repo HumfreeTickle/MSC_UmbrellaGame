@@ -5,6 +5,7 @@ using NPC;
 public class PriestOutside : MonoBehaviour {
 
 	private Animator anim;
+
 	private NPC_FinalMission finalMission;
 	private Transform spawnPoint;
 
@@ -26,6 +27,9 @@ public class PriestOutside : MonoBehaviour {
 			finalMission.final_X = 4;
 
 		}
+
+
 	}
+
 
 }

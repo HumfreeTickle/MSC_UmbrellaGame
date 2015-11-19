@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Audio;
 
 public class SignBlow : MonoBehaviour {
 
@@ -8,8 +9,10 @@ public class SignBlow : MonoBehaviour {
 	public bool swinging;
 	public Rigidbody brolly;
 	//private float theSpeed;
-	public Vector3 back;
-	public Vector3 forward;
+//	public Vector3 back;
+//	public Vector3 forward;
+	private AudioClip Creaky;
+	private AudioSource audio2;
 
 
 
@@ -17,6 +20,8 @@ public class SignBlow : MonoBehaviour {
 	void Start () {
 		anim = gameObject.GetComponent<Animator> ();
 		timer = 10;
+		audio2 = GetComponent<AudioSource>();
+		Creaky = audio2.clip;
 		}
 	
 	// Update is called once per frame
@@ -32,6 +37,7 @@ public class SignBlow : MonoBehaviour {
 		if(swinging){
 
 			timer--;
+			audio2.PlayOneShot(Creaky);
 		}
 
 	}

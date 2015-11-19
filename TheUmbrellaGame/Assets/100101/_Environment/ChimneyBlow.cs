@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.Audio;
 
 namespace Enivironment
 {
@@ -8,11 +9,15 @@ namespace Enivironment
 		public float push;
 		private float savedPush;
 		private Animator umbrellaAnim;
+		private AudioClip whoosh;
+		private AudioSource audio2;
 
 		void Start ()
 		{
 			savedPush = push;
 			umbrellaAnim = GameObject.Find ("Umbrella").GetComponent<Animator> ();
+			audio2 = GetComponent<AudioSource>();
+			whoosh = audio2.clip;
 		}
 
 		void OnTriggerStay (Collider other)
@@ -20,11 +25,20 @@ namespace Enivironment
 			if (other.gameObject.tag == "Player") {
 				if (other.GetComponent<Rigidbody> ()) {
 					other.GetComponent<Rigidbody> ().AddForce (transform.forward * push);
+
 				}
 				umbrellaAnim.SetBool ("Hit", true);
 
 				push -= 1;
 				push = Mathf.Clamp (push, 0, savedPush);
+			}
+		}
+
+		void OnTriggerEnter(Collider other)
+		{
+			if (other.gameObject.tag == "Player") {
+				audio2.PlayOneShot(whoosh);
+				Debug.Log("Whoosh");
 			}
 		}
 
