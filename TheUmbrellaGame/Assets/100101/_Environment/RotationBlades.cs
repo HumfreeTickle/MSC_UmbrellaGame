@@ -36,7 +36,7 @@ namespace Environment
 		{
 			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
 			npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
-			caughtPiece = transform.parent.transform.FindChild ("Caught_Wood").gameObject;
+			caughtPiece = transform.parent.transform.FindChild ("Pickup_pole").gameObject;
 
 			activeLight = caughtPiece.transform.FindChild ("Activate").GetComponent<Light> (); //finds the light attahed to the caughtpiece
 			windParticles = activeLight.gameObject.transform.GetChild (0).gameObject; // not sure what this is used for
@@ -63,18 +63,19 @@ namespace Environment
 					CameraMove ();
 				}
 			}
+			if (gameManager.missionState == MissionController.TutorialMission) {
+				if (caughtPiece.transform.parent == handle.transform) {
+					activeLight.enabled = false;
+					lightsOn = false;
+					rotation = true;//turn on the windmill
 
-			if (caughtPiece.transform.parent == handle.transform) {
-				activeLight.enabled = false;
-				lightsOn = false;
-				rotation = true;//turn on the windmill
+					tutorial.objectTag = "";
+					this.tag = "Untagged";
 
-				tutorial.objectTag = "";
-				this.tag = "Untagged";
-
-				npc_TutorialMission.npc_Tutorial.tag = "NPC_talk";
-				npc_TutorialMission.tut_X = 2;
-				npc_TutorialMission.jumpAround_Tut = true;
+					npc_TutorialMission.npc_Tutorial.tag = "NPC_talk";
+					npc_TutorialMission.tut_X = 2;
+					npc_TutorialMission.jumpAround_Tut = true;
+				}
 			} else {
 				if (lightsOn) {
 					activeLight.enabled = true;
@@ -128,7 +129,7 @@ namespace Environment
 					}
 					moveCmarea = false;};
 				
-				cameraMoveCoroutine = cmaeraMove.cameraMove (this.gameObject,endCoroutine, moveTo, 2f );
+				cameraMoveCoroutine = cmaeraMove.cameraMove (this.gameObject, endCoroutine, moveTo, 2f);
 				StartCoroutine (cameraMoveCoroutine);
 			}
 		}

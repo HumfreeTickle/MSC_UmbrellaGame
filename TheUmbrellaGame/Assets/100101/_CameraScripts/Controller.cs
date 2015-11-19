@@ -231,8 +231,6 @@ namespace CameraScripts
 		{
 			if (Mathf.Abs (Input.GetAxis ("Vertical_R")) > 0) {
 				transform.RotateAround (lookAtTr.position, transform.TransformDirection (Vector3.right), -1 * Input.GetAxis ("Vertical_R") * rotateSpeed); 
-			}else{
-				transform.RotateAround (lookAtTr.position, transform.TransformDirection (Vector3.right), rotateSpeed/70); 
 			}
 		}
 		
