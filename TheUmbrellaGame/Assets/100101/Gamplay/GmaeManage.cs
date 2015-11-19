@@ -182,7 +182,7 @@ public class GmaeManage : MonoBehaviour
 	}
 
 
-//------------------------------------ Getters and Setters ------------------------------------------------------------
+//------------------------------------ Getters and Setters -----------------------------------------------------------//
 
 	//Needs to be renamed to gameOverTimer
 	public float gameOver_Timer { //timer used elsewhere to end the game
@@ -257,12 +257,10 @@ public class GmaeManage : MonoBehaviour
 	private bool playSFX;
 
 
-//-------------------------------------- The Setup -----------------------------------------------------------------
+//-------------------------------------- The Setup ----------------------------------------------------------------//
 
 	void Awake ()
 	{
-//		DontDestroyOnLoad (transform.gameObject);
-
 		//-------------------- For the different controllers ---------------------------------
 		if (Input.GetJoystickNames ().Length > 0) {// checks to see if a controller is connected
 			ControllerType = ControllerType.ConsoleContoller;
@@ -325,11 +323,17 @@ public class GmaeManage : MonoBehaviour
 			if (umbrella != null) {
 				umbrellaRb = umbrella.GetComponent<Rigidbody> ();
 			}
-			if (PlayerPrefs.GetFloat ("PlayerX") != 0 || PlayerPrefs.GetFloat ("PlayerY") != 0 || PlayerPrefs.GetFloat ("PlayerZ") != 0) {
-				startingPos = new Vector3 (PlayerPrefs.GetFloat ("PlayerX"), PlayerPrefs.GetFloat ("PlayerY"), PlayerPrefs.GetFloat ("PlayerZ"));
+			if (PlayerPrefs.GetFloat ("PlayerProgression") != 0) {
+				progression = PlayerPrefs.GetInt ("PlayerProgression");
 			} else {
-				startingPos = umbrella.transform.localPosition;
+				progression = 1;
 			}
+
+//			if(PlayerPrefs.GetString("Mission") != null){
+//				missionState = (MissionController)System.Enum.Parse( typeof(MissionController), PlayerPrefs.GetString("Mission"));
+//			}else{
+//				missionState = MissionController.Default;
+//			}
 //			umbrella.transform.localPosition = startingPos;
 
 //			backgroundMusic = GameObject.Find ("Music");
@@ -359,9 +363,9 @@ public class GmaeManage : MonoBehaviour
 
 		if (Application.loadedLevelName == "Boucing") {
 
-			if (Input.GetButtonDown ("Undefined")) {
-				progression += 1;
-			}
+//			if (Input.GetButtonDown ("Undefined")) {
+//				progression += 1;
+//			}
 
 			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
 				_oldWidth = Screen.width;
@@ -444,9 +448,17 @@ public class GmaeManage : MonoBehaviour
 	
 	void RestartGame ()
 	{
-		if (Input.GetKeyDown (KeyCode.R) || umbrella.transform.position.y <= -200f) {
+		if (Input.GetKeyDown (KeyCode.R)){
 			GameState = GameState.GameOver;
+			PlayerPrefs.DeleteAll();
 			print ("Reset");
+		}else if(umbrella.transform.position.y <= -200f) {
+				PlayerPrefs.SetInt ("PlayerProgression", progression);
+				PlayerPrefs.SetString ("Mission", currentMission.ToString());
+			//	PlayerPrefs.SetFloat ("PlayerZ", lastKnownPosition.z);
+
+			GameState = GameState.GameOver;
+			print ("Too Low");
 		}
 	}
 
@@ -489,7 +501,10 @@ public class GmaeManage : MonoBehaviour
 		Time.timeScale = 0; //game paused
 		
 		fading.FadeIN (PauseScreen, transitionSpeed);
-		
+
+		GameObject.Find ("Achievements_Box").GetComponent<Image> ().enabled = false;
+		GameObject.Find ("Achievemts_text").GetComponent<Text> ().enabled = false;
+
 		//		if (backgroundMusic.transform.childCount > 0) {
 		//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
 		//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = -1;
@@ -499,10 +514,10 @@ public class GmaeManage : MonoBehaviour
 		//		}
 
 		// Movement with
-		if(Input.GetAxisRaw("Vertical_L") > 0){
+		if (Input.GetAxisRaw ("Vertical_L") > 0) {
 			//move up one in the button array
 			//if greater then 2 move to 0
-		}else if(Input.GetAxisRaw("Vertical_L") > 0){
+		} else if (Input.GetAxisRaw ("Vertical_L") > 0) {
 			//move down one in the button array
 			//if less then 0 move to 2
 		}
@@ -514,7 +529,12 @@ public class GmaeManage : MonoBehaviour
 		
 		Time.timeScale = 1f; //runs at regular time
 		fading.FadeOUT (PauseScreen, transitionSpeed);
-		
+
+		GameObject.Find ("Achievements_Box").GetComponent<Image> ().enabled = true;
+		GameObject.Find ("Achievemts_text").GetComponent<Text> ().enabled = true;
+
+		//might need to add something in here for the buttons as well
+
 		//		if (backgroundMusic.transform.childCount > 0) {
 		//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
 		//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = 1;
@@ -598,10 +618,10 @@ public class GmaeManage : MonoBehaviour
 					} else if (Application.loadedLevelName == "Boucing") {
 						if (progression < 6) {
 							Application.LoadLevel ("Boucing");
-						}else{
+						} else {
 							Application.LoadLevel ("Start_Screen");
 						}
-						//------------- No longer used stuff --------------//
+
 //						PlayerPrefs.SetFloat ("PlayerX", lastKnownPosition.x);
 //						PlayerPrefs.SetFloat ("PlayerY", lastKnownPosition.y);
 //						PlayerPrefs.SetFloat ("PlayerZ", lastKnownPosition.z);

@@ -18,10 +18,11 @@ namespace Player
 		private Achievements achieves;
 		private Tutuorial tutorial;
 		private DestroyObject destroy = new Inheritence.DestroyObject ();
-		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
+//		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
 
 		private Collider umbrella;
 		private bool thrown;
+		public float pickupSize = 1.2f;
 
 		void Start ()
 		{
@@ -94,7 +95,6 @@ namespace Player
 
 		void Detachment ()
 		{
-//			if (transform.childCount > 0) {
 			if (pickupObject == null) {
 				pickupObject = this.transform.GetChild (0).gameObject;
 			} 
@@ -122,28 +122,76 @@ namespace Player
 			}
 			pickupObject = null;
 			originalParent = null;
-//			} else {
-//				return;
-//			}
+		}
+
+		void OnTriggerEnter (Collider col)
+		{
+			if (col.gameObject.tag == "Pickup") {
+				Debug.Log(col.name + " : Enter");
+				pickupObject = col.gameObject;
+				originalParent = pickupObject.transform.parent;
+//				pickupObject.layer = 15;
+
+				if (col.GetComponent<BoxCollider> ()) {
+					if (col.GetComponent<BoxCollider> ().isTrigger) {
+						if (col.GetComponent<BoxCollider> ().size.magnitude < 1000) {
+							col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size * pickupSize;
+						} else {
+							Debug.LogError ("Some shit went down");
+							while (col.GetComponent<BoxCollider> ().size.magnitude > 10) {
+								col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size / pickupSize;
+							}
+						}
+					}
+
+				} else if (col.GetComponent<SphereCollider> ()) {
+					if (col.GetComponent<BoxCollider> ().isTrigger) {
+						col.GetComponent<SphereCollider> ().radius = col.GetComponent<SphereCollider> ().radius * pickupSize;
+					}
+				}
+
+			}
 		}
 
 		void OnTriggerStay (Collider col)
 		{
 
-			if (interactTutorial) {
+//			if (interactTutorial) {
 				
-				if (col.gameObject.tag == "Pickup") {
-					if (tutorial.objectTag == "") {
-						tutorial.objectTag = "Interaction";
-					}
-					if (interactTutorial) {
-						interactTutorial = false;
-					}
-					pickupObject = col.gameObject;
-					originalParent = pickupObject.transform.parent;
-					pickupObject.layer = 15;
+			if (col.gameObject.tag == "Pickup") {
+//								
+//				if (col.GetComponent<BoxCollider> ()) {
+//					if (col.GetComponent<BoxCollider> ().isTrigger) {
+//						if (col.GetComponent<BoxCollider> ().size.magnitude < 1000) {
+//							col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size * pickupSize;
+//						} else {
+//							Debug.LogError ("Some shit went down");
+//							while (col.GetComponent<BoxCollider> ().size.magnitude > 10) {
+//								col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size / pickupSize;
+//							}
+//						}
+//					}
+//						
+//				} else if (col.GetComponent<SphereCollider> ()) {
+//					if (col.GetComponent<BoxCollider> ().isTrigger) {
+//						col.GetComponent<SphereCollider> ().radius = col.GetComponent<SphereCollider> ().radius * pickupSize;
+//					}
+//				}
+
+				if (tutorial.objectTag == "") {
+					tutorial.objectTag = "Interaction";
 				}
-			} 
+//					if (interactTutorial) {
+//						interactTutorial = false;
+//					}
+
+				pickupObject = col.gameObject;
+				originalParent = pickupObject.transform.parent;
+				for (int child = 0; child< pickupObject.transform.childCount; child++) {
+					pickupObject.transform.GetChild(child).gameObject.layer = 15;
+				}
+			}
+//			} 
 
 			if (col.gameObject.tag == "River") {
 				if (rb.velocity.magnitude > 10) {
@@ -162,8 +210,23 @@ namespace Player
 		void OnTriggerExit (Collider col)
 		{
 			if (col.gameObject.tag == "Pickup") {
+				Debug.Log(col.name + " : Exit");
+
 				if (pickupObject != null) {
-					pickupObject.layer = 0;
+
+					if (col.GetComponent<BoxCollider> ()) {
+						if (col.GetComponent<BoxCollider> ().isTrigger) {
+							col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size / pickupSize;
+						}
+						
+					} else if (col.GetComponent<SphereCollider> ()) {
+						col.GetComponent<SphereCollider> ().radius = col.GetComponent<SphereCollider> ().radius / pickupSize;
+					}
+
+					
+					for (int child = 0; child< pickupObject.transform.childCount; child++) {
+						pickupObject.transform.GetChild(child).gameObject.layer = 0;
+					}
 					pickupObject = null;
 					originalParent = null;
 				}
@@ -177,9 +240,9 @@ namespace Player
 				if (tutorial.objectTag != "") {
 					tutorial.objectTag = "";
 				}
-				if (!interactTutorial) {
-					interactTutorial = true;
-				}
+//				if (!interactTutorial) {
+//					interactTutorial = true;
+//				}
 			}
 		}
 

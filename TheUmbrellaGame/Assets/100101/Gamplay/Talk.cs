@@ -17,7 +17,7 @@ public class Talk : MonoBehaviour
 	public float talkboxSpeed = 0.1f;
 	//--------------------------//
 	private Image npc_TalkBox;
-	private Animator L1_Click;
+	public Animator Talk_Click;
 	//--------------------------//
 	private bool proceed;
 	private int i = 0;
@@ -45,7 +45,12 @@ public class Talk : MonoBehaviour
 		gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 		npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
 		npc_TalkBox = GetComponent<Image> ();
-		L1_Click = this.transform.GetChild (0).GetComponent<Animator> ();
+
+		if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+			Talk_Click = this.transform.GetChild (0).GetComponent<Animator> ();
+		}else if(gameManager.ControllerType == ControllerType.Keyboard) {
+			Talk_Click = this.transform.GetChild (1).GetComponent<Animator> ();
+		}
 
 		cameraMove = GameObject.Find ("Follow Camera").GetComponent<_MoveCamera> ();
 		colourFadeIN = new Vector4 (npc_TalkBox.color.r, npc_TalkBox.color.g, npc_TalkBox.color.b, 0.5f);
@@ -92,7 +97,7 @@ public class Talk : MonoBehaviour
 
 		foreach (string text in whatToSay) {// cycles through the array and out puts a new piece of dialouge after each button press
 			while (i <= text.Length) {
-				L1_Click.SetBool ("proceed", false);
+				Talk_Click.SetBool ("proceed", false);
 
 				npc_Message = text;
 				npc_Talking.text = (npc_Message.Substring (0, i)); //adds a new character each cycle
@@ -101,7 +106,7 @@ public class Talk : MonoBehaviour
 			}
 
 			while (!Input.GetButtonDown("Talk")) {// waits for a button press to contiue
-				L1_Click.SetBool ("proceed", true);
+				Talk_Click.SetBool ("proceed", true);
 				i = 0; 
 				yield return null;
 			}
@@ -115,7 +120,7 @@ public class Talk : MonoBehaviour
 			yield return null;
 		}
 		npc_TalkBox.color = colourFadeOUT;
-		L1_Click.SetBool ("proceed", false);
+		Talk_Click.SetBool ("proceed", false);
 
 		//------------------------------------//
 		if (!cameraMove.StartCoroutineCamera) {

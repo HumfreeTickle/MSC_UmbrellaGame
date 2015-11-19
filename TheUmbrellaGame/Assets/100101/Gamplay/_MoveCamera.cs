@@ -47,7 +47,9 @@ public class _MoveCamera : MonoBehaviour
 
 		startCoroutineCamera = true;
 
-		gameManager.GameState = GameState.MissionEvent; // changes game stat
+		if (gameManager.GameState != GameState.MissionEvent) {
+			gameManager.GameState = GameState.MissionEvent;
+		}
 
 		yield return null;
 

@@ -173,6 +173,7 @@ namespace NPC
 				}
 
 				System.Action dialogue3 = () => {
+
 					tut_X = 4;};
 				tutorialCoroutine = talkCoroutine.Talking (catMissionDialogue2, dialogue3);
 				StartCoroutine (tutorialCoroutine);

@@ -35,13 +35,11 @@ namespace NPC
 		{
 			"My boxes!!! "
 		};
-
 		private string[] boxesMissionDialogue2 = 
 		{
 			"Someone has stolen them and haphazardly placed them around the town.", 
 			"Can you please retrive them from their unusual locales?"
 		};
-
 		private string[] boxesMissionDialogue3 = 
 		{
 			"You are a saint of an umbrella.",
@@ -50,7 +48,7 @@ namespace NPC
 		private _MoveCamera cmaeraMove;
 		private IEnumerator cameraMoveCoroutine;
 		private bool moveCmarea = true;
-		private GameObject box;
+		public GameObject box;
 		
 		//--------------------------------------------//
 		
@@ -75,7 +73,9 @@ namespace NPC
 
 			cmaeraMove = GameObject.Find ("Follow Camera").GetComponent<_MoveCamera> ();
 
-			box = GameObject.Find ("Pickup_Crate");
+			if (!box) {
+				box = GameObject.Find ("Pickup_Crate");
+			}
 		}
 		
 		void Update ()

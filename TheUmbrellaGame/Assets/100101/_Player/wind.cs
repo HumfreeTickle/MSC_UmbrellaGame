@@ -38,7 +38,7 @@ namespace Player
 					StartCoroutine (AnimationControl ());
 				}
 				if (gameState == GameState.Intro) {
-					gameTutorial.AnimatorYeah.SetBool ("Wind", false);
+					gameTutorial.windAnim.SetBool ("Wind", false);
 					umbrella.GetComponent<Rigidbody> ().AddForce (Vector3.up * 1000);
 				}
 			}

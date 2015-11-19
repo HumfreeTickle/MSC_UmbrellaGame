@@ -120,7 +120,9 @@ namespace NPC
 			pickupTool = GameObject.Find ("Pickaxe");
 			lighthouseRotate = GameObject.Find ("LigthHouse_Glass").GetComponent<LightOnRotate> ();
 			LightHouseKeep_DropOff = GameObject.Find ("LightHouseKeep_DropOff");
-			LightHouseKeep_DropOff.SetActive (false);
+			if (LightHouseKeep_DropOff.activeSelf) {
+				LightHouseKeep_DropOff.SetActive (false);
+			}
 			bridgeDrop = GameObject.Find ("Walkway-Bridge_C-Basic").GetComponent<DropTheBridge> ();
 			overHereLight = bridge_npc.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;
 			talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
@@ -151,14 +153,12 @@ namespace NPC
 					npc_Interact.MissionDelegate = StartFinalMission;
 
 					overHereLight.SetActive (jumpAround_Final);
-
-
 					if (currentPerson.GetComponent<Animator> ()) {
 						npc_Animator = currentPerson.GetComponent<Animator> ();
 					}
-
 				}
 
+				// Sets the mission in motion
 				if (final_X == 0) {
 					bridge_npc.tag = "NPC_talk";
 				} else {
@@ -287,8 +287,14 @@ namespace NPC
 				break;
 
 			case 4:
-				if (talkCoroutine.StartCoroutineTalk)
+				if (talkCoroutine.StartCoroutineTalk) {
 					break;
+				} else {
+					moveCmarea = true;
+					
+					lookAt = lookAtObjects [1];
+					moveTo = moveToObjects [0];
+				}
 				System.Action dialogue3 = () => {
 					final_X = 5;
 					currentPerson = lightHouseKeeper;
@@ -299,12 +305,6 @@ namespace NPC
 				StartCoroutine (finalCoroutine);
 				priest.tag = "NPC";
 
-				moveCmarea = true;
-
-				lookAt = lookAtObjects [1];
-				moveTo = moveToObjects [0];
-
-				
 				break;
 
 			// Movement between priest and lighthouse keeper
@@ -324,6 +324,7 @@ namespace NPC
 					break;
 				System.Action dialogue4 = () => {
 					final_X = 7;
+					moveCmarea = true;
 				};
 				finalCoroutine = talkCoroutine.Talking (LightHouseKeeper_Dialogue1, dialogue4);
 				StartCoroutine (finalCoroutine);
@@ -333,8 +334,13 @@ namespace NPC
 				break;
 
 			case 7:
-				if (talkCoroutine.StartCoroutineTalk)
+				if (talkCoroutine.StartCoroutineTalk) {
 					break;
+				} else {
+					lookAt = lookAtObjects [2];
+					moveTo = moveToObjects [1];
+				}
+
 				System.Action stealing = () => {
 					final_X = 8;
 					pickupTool.tag = "Pickup";
@@ -343,24 +349,25 @@ namespace NPC
 				finalCoroutine = talkCoroutine.Talking (LightHouseKeeper_Dialogue2, stealing);
 				StartCoroutine (finalCoroutine);
 
-				moveCmarea = true;
-				lookAt = lookAtObjects [2];
-				moveTo = moveToObjects [1];
-
 				break;
 
 
 			// Stealing the pickaxe
 			case 8:
-				moveCmarea = true;
 
 				pickupTool.transform.FindChild ("Activate").GetComponent<Light> ().enabled = true;
 				finalMission = false;
 				break;
 
 			case 9:
-				if (talkCoroutine.StartCoroutineTalk)
+				if (talkCoroutine.StartCoroutineTalk) {
 					break;
+				} else {
+					moveCmarea = true;
+					lookAt = lookAtObjects [3];
+					moveTo = moveToObjects [2];
+
+				}
 				System.Action lightHerUp = () => {
 					final_X = 10;
 					lighthouseRotate.lightHerUp = true;
@@ -377,10 +384,6 @@ namespace NPC
 
 				npc_Animator.SetBool ("FixIt", true);
 
-				moveCmarea = true;
-
-				lookAt = lookAtObjects [3];
-				moveTo = moveToObjects [2];
 
 				break;
 
@@ -407,8 +410,6 @@ namespace NPC
 
 			//Bringing the lighthousekeeper over to the bridge
 			case 11:
-				moveCmarea = true;
-
 				currentPerson = null;
 				lightHouseKeeper.GetComponent<SphereCollider> ().radius = 0.15f;
 
@@ -447,9 +448,11 @@ namespace NPC
 			if (!cmaeraMove.StartCoroutineCamera) {
 				System.Action endCoroutine = () => {
 					cmaera.GetComponent<Controller> ().lookAt = umbrella; // changes the camera's focus
+
 					if (moveCmarea) {
 						moveCmarea = false;
 					}
+				
 					lookAt = null;
 					moveTo = null;
 				};
