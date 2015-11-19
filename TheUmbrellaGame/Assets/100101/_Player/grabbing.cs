@@ -127,7 +127,7 @@ namespace Player
 		void OnTriggerEnter (Collider col)
 		{
 			if (col.gameObject.tag == "Pickup") {
-				Debug.Log(col.name + " : Enter");
+				Debug.Log (col.name + " : Enter");
 				pickupObject = col.gameObject;
 				originalParent = pickupObject.transform.parent;
 //				pickupObject.layer = 15;
@@ -137,7 +137,7 @@ namespace Player
 						if (col.GetComponent<BoxCollider> ().size.magnitude < 1000) {
 							col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size * pickupSize;
 						} else {
-							Debug.LogError ("Some shit went down");
+							Debug.LogError ("Some shit went down : Box Collider");
 							while (col.GetComponent<BoxCollider> ().size.magnitude > 10) {
 								col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size / pickupSize;
 							}
@@ -145,11 +145,17 @@ namespace Player
 					}
 
 				} else if (col.GetComponent<SphereCollider> ()) {
-					if (col.GetComponent<BoxCollider> ().isTrigger) {
-						col.GetComponent<SphereCollider> ().radius = col.GetComponent<SphereCollider> ().radius * pickupSize;
+					if (col.GetComponent<SphereCollider> ().isTrigger) {
+						if (col.GetComponent<SphereCollider> ().radius < 100) {
+							col.GetComponent<SphereCollider> ().radius = col.GetComponent<SphereCollider> ().radius * pickupSize;
+						} else {
+							Debug.LogError ("Some shit went down : Sphere Collider");
+							while (col.GetComponent<SphereCollider> ().radius > 10) {
+								col.GetComponent<SphereCollider> ().radius = col.GetComponent<SphereCollider> ().radius / pickupSize;
+							}
+						}
 					}
 				}
-
 			}
 		}
 
@@ -188,7 +194,7 @@ namespace Player
 				pickupObject = col.gameObject;
 				originalParent = pickupObject.transform.parent;
 				for (int child = 0; child< pickupObject.transform.childCount; child++) {
-					pickupObject.transform.GetChild(child).gameObject.layer = 15;
+					pickupObject.transform.GetChild (child).gameObject.layer = 15;
 				}
 			}
 //			} 
@@ -210,7 +216,7 @@ namespace Player
 		void OnTriggerExit (Collider col)
 		{
 			if (col.gameObject.tag == "Pickup") {
-				Debug.Log(col.name + " : Exit");
+				Debug.Log (col.name + " : Exit");
 
 				if (pickupObject != null) {
 
@@ -225,7 +231,7 @@ namespace Player
 
 					
 					for (int child = 0; child< pickupObject.transform.childCount; child++) {
-						pickupObject.transform.GetChild(child).gameObject.layer = 0;
+						pickupObject.transform.GetChild (child).gameObject.layer = 0;
 					}
 					pickupObject = null;
 					originalParent = null;
