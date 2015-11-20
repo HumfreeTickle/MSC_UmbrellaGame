@@ -18,16 +18,16 @@ public class SignBlow : MonoBehaviour
 	void Start ()
 	{
 		anim = gameObject.GetComponent<Animator> ();
-<<<<<<< HEAD
+
 		timer = 100;
 		audio2 = GetComponent<AudioSource>();
-=======
+
 		timer = 10;
 
 		brolly = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
 
 		audio2 = GetComponent<AudioSource> ();
->>>>>>> origin/master
+
 		Creaky = audio2.clip;
 	}
 	
@@ -39,10 +39,9 @@ public class SignBlow : MonoBehaviour
 			anim.SetBool ("SwingBack", false);
 			swinging = false;
 			audio2.Stop();
-<<<<<<< HEAD
-=======
+
 			timer = 10;
->>>>>>> origin/master
+
 		}
 		if (swinging) {
 			timer--;

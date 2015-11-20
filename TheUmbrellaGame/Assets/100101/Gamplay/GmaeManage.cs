@@ -124,6 +124,7 @@ public class GmaeManage : MonoBehaviour
 	public float autoPauseTimer; // idle timer till game auto pauses
 	public float transitionSpeed; // speed of transitions
 	public float _gameOverTimer; // 
+	private Image StartPlay;
 
 	//---------------- Progression ------------------//
 
@@ -338,6 +339,7 @@ public class GmaeManage : MonoBehaviour
 
 //			backgroundMusic = GameObject.Find ("Music");
 //			npcManager = GetComponent<NPCManage> ();
+			StartPlay = GameObject.Find("PressStart").GetComponent<Image>();
 
 			progressionSFX = GameObject.Find ("main_Sphere").GetComponent<AudioSource> ();
 			progressionClip = progressionSFX.clip;
@@ -497,10 +499,15 @@ public class GmaeManage : MonoBehaviour
 	void Paused ()
 	{
 		GetComponent<BlurOptimized> ().enabled = true;
-		
+		StartPlay.enabled = true;
 		Time.timeScale = 0; //game paused
+
+
 		
 		fading.FadeIN (PauseScreen, transitionSpeed);
+//		fading.FadeIN(StartPlay, transitionSpeed);
+
+//		StartPlay.color = new Vector4(StartPlay.color.r, StartPlay.color.g, StartPlay.color.b,  Mathf.PingPong(Time.fixedDeltaTime, 1));
 
 		GameObject.Find ("Achievements_Box").GetComponent<Image> ().enabled = false;
 		GameObject.Find ("Achievemts_text").GetComponent<Text> ().enabled = false;
@@ -526,12 +533,15 @@ public class GmaeManage : MonoBehaviour
 	void NotPaused ()
 	{
 		GetComponent<BlurOptimized> ().enabled = false;
-		
+		StartPlay.enabled = false;
+
 		Time.timeScale = 1f; //runs at regular time
 		fading.FadeOUT (PauseScreen, transitionSpeed);
 
 		GameObject.Find ("Achievements_Box").GetComponent<Image> ().enabled = true;
 		GameObject.Find ("Achievemts_text").GetComponent<Text> ().enabled = true;
+
+
 
 		//might need to add something in here for the buttons as well
 
