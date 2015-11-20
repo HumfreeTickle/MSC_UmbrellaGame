@@ -11,8 +11,6 @@ public class Tutuorial : MonoBehaviour
 	private GameState gameState;
 	private bool started;
 	private bool inTheBeginning;
-	private Image windImage;
-
 	public Animator windAnim{ get; private set; }
 
 	private Animator Talk_Animator;
@@ -27,7 +25,6 @@ public class Tutuorial : MonoBehaviour
 		GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
 		if (GameManager.ControllerType == ControllerType.ConsoleContoller) {
-			windImage = GetComponent<Image> ();
 			windAnim = GetComponent<Animator> ();
 
 			Talk_Button = GameObject.Find ("L1_tutorial").GetComponent<Image> ();
@@ -36,7 +33,6 @@ public class Tutuorial : MonoBehaviour
 			Talk_Animator = GameObject.Find ("L1_tutorial").GetComponent<Animator> ();
 			Interact_Animator = GameObject.Find ("R1_tutorial").GetComponent<Animator> ();
 		} else if (GameManager.ControllerType == ControllerType.Keyboard) {
-			windImage = GameObject.Find ("UP_tutorial").GetComponent<Image> ();
 			Talk_Button = GameObject.Find ("Q_tutorial").GetComponent<Image> ();
 			Interact_Button = GameObject.Find ("E_tutorial").GetComponent<Image> ();
 
@@ -87,16 +83,6 @@ public class Tutuorial : MonoBehaviour
 				}
 			}
 		}
-//		} 
-//	else {
-//			// stops the wrong tutorial images from appearing when using keyboard
-//			GetComponent<Image> ().enabled = false;
-//			Talk_Button.enabled = false;
-//			Interact_Button.enabled = false;
-//			for (int i = 0; i < transform.childCount; i++) {
-//				transform.GetChild (i).gameObject.SetActive (false);
-//			}
-//		}
 	}
 
 	public void StartingPositions ()

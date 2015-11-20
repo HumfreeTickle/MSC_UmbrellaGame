@@ -434,12 +434,17 @@ namespace NPC
 				lightHouseKeeper.GetComponent<SphereCollider> ().radius = 0.15f;
 
 				priest.tag = "NPC_talk";
+
+				overHereLight = priest.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;
+				overHereLight.SetActive(true);
 				LightHouseKeep_DropOff.SetActive (true);
 
 				finalMission = false;
 				break;
 
 			case 12:
+				overHereLight.SetActive(false);
+
 				if (talkCoroutine.StartCoroutineTalk)
 					break;
 				System.Action dialogue6 = () => {
