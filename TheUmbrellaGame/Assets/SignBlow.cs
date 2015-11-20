@@ -19,7 +19,7 @@ public class SignBlow : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		anim = gameObject.GetComponent<Animator> ();
-		timer = 10;
+		timer = 100;
 		audio2 = GetComponent<AudioSource>();
 		Creaky = audio2.clip;
 		}
@@ -33,6 +33,7 @@ public class SignBlow : MonoBehaviour {
 			anim.SetBool("SwingBack", false);
 			timer = 100;
 			swinging = false;
+			audio2.Stop();
 		}
 		if(swinging){
 

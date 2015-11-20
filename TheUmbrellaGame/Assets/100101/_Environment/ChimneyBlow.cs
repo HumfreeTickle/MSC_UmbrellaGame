@@ -18,6 +18,7 @@ namespace Enivironment
 			umbrellaAnim = GameObject.Find ("Umbrella").GetComponent<Animator> ();
 			audio2 = GetComponent<AudioSource>();
 			whoosh = audio2.clip;
+
 		}
 
 		void OnTriggerStay (Collider other)
@@ -31,12 +32,14 @@ namespace Enivironment
 
 				push -= 1;
 				push = Mathf.Clamp (push, 0, savedPush);
+
 			}
 		}
 
 		void OnTriggerEnter(Collider other)
 		{
 			if (other.gameObject.tag == "Player") {
+
 				audio2.PlayOneShot(whoosh);
 				Debug.Log("Whoosh");
 			}

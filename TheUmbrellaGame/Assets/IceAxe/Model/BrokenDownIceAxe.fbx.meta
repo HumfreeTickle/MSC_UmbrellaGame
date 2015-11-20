@@ -1,0 +1,131 @@
+fileFormatVersion: 2
+guid: 86cd4c0272ef747cba84c4b050e2515d
+timeCreated: 1447967191
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: IceAxe
+    100004: IceAxe.001
+    100006: IceAxe.002
+    100008: IceAxe.003
+    100010: IceAxe.004
+    100012: IceAxe.005
+    100014: IceAxe.006
+    100016: IceAxe.007
+    100018: IceAxe.008
+    100020: IceAxe.009
+    100022: IceAxe.010
+    100024: IceAxe.011
+    400000: //RootNode
+    400002: IceAxe
+    400004: IceAxe.001
+    400006: IceAxe.002
+    400008: IceAxe.003
+    400010: IceAxe.004
+    400012: IceAxe.005
+    400014: IceAxe.006
+    400016: IceAxe.007
+    400018: IceAxe.008
+    400020: IceAxe.009
+    400022: IceAxe.010
+    400024: IceAxe.011
+    2300000: IceAxe
+    2300002: IceAxe.001
+    2300004: IceAxe.002
+    2300006: IceAxe.003
+    2300008: IceAxe.004
+    2300010: IceAxe.005
+    2300012: IceAxe.006
+    2300014: IceAxe.007
+    2300016: IceAxe.008
+    2300018: IceAxe.009
+    2300020: IceAxe.010
+    2300022: IceAxe.011
+    3300000: IceAxe
+    3300002: IceAxe.001
+    3300004: IceAxe.002
+    3300006: IceAxe.003
+    3300008: IceAxe.004
+    3300010: IceAxe.005
+    3300012: IceAxe.006
+    3300014: IceAxe.007
+    3300016: IceAxe.008
+    3300018: IceAxe.009
+    3300020: IceAxe.010
+    3300022: IceAxe.011
+    4300000: IceAxe.011
+    4300002: IceAxe.010
+    4300004: IceAxe.009
+    4300006: IceAxe.008
+    4300008: IceAxe.007
+    4300010: IceAxe.006
+    4300012: IceAxe.005
+    4300014: IceAxe.004
+    4300016: IceAxe.003
+    4300018: IceAxe.002
+    4300020: IceAxe.001
+    4300022: IceAxe
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
