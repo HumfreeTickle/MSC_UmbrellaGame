@@ -48,7 +48,7 @@ namespace NPC
 		private _MoveCamera cmaeraMove;
 		private IEnumerator cameraMoveCoroutine;
 		private bool moveCmarea = true;
-		public GameObject box;
+		private GameObject box;
 		
 		//--------------------------------------------//
 		
@@ -72,10 +72,8 @@ namespace NPC
 			jumpAround_Boxes = false;
 
 			cmaeraMove = GameObject.Find ("Follow Camera").GetComponent<_MoveCamera> ();
+			box = boxes.GetChild (0).gameObject;
 
-			if (!box) {
-				box = GameObject.Find ("Pickup_Crate");
-			}
 		}
 		
 		void Update ()

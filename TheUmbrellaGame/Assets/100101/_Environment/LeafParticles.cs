@@ -14,33 +14,10 @@ namespace Environment
 		private GameObject particleChild;
 		private GameObject treeTrunk;
 
-//		void OnValidate ()
-//		{
-//			gameObject.name = "Tree_Leaves";
-//			treeTrunk = transform.parent.transform.GetChild(1).gameObject;
-//			treeTrunk.name = "Tree_Trunk";
-//
-//
-//
-//			GetComponent<MeshCollider> ().convex = true;
-//			GetComponent<MeshCollider> ().isTrigger = true;
-//
-//			if(!treeTrunk.GetComponent<MeshCollider>()){
-//				treeTrunk.AddComponent<MeshCollider>();
-//			}
-//			treeTrunk.GetComponent<MeshCollider> ().convex = true;
-//
-//			if (transform.childCount == 0) {
-//				particleChild = Instantiate (leafParticleSystem, this.transform.position, Quaternion.identity) as GameObject;
-//				particleChild.transform.parent = this.transform;
-//				leafParticle = this.gameObject.transform.GetChild(0).GetComponent<ParticleSystem> ();
-//
-//			}else{
-//				leafParticle = this.gameObject.transform.GetChild(0).GetComponent<ParticleSystem> ();
-//			}
-//
-//
-//		}
+		void OnValidate ()
+		{
+
+		}
 
 		void Start ()
 		{
