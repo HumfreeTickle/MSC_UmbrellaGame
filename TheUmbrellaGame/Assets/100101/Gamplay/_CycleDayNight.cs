@@ -15,10 +15,11 @@ namespace Environment
 	public class _CycleDayNight : MonoBehaviour
 	{  
 		private int i = 0;
+
 		private List<MissionController> listOFMissionTesting = new List<MissionController> (); 
 
 		/// current day phase  
-		public DayPhase currentPhase{get;private set;}
+		public DayPhase currentPhase{ get; private set; }
 
 		/// The scene fog color to use at dawn and dusk.  
 		public Color dawnDuskSun = new Color (133.0f / 255.0f, 124.0f / 255.0f, 102.0f / 255.0f);  
@@ -62,6 +63,7 @@ namespace Environment
 			mapCentre = GameObject.Find ("Centre of Map").transform;  
 			sun = GetComponent<Light> ();
 
+			listOFMissionTesting.Add (MissionController.Default);
 			listOFMissionTesting.Add (MissionController.TutorialMission);
 			listOFMissionTesting.Add (MissionController.CatMission);
 			listOFMissionTesting.Add (MissionController.BoxesMission);
@@ -104,9 +106,22 @@ namespace Environment
 			}
 			//------------------------------------------------------//
 
-			missionState = gameManager.MissionState;
+			if (gameManager.gameState != GameState.NullState) {
+				missionState = gameManager.MissionState;
+			} else {
+				missionState = listOFMissionTesting [2];
+			}
 
 			switch (missionState) {
+
+				
+			case MissionController.Default:
+				SetDawn ();  
+				SetSun (350);
+				blendRatio = 0;
+				
+				break;
+
 			case MissionController.TutorialMission:
 				SetDay (0.6f); //early morning 
 				SetSun (45);
@@ -139,13 +154,6 @@ namespace Environment
 				SetNight (); 
 				SetSun (270);
 				blendRatio = 1;
-
-				break;
-
-			case MissionController.Default:
-				SetDawn ();  
-				SetSun (350);
-				blendRatio = 0;
 
 				break;
 

@@ -9,40 +9,46 @@ namespace Player
 {
 	public class grabbing : MonoBehaviour
 	{
+		private GmaeManage gameManager;
 		public GameObject pickupObject;
 		private Transform originalParent;
 		public float throwingSpeed;
 		public GameObject waterParticles;
 		private GameObject instanWaterParticles;
+		private GameObject umbrella;
 		private Rigidbody rb;
 		private Achievements achieves;
 		private Tutuorial tutorial;
 		private DestroyObject destroy = new Inheritence.DestroyObject ();
 //		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
 
-		private Collider umbrella;
+		private Collider umbrellaCol;
 		private bool thrown;
 		public float pickupSize = 1.2f;
+		private float pickupObjectRadius = 0;
+		private Vector3 pickupObjectSize = Vector3.zero;
 
 		void Start ()
 		{
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
+			umbrella = GameObject.Find ("main_Sphere");
 			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
 			achieves = GameObject.Find ("Follow Camera").GetComponent<Achievements> ();
-			rb = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
-			umbrella = GameObject.Find ("main_Sphere").GetComponent<Collider> ();
+			rb = umbrella.GetComponent<Rigidbody> ();
+			umbrellaCol = umbrella.GetComponent<Collider> ();
 		}
 
 		void Update ()
 		{
 			if (pickupObject != null) {
 				if (pickupObject.GetComponent<Collider> ()) {
-					Physics.IgnoreCollision (umbrella, pickupObject.GetComponent<Collider> ());
+					Physics.IgnoreCollision (umbrellaCol, pickupObject.GetComponent<Collider> ());
 				}
 			}
 
 			if (pickupObject != null) {
-				if (Input.GetButtonDown ("Interact")) {
-					if (Input.GetButtonDown ("Interact")) {
+				if (Input.GetButtonDown (gameManager.controllerInteract)) {
+					if (Input.GetButtonDown (gameManager.controllerInteract)) {
 						if (!IsInvoking ("Pickup")) {
 							Invoke ("Pickup", 0);
 						}
@@ -50,9 +56,8 @@ namespace Player
 				}
 			}
 
-
 			if (transform.childCount > 0) {
-				if (Input.GetButtonDown ("Interact")) {
+				if (Input.GetButtonDown (gameManager.controllerInteract) || gameManager.gameState == GameState.MissionEvent) {
 					if (!IsInvoking ("Detachment")) {
 						Invoke ("Detachment", 0);
 					}
@@ -116,6 +121,15 @@ namespace Player
 
 			} 
 
+			if (pickupObject.GetComponent<BoxCollider> ()) {
+				if (pickupObject.GetComponent<BoxCollider> ().isTrigger) {
+					pickupObject.GetComponent<BoxCollider> ().size = pickupObjectSize;
+				}
+				
+			} else if (pickupObject.GetComponent<SphereCollider> ()) {
+				pickupObject.GetComponent<SphereCollider> ().radius = pickupObjectRadius;
+			}
+
 			if (!thrown) {
 				pickupObject.GetComponent<Rigidbody> ().AddForce (rb.velocity * throwingSpeed);
 				thrown = true;
@@ -127,14 +141,15 @@ namespace Player
 		void OnTriggerEnter (Collider col)
 		{
 			if (col.gameObject.tag == "Pickup") {
-				Debug.Log (col.name + " : Enter");
 				pickupObject = col.gameObject;
 				originalParent = pickupObject.transform.parent;
-//				pickupObject.layer = 15;
 
 				if (col.GetComponent<BoxCollider> ()) {
 					if (col.GetComponent<BoxCollider> ().isTrigger) {
 						if (col.GetComponent<BoxCollider> ().size.magnitude < 1000) {
+							if (pickupObjectSize == Vector3.zero) {
+								pickupObjectSize = col.GetComponent<BoxCollider> ().size;
+							}
 							col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size * pickupSize;
 						} else {
 							Debug.LogError ("Some shit went down : Box Collider");
@@ -147,6 +162,9 @@ namespace Player
 				} else if (col.GetComponent<SphereCollider> ()) {
 					if (col.GetComponent<SphereCollider> ().isTrigger) {
 						if (col.GetComponent<SphereCollider> ().radius < 100) {
+							if (pickupObjectRadius == 0) {
+								pickupObjectRadius = col.GetComponent<SphereCollider> ().radius;
+							}
 							col.GetComponent<SphereCollider> ().radius = col.GetComponent<SphereCollider> ().radius * pickupSize;
 						} else {
 							Debug.LogError ("Some shit went down : Sphere Collider");
@@ -161,35 +179,11 @@ namespace Player
 
 		void OnTriggerStay (Collider col)
 		{
-
-//			if (interactTutorial) {
-				
 			if (col.gameObject.tag == "Pickup") {
-//								
-//				if (col.GetComponent<BoxCollider> ()) {
-//					if (col.GetComponent<BoxCollider> ().isTrigger) {
-//						if (col.GetComponent<BoxCollider> ().size.magnitude < 1000) {
-//							col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size * pickupSize;
-//						} else {
-//							Debug.LogError ("Some shit went down");
-//							while (col.GetComponent<BoxCollider> ().size.magnitude > 10) {
-//								col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size / pickupSize;
-//							}
-//						}
-//					}
-//						
-//				} else if (col.GetComponent<SphereCollider> ()) {
-//					if (col.GetComponent<BoxCollider> ().isTrigger) {
-//						col.GetComponent<SphereCollider> ().radius = col.GetComponent<SphereCollider> ().radius * pickupSize;
-//					}
-//				}
 
 				if (tutorial.objectTag == "") {
 					tutorial.objectTag = "Interaction";
 				}
-//					if (interactTutorial) {
-//						interactTutorial = false;
-//					}
 
 				pickupObject = col.gameObject;
 				originalParent = pickupObject.transform.parent;
@@ -197,7 +191,6 @@ namespace Player
 					pickupObject.transform.GetChild (child).gameObject.layer = 15;
 				}
 			}
-//			} 
 
 			if (col.gameObject.tag == "River") {
 				if (rb.velocity.magnitude > 10) {
@@ -216,27 +209,26 @@ namespace Player
 		void OnTriggerExit (Collider col)
 		{
 			if (col.gameObject.tag == "Pickup") {
-				Debug.Log (col.name + " : Exit");
+				if (col.GetComponent<BoxCollider> ()) {
+					if (col.GetComponent<BoxCollider> ().isTrigger) {
+						col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size / pickupSize;
+					}
+						
+				} else if (col.GetComponent<SphereCollider> ()) {
+					col.GetComponent<SphereCollider> ().radius = col.GetComponent<SphereCollider> ().radius / pickupSize;
+				}
 
 				if (pickupObject != null) {
-
-					if (col.GetComponent<BoxCollider> ()) {
-						if (col.GetComponent<BoxCollider> ().isTrigger) {
-							col.GetComponent<BoxCollider> ().size = col.GetComponent<BoxCollider> ().size / pickupSize;
-						}
-						
-					} else if (col.GetComponent<SphereCollider> ()) {
-						col.GetComponent<SphereCollider> ().radius = col.GetComponent<SphereCollider> ().radius / pickupSize;
-					}
-
-					
 					for (int child = 0; child< pickupObject.transform.childCount; child++) {
 						pickupObject.transform.GetChild (child).gameObject.layer = 0;
 					}
+
 					pickupObject = null;
 					originalParent = null;
+				} else {
+					pickupObjectRadius = 0;
+					pickupObjectSize = Vector3.zero;
 				}
-
 			}
 
 			if (col.gameObject.tag == "Interaction" 
@@ -246,9 +238,6 @@ namespace Player
 				if (tutorial.objectTag != "") {
 					tutorial.objectTag = "";
 				}
-//				if (!interactTutorial) {
-//					interactTutorial = true;
-//				}
 			}
 		}
 
@@ -271,30 +260,5 @@ namespace Player
 			instanWaterParticles.GetComponent<ParticleSystem> ().Play ();
 			destroy.DestroyOnTimer (instanWaterParticles, 0.5f);
 		}
-
-//		void TurnOnColliders (Transform obj)
-//		{
-//			for (int child = 0; child< obj.childCount; child++) { //goes through each child object one at a time
-//				if (obj.GetComponent<BoxCollider> ()) {
-//					obj.GetComponent<BoxCollider> ().enabled = true;
-//				} else if (obj.GetComponent<MeshCollider> ()) {
-//					obj.GetComponent<MeshCollider> ().enabled = true;
-//				} else if (obj.GetComponent<SphereCollider> ()) {
-//					obj.GetComponent<SphereCollider> ().enabled = true;
-//				}
-//
-//				if (obj.GetChild (child).transform.childCount > 0) {
-//					TurnOnColliders (obj.GetChild (child));
-//				} else {
-//					if (obj.GetComponent<BoxCollider> ()) {
-//						obj.GetComponent<BoxCollider> ().enabled = true;
-//					} else if (obj.GetChild (child).GetComponent<MeshCollider> ()) {
-//						obj.GetChild (child).GetComponent<MeshCollider> ().enabled = true;
-//					} else if (obj.GetChild (child).GetComponent<SphereCollider> ()) {
-//						obj.GetChild (child).GetComponent<SphereCollider> ().enabled = true;
-//					}
-//				}
-//			}
-//		}
 	}
 }

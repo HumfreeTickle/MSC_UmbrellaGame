@@ -20,12 +20,12 @@ public class SignBlow : MonoBehaviour
 		anim = gameObject.GetComponent<Animator> ();
 
 		timer = 100;
-		audio2 = GetComponent<AudioSource>();
+		audio2 = GetComponent<AudioSource> ();
 
 		timer = 10;
-
-		brolly = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
-
+		if (GameObject.Find ("main_Sphere")) {
+			brolly = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
+		}
 		audio2 = GetComponent<AudioSource> ();
 
 		Creaky = audio2.clip;
@@ -38,7 +38,7 @@ public class SignBlow : MonoBehaviour
 			anim.SetBool ("Swing", false);
 			anim.SetBool ("SwingBack", false);
 			swinging = false;
-			audio2.Stop();
+			audio2.Stop ();
 
 			timer = 10;
 
@@ -52,9 +52,7 @@ public class SignBlow : MonoBehaviour
 	void OnTriggerEnter (Collider col)
 	{
 		if ((col.gameObject.tag == "Player")) {
-
-			print (brolly.velocity.x);
-
+		
 			if (brolly.velocity.x > 1) {
 				anim.SetBool ("Swing", true);
 				swinging = true;

@@ -220,8 +220,8 @@ namespace CameraScripts
 		
 		void RotateYaw ()
 		{
-			if (Mathf.Abs (Input.GetAxis ("Horizontal_R")) > 0) {
-				transform.RotateAround (lookAtTr.position, Vector3.up, Input.GetAxis ("Horizontal_R") * rotateSpeed); 
+			if (Mathf.Abs (Input.GetAxis (GameManager.controllerTypeHorizontal_R)) > 0) {
+				transform.RotateAround (lookAtTr.position, Vector3.up, Input.GetAxis (GameManager.controllerTypeHorizontal_R) * rotateSpeed); 
 			}else{
 				transform.RotateAround (lookAtTr.position, Vector3.up, rotateSpeed/30); 
 			}
@@ -229,8 +229,8 @@ namespace CameraScripts
 		
 		void RotatePitch ()
 		{
-			if (Mathf.Abs (Input.GetAxis ("Vertical_R")) > 0) {
-				transform.RotateAround (lookAtTr.position, transform.TransformDirection (Vector3.right), -1 * Input.GetAxis ("Vertical_R") * rotateSpeed); 
+			if (Mathf.Abs (Input.GetAxis (GameManager.controllerTypeVertical_R)) > 0) {
+				transform.RotateAround (lookAtTr.position, transform.TransformDirection (Vector3.right), -1 * Input.GetAxis (GameManager.controllerTypeVertical_R) * rotateSpeed); 
 			}
 		}
 		

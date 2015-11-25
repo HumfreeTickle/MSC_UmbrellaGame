@@ -6,13 +6,14 @@ using Player;
 
 public class Tutuorial : MonoBehaviour
 {	
-	private GmaeManage GameManager;
+	private GmaeManage gameManager;
 	public float secondsToStart = 4;
 	private GameState gameState;
 	private bool started;
 	private bool inTheBeginning;
-	public Animator windAnim{ get; private set; }
 
+	public Animator windAnim{ get; private set; }
+	
 	private Animator Talk_Animator;
 	private Animator Interact_Animator;
 	private Image Talk_Button;
@@ -20,11 +21,11 @@ public class Tutuorial : MonoBehaviour
 
 	public string objectTag{ get; set; }
 	
-	void Awake ()
+	void Start ()
 	{
-		GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
+		gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
-		if (GameManager.ControllerType == ControllerType.ConsoleContoller) {
+		if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
 			windAnim = GetComponent<Animator> ();
 
 			Talk_Button = GameObject.Find ("L1_tutorial").GetComponent<Image> ();
@@ -32,10 +33,11 @@ public class Tutuorial : MonoBehaviour
 
 			Talk_Animator = GameObject.Find ("L1_tutorial").GetComponent<Animator> ();
 			Interact_Animator = GameObject.Find ("R1_tutorial").GetComponent<Animator> ();
-		} else if (GameManager.ControllerType == ControllerType.Keyboard) {
+
+		} else if (gameManager.ControllerType == ControllerType.Keyboard) {
 			Talk_Button = GameObject.Find ("Q_tutorial").GetComponent<Image> ();
 			Interact_Button = GameObject.Find ("E_tutorial").GetComponent<Image> ();
-
+		
 			windAnim = GameObject.Find ("UP_tutorial").GetComponent<Animator> ();
 			Talk_Animator = GameObject.Find ("Q_tutorial").GetComponent<Animator> ();
 			Interact_Animator = GameObject.Find ("E_tutorial").GetComponent<Animator> ();
@@ -44,42 +46,44 @@ public class Tutuorial : MonoBehaviour
 	
 	void Update ()
 	{
-
 		//------------- Failsafe ----------------//
-		if (GameManager == null) {
+		if (gameManager == null) {
 			return;
 		}
 
 		//----------------- Changes the tutorial animation ----------------//
-		if (GameManager.GameState == GameState.Intro) {
+		if (gameManager.GameState == GameState.Intro) {
 			if (!inTheBeginning) {
 				Invoke ("StartingPositions", secondsToStart);
 				inTheBeginning = true;
 			}
 
-		} else if (GameManager.GameState == GameState.Game) {
+		} else if (gameManager.GameState == GameState.Game) {
 			windAnim.SetBool ("Wind", false);
 			PressButtions ();
 		}
 
-		//------------- Removes tutorial if game is paused or character is dead ---------------------//
-		if (GameManager.GameState == GameState.Pause || GameManager.GameState == GameState.GameOver || GameManager.GameState == GameState.MissionEvent) {
 
-			windAnim.enabled = false;
-			Talk_Button.enabled = false;
-			Interact_Button.enabled = false;
-			if (GameManager.ControllerType == ControllerType.ConsoleContoller) {
-				for (int i = 0; i < transform.childCount; i++) {
-					transform.GetChild (i).gameObject.SetActive (false);
+		//------------- Removes tutorial if game is paused or character is dead ---------------------//
+		if (windAnim != null && Talk_Button != null && Interact_Button != null) {
+			if (gameManager.GameState == GameState.Pause || gameManager.GameState == GameState.GameOver || gameManager.GameState == GameState.MissionEvent) {
+
+				windAnim.enabled = false;
+				Talk_Button.enabled = false;
+				Interact_Button.enabled = false;
+				if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+					for (int i = 0; i < transform.childCount; i++) {
+						transform.GetChild (i).gameObject.SetActive (false);
+					}
 				}
-			}
-		} else {
-			windAnim.enabled = true;
-			Talk_Button.enabled = true;
-			Interact_Button.enabled = true;
-			if (GameManager.ControllerType == ControllerType.ConsoleContoller) {
-				for (int i = 0; i < transform.childCount; i++) {
-					transform.GetChild (i).gameObject.SetActive (true);
+			} else {
+				windAnim.enabled = true;
+				Talk_Button.enabled = true;
+				Interact_Button.enabled = true;
+				if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+					for (int i = 0; i < transform.childCount; i++) {
+						transform.GetChild (i).gameObject.SetActive (true);
+					}
 				}
 			}
 		}

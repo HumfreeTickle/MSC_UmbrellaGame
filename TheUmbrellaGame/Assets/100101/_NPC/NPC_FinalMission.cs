@@ -100,10 +100,8 @@ namespace NPC
 		};
 		public GameObject[] lookAtObjects = new GameObject[3];
 		private GameObject lookAt;
-
 		public Transform[] moveToObjects = new Transform[3];
 		private Transform moveTo;
-
 		private _MoveCamera cmaeraMove;
 		private IEnumerator cameraMoveCoroutine;
 		private bool moveCmarea;
@@ -113,53 +111,56 @@ namespace NPC
 		
 		void Start ()
 		{
+
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
-			bridge_npc = GameObject.Find ("NPC_Bridge");
-			priest = GameObject.Find ("Priest");
-			lightHouseKeeper = GameObject.Find ("NPC_LightHouseKeeper");
-			NPC_worker = GameObject.Find ("NPC_Worker");
-			pickupTool = GameObject.Find ("Pickaxe");
-			lighthouseRotate = GameObject.Find ("LigthHouse_Glass").GetComponent<LightOnRotate> ();
-			LightHouseKeep_DropOff = GameObject.Find ("LightHouseKeep_DropOff");
+			if (gameManager.GameState != GameState.NullState) {
+				bridge_npc = GameObject.Find ("NPC_Bridge");
+				priest = GameObject.Find ("Priest");
+				lightHouseKeeper = GameObject.Find ("NPC_LightHouseKeeper");
+				NPC_worker = GameObject.Find ("NPC_Worker");
+				pickupTool = GameObject.Find ("Pickaxe");
+				lighthouseRotate = GameObject.Find ("LigthHouse_Glass").GetComponent<LightOnRotate> ();
+				LightHouseKeep_DropOff = GameObject.Find ("LightHouseKeep_DropOff");
 
-			if (LightHouseKeep_DropOff.activeSelf) {
-				LightHouseKeep_DropOff.SetActive (false);
-			}
+				if (LightHouseKeep_DropOff.activeSelf) {
+					LightHouseKeep_DropOff.SetActive (false);
+				}
 
-			bridgeDrop = GameObject.Find ("Walkway-Bridge_C-Basic").GetComponent<DropTheBridge> ();
-			overHereLight = bridge_npc.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;
-			talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
+				bridgeDrop = GameObject.Find ("Walkway-Bridge_C-Basic").GetComponent<DropTheBridge> ();
+				overHereLight = bridge_npc.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;
+				talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
 
-			if(lookAtObjects.Length != 3){
-				lookAtObjects = new GameObject[3];
-			}
-			lookAtObjects[0] = GameObject.Find("Church_Roof");
-			lookAtObjects[1] = GameObject.Find("Lighthouse_LookAt");
-			lookAtObjects[2] = GameObject.Find("Pickaxe");
+				if (lookAtObjects.Length != 3) {
+					lookAtObjects = new GameObject[3];
+				}
+				lookAtObjects [0] = GameObject.Find ("Church_Roof");
+				lookAtObjects [1] = GameObject.Find ("Lighthouse_LookAt");
+				lookAtObjects [2] = GameObject.Find ("Pickaxe");
 		
 
-			if(moveToObjects.Length != 3){
-				moveToObjects = new Transform[3];
+				if (moveToObjects.Length != 3) {
+					moveToObjects = new Transform[3];
+				}
+
+				moveToObjects [0] = GameObject.Find ("lighthouseMove").transform;
+				moveToObjects [1] = GameObject.Find ("Robbing_Point").transform;
+				moveToObjects [2] = GameObject.Find ("Lighthouse_Move").transform;
+
+				umbrella = GameObject.Find ("main_Sphere");
+
+				npc_Interact = bridge_npc.GetComponent<NPC_Interaction> ();
+				npc_Interact.MissionDelegate = StartFinalMission;
+
+				npc_Animator = bridge_npc.GetComponent<Animator> ();
+
+				jumpAround_Final = true;
+				currentPerson = bridge_npc;
+				cmaera = GameObject.Find ("Follow Camera");
+				cmaeraMove = cmaera.GetComponent<_MoveCamera> ();
+
+				handle = GameObject.Find ("handle");
 			}
-
-			moveToObjects[0] = GameObject.Find("lighthouseMove").transform;
-			moveToObjects[1] = GameObject.Find("Robbing_Point").transform;
-			moveToObjects[2] = GameObject.Find("Lighthouse_Move").transform;
-
-			umbrella = GameObject.Find ("main_Sphere");
-
-			npc_Interact = bridge_npc.GetComponent<NPC_Interaction> ();
-			npc_Interact.MissionDelegate = StartFinalMission;
-
-			npc_Animator = bridge_npc.GetComponent<Animator> ();
-
-			jumpAround_Final = true;
-			currentPerson = bridge_npc;
-			cmaera = GameObject.Find ("Follow Camera");
-			cmaeraMove = cmaera.GetComponent<_MoveCamera> ();
-
-			handle = GameObject.Find ("handle");
 		}
 		
 		void Update ()
@@ -436,14 +437,14 @@ namespace NPC
 				priest.tag = "NPC_talk";
 
 				overHereLight = priest.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;
-				overHereLight.SetActive(true);
+				overHereLight.SetActive (true);
 				LightHouseKeep_DropOff.SetActive (true);
 
 				finalMission = false;
 				break;
 
 			case 12:
-				overHereLight.SetActive(false);
+				overHereLight.SetActive (false);
 
 				if (talkCoroutine.StartCoroutineTalk)
 					break;

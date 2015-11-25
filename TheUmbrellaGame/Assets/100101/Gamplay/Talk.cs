@@ -105,7 +105,7 @@ public class Talk : MonoBehaviour
 				yield return new WaitForSeconds (talkingSpeed); // how fast each character appears on screen
 			}
 
-			while (!Input.GetButtonDown("Talk")) {// waits for a button press to contiue
+			while (!Input.GetButtonDown(gameManager.controllerTalk)) {// waits for a button press to contiue
 				Talk_Click.SetBool ("proceed", true);
 				i = 0; 
 				yield return null;

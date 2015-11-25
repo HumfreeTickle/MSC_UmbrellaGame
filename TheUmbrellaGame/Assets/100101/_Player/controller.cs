@@ -43,7 +43,6 @@ namespace Player
 		private Color transparentColorStart = Color.white;
 		private Color transparentColorEnd = new Color (1, 1, 1, 0.5f);
 		public float distanceFromTerrain;
-
 		private bool playSFX;
 
 		void Start ()
@@ -53,8 +52,9 @@ namespace Player
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			cameraController = GameObject.Find ("Follow Camera").GetComponent<Controller> ();
 			upForce = GetComponent<upwardForce> ();
-			controllerTypeVertical = gameManager.ControllerTypeVertical;
-			controllerTypeHorizontal = gameManager.ControllerTypesHorizontal;
+			controllerTypeVertical = gameManager.controllerTypeVertical_L;
+			controllerTypeHorizontal = gameManager.controllerTypeHorizontal_L;
+
 			umbrellaAnim = GameObject.Find ("Umbrella").GetComponent<Animator> ();
 			rotationAnim = GameObject.Find ("Rotation_Sphere").GetComponent<Animator> ();
 			defaultUpForce = upForce.upwardsforce;
@@ -75,12 +75,6 @@ namespace Player
 				rb.angularDrag = 5;
 		
 				Movement ();
-
-//				hitTerrain = GetComponent<CreateWind> ().hitTerrain;
-//				if (hitTerrain) {
-//					hit = GetComponent<CreateWind> ().RaycastingInfo;
-//				}
-
 				TheDescent ();
 
 
@@ -90,6 +84,7 @@ namespace Player
 				rb.mass = 10000;
 				umbrellaAnim.SetBool ("Falling", true);
 				rotate = false;
+
 
 			} else if (gameManager.GameState == GameState.MissionEvent) {
 				Stabilize ();
@@ -171,7 +166,7 @@ namespace Player
 				leftside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
 				rightside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
 
-				if(playSFX){
+				if (playSFX) {
 					playSFX = false;
 					leftside.GetComponent<AudioSource> ().PlayOneShot (leftside.GetComponent<AudioSource> ().clip);
 				}
@@ -197,8 +192,13 @@ namespace Player
 
 		void Stabilize ()
 		{
-			rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * 10);
+			if (Vector3.Distance (rb.velocity, Vector3.zero) < 5) {
+				rb.velocity = Vector3.zero;
+			} else {
+				rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * 10);
+			}
 			rb.angularDrag = Mathf.Lerp (rb.angularDrag, 100, Time.fixedDeltaTime * 10);
+			rb.useGravity = false;
 			umbrellaAnim.SetBool ("Falling", false);
 			rotationAnim.SetBool ("Input_V", false);
 			rotationAnim.SetBool ("Input_H", false);
@@ -206,7 +206,7 @@ namespace Player
 			Physics.gravity = new Vector3 (0, -18.36f, 0);
 
 			upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
-			upForce.enabled = true;
+			upForce.enabled = false;
 		}
 
 		void ClampPhysics ()
