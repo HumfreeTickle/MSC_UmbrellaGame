@@ -72,40 +72,41 @@ public class Presentation : MonoBehaviour
 	void Update ()
 	{
 		if (progress) {
-			if (Input.GetKeyDown (KeyCode.Space)) {
-				if (endOfScene) {
-					switch (currentSlide) {
+			if (endOfScene) {
+				switch (currentSlide) {
 
-					case slide.nullstate:
-						progress = false;
-						theCanvas.transform.GetChild (0).GetComponent<Image> ().CrossFadeAlpha (0f, 1f, false);
+				case slide.nullstate:
+					progress = false;
+					theCanvas.transform.GetChild (0).GetComponent<Image> ().CrossFadeAlpha (0f, 1f, false);
+					if (theCanvas.transform.GetChild (0).GetComponent<Image> ().color.a > 0.9f) {
 						currentSlide = slide.firstSlide;
-						break;
-
-					case slide.firstSlide:
-						progress = false;
-
-						currentSlide = slide.secondSlide;
-						break;
-
-					case slide.secondSlide:
-						progress = false;
-
-						currentSlide = slide.thirdSlide;
-						break;
-				
-					case slide.thirdSlide:
-						progress = false;
-						
-						currentSlide = slide.endPresentation;
-						break;
-
-					default:
-				
-						break;
 					}
+					break;
+
+				case slide.firstSlide:
+					progress = false;
+
+					currentSlide = slide.secondSlide;
+					break;
+
+				case slide.secondSlide:
+					progress = false;
+
+					currentSlide = slide.thirdSlide;
+					break;
+				
+				case slide.thirdSlide:
+					progress = false;
+						
+					currentSlide = slide.endPresentation;
+					break;
+
+				default:
+				
+					break;
 				}
 			}
+
 		}
 		Transition ();
 	}
@@ -117,24 +118,21 @@ public class Presentation : MonoBehaviour
 		case slide.firstSlide:
 			StartCoroutine (firstScene ());
 			
-			progress = true;
 			umbrellaAnim.SetBool ("Scene 1", Scene1);
 
-			umbrellaColour = allTheColoursOfTheUmbrella [0];
-			ChangeColours (canopyCOlours);
+//			umbrellaColour = allTheColoursOfTheUmbrella [0];
+//			ChangeColours (canopyCOlours);
 
 			break;
 		case slide.secondSlide:
 			StartCoroutine (secondScene ());
-			
-			progress = true;
-
+		
 			umbrellaAnim.SetBool ("Scene 2", Scene2);
 
 			npcHands.SetBool ("Scene2", Scene2);
 			npcAnim.SetBool ("Scene2", Scene2);
-			umbrellaColour = allTheColoursOfTheUmbrella [1];
-			ChangeColours (canopyCOlours);
+//			umbrellaColour = allTheColoursOfTheUmbrella [1];
+//			ChangeColours (canopyCOlours);
 
 			
 			break;
@@ -142,21 +140,20 @@ public class Presentation : MonoBehaviour
 		case slide.thirdSlide:
 			StartCoroutine (thirdScene ());
 
-			progress = true;
 			umbrellaAnim.SetBool ("Scene 3", Scene3);
 
 
-			umbrellaColour = allTheColoursOfTheUmbrella [2];
-			ChangeColours (canopyCOlours);
+//			umbrellaColour = allTheColoursOfTheUmbrella [2];
+//			ChangeColours (canopyCOlours);
 
 			
 			break;
 
 		case slide.endPresentation:
 			StartCoroutine (transitionToNextScene ());
-			umbrellaColour = allTheColoursOfTheUmbrella [3];
+//			umbrellaColour = allTheColoursOfTheUmbrella [3];
 
-			ChangeColours (canopyCOlours);
+//			ChangeColours (canopyCOlours);
 			progress = true;
 
 			break;
@@ -167,49 +164,55 @@ public class Presentation : MonoBehaviour
 		}
 	}
 
-	void ChangeColours (Transform obj)
-	{
-		for (int child = 0; child< obj.childCount; child++) { //goes through each child object one at a time
-			if (obj.GetChild (child).transform.childCount > 0) {
-				ChangeColours (obj.GetChild (child));
-			} else {
-				if (obj.GetChild (child).GetComponent<MeshRenderer> ()) {
-					if (obj.GetChild (child).tag == umbrellaColour.name) {// checks to see if there is a mesh renderer attached to child
-						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
-						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime / 2);
-
-					}
-				}
-			}
-		}
-	}
+//	void ChangeColours (Transform obj)
+//	{
+//		for (int child = 0; child< obj.childCount; child++) { //goes through each child object one at a time
+//			if (obj.GetChild (child).transform.childCount > 0) {
+//				ChangeColours (obj.GetChild (child));
+//			} else {
+//				if (obj.GetChild (child).GetComponent<MeshRenderer> ()) {
+//					if (obj.GetChild (child).tag == umbrellaColour.name) {// checks to see if there is a mesh renderer attached to child
+//						MeshRenderer umbrellaChild = obj.GetChild (child).GetComponent<MeshRenderer> ();
+//						umbrellaChild.material.Lerp (umbrellaChild.material, umbrellaColour, Time.deltaTime / 2);
+//
+//					}
+//				}
+//			}
+//		}
+//	}
 	
 	IEnumerator firstScene ()
 	{
 		while (currentSlide == slide.firstSlide) {
-			if (Vector3.Distance (umbrellaTr.position, scenePlacements [0].position) <= 10) {
+			while (Vector3.Distance (umbrellaTr.position, scenePlacements [0].position) <= 10) {
 				Scene1 = false;
 				fullcolour = Color.Lerp (fullcolour, Color.black, Time.deltaTime);
 				theCanvas.transform.GetChild (1).GetComponent<Text> ().color = fullcolour;
 				endOfScene = true;
-
-			} else {
-				yield return new WaitForSeconds (speed);
-
-				endOfScene = false;
-				Scene1 = true;
-				blurring.blur = Mathf.Lerp (blurring.blur, 0.7f, Time.deltaTime);
-				umbrellaTr.parent.position = Vector3.Lerp (umbrellaTr.parent.position, scenePlacements [0].position, Time.deltaTime / speed);
-				float x = Mathf.Lerp (cmaeraTr.position.x, scenePlacements [0].position.x + offset, Time.deltaTime / speed);
-				cmaeraTr.position = new Vector3 (x, cmaeraTr.position.y, cmaeraTr.position.z);
 				yield return null;
 
-			}
-			yield return null;
+			} 
+			yield return new WaitForSeconds (speed);
 
+			endOfScene = false;
+			Scene1 = true;
+			blurring.blur = Mathf.Lerp (blurring.blur, 0.7f, Time.deltaTime);
+			umbrellaTr.parent.position = Vector3.Lerp (umbrellaTr.parent.position, scenePlacements [0].position, Time.deltaTime / speed);
+			float x = Mathf.Lerp (cmaeraTr.position.x, scenePlacements [0].position.x + offset, Time.deltaTime / speed);
+			cmaeraTr.position = new Vector3 (x, cmaeraTr.position.y, cmaeraTr.position.z);
+
+
+			yield return new WaitForSeconds (4);
+			
+			currentSlide = slide.secondSlide;
+			progress = true;
 		}
+
 		Scene2 = true;
 		theCanvas.transform.GetChild (1).GetComponent<Text> ().enabled = false;
+
+
+
 		yield break;
 
 	}
@@ -238,6 +241,11 @@ public class Presentation : MonoBehaviour
 			
 		}
 		theCanvas.transform.GetChild (2).GetComponent<Text> ().enabled = false;
+
+		yield return new WaitForSeconds (4);
+
+		currentSlide = slide.thirdSlide;
+		progress = true;
 
 		yield break;
 
@@ -269,7 +277,12 @@ public class Presentation : MonoBehaviour
 			
 		}
 		theCanvas.transform.GetChild (3).GetComponent<Text> ().enabled = false;
-		
+
+		yield return new WaitForSeconds (4);
+
+		currentSlide = slide.endPresentation;
+		progress = true;
+
 		yield break;
 		
 	}
@@ -293,7 +306,7 @@ public class Presentation : MonoBehaviour
 				}
 
 				float umbrellaX = Mathf.Lerp (umbrellaTr.position.x, scenePlacements [4].position.x, Time.deltaTime / (speed));
-				float umbrellaY = Mathf.Lerp (umbrellaTr.position.y, scenePlacements [4].position.y, Time.deltaTime / (speed ));
+				float umbrellaY = Mathf.Lerp (umbrellaTr.position.y, scenePlacements [4].position.y, Time.deltaTime / (speed));
 				umbrellaTr.position = new Vector3 (umbrellaX, umbrellaY, umbrellaTr.position.z);
 				umbrellaTr.rotation = Quaternion.Euler (new Vector3 (0, 90, 0));
 
@@ -316,7 +329,7 @@ public class Presentation : MonoBehaviour
 
 
 			} else {
-				npcHands.SetBool("Final", final);
+				npcHands.SetBool ("Final", final);
 
 				
 				if (npcTR.localScale.x <= 8) {
@@ -325,20 +338,21 @@ public class Presentation : MonoBehaviour
 				}
 				yield return new WaitForSeconds (speed);
 				umbrellaTr.parent = GameObject.Find ("Hand_L").transform;
-				umbrellaTr.localPosition = new Vector3(0,-3.8f,0);
+				umbrellaTr.localPosition = new Vector3 (0, -3.8f, 0);
 
-				yield return new WaitForSeconds (speed/2);
-				npcHands.SetBool("EndWalk", true);
-				npcTR.rotation = Quaternion.Slerp(npcTR.rotation, Quaternion.Euler(new Vector3(0,180,0)), Time.deltaTime);
+				yield return new WaitForSeconds (speed / 2);
+				npcHands.SetBool ("EndWalk", true);
+				npcTR.rotation = Quaternion.Slerp (npcTR.rotation, Quaternion.Euler (new Vector3 (0, 180, 0)), Time.deltaTime);
 
 
 				yield return new WaitForSeconds (speed);
-				npcTR.localScale = Vector3.Lerp(npcTR.lossyScale, new Vector3(7,7,7), Time.deltaTime/(speed* 2));
+				npcTR.localScale = Vector3.Lerp (npcTR.lossyScale, new Vector3 (7, 7, 7), Time.deltaTime / (speed * 2));
 				
 			}
 			yield return null;
 
 		}
+
 		yield break;
 
 	}

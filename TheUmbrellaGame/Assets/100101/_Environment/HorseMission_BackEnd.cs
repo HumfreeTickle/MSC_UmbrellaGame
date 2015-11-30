@@ -68,7 +68,6 @@ namespace NPC
 				}
 			}
 
-
 			horse_X = 0;
 			talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
 		}

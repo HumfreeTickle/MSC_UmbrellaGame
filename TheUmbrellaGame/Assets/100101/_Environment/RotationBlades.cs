@@ -22,7 +22,7 @@ namespace Environment
 		public GameObject lineTwo;
 		private Color transparentStart = Color.white;
 
-		public bool lightsOn{ private get; set; }
+		public bool lightsOn{private get; set; }
 
 		private Transform handle;
 		private GameObject cameraSet;
@@ -56,7 +56,6 @@ namespace Environment
 
 		void Update ()
 		{
-
 			if (rotation) {
 				onRotation ();
 				if (moveCmarea) {
@@ -75,12 +74,12 @@ namespace Environment
 					npc_TutorialMission.npc_Tutorial.tag = "NPC_talk";
 					npc_TutorialMission.tut_X = 2;
 					npc_TutorialMission.jumpAround_Tut = true;
+				}else {
+					if (lightsOn) {
+						activeLight.enabled = true;
+					}
 				}
-			} else {
-				if (lightsOn) {
-					activeLight.enabled = true;
-				}
-			}
+			} 
 		}
 
 		void onRotation ()

@@ -7,16 +7,24 @@ public class StayAchieve : MonoBehaviour
 	private Achievements achieves;
 	private float _timer;
 	public string achievementName;
+	private AudioClip Rustle;
+	private AudioSource audio2;
 
 	void Start ()
 	{
 		achieves = GameObject.Find ("Follow Camera").GetComponent<Achievements> ();
+//		audio2 = GetComponent<AudioSource>();
+//		Rustle = audio2.clip;
 		
 	}
+
+
 	
 	void OnTriggerStay (Collider col)
 	{
 		if (col.gameObject.tag == "Player") {
+
+			audio2.PlayOneShot (Rustle);
 			_timer += Time.deltaTime;
 			if (_timer > 2) {
 				if (!achieves.CoroutineInMotion) {

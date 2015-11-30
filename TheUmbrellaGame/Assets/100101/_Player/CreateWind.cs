@@ -11,7 +11,7 @@ namespace Player.PhysicsStuff
 		/// <summary>
 		/// Turns on/off the barrriers around the islands
 		/// </summary>
-		private GmaeManage GameManager;
+		private GmaeManage gameManager;
 		private GameState gameState;
 		public GameObject windSystem;
 		private GameObject instatiatedWind;
@@ -49,43 +49,64 @@ namespace Player.PhysicsStuff
 		}
 
 		public bool hitTerrain{ get; private set; }
-		private bool onceOnly;
-		public bool tooHigh{ get; private set; }
-		public float upSpeed = 100;
 
+		private bool onceOnly;
+
+		public bool tooHigh{ get; private set; }
+
+		public float upSpeed = 100;
 		public AudioMixerSnapshot defaultSnapShot;
 		public AudioMixerSnapshot offIslandSnapShot;
 		public float snapshotTransitionSpeed;
 
 		void Start ()
 		{
-			GameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
-			gameState = GameManager.GameState;
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
+			gameState = gameManager.GameState;
 			rb = gameObject.GetComponent<Rigidbody> ();
-			tutorialAnim = GameObject.Find ("Tutorial").GetComponent<Animator> ();
+			if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+				tutorialAnim = GameObject.Find ("Tutorial").GetComponent<Animator> ();
+			} else if (gameManager.ControllerType == ControllerType.Keyboard) {
+				tutorialAnim = GameObject.Find ("Down_tutorial").GetComponent<Animator> ();
+			}
 		}
 
 		void Update ()
 		{
-			progression = GameManager.Progression;
+			progression = gameManager.Progression;
 
 			if (progression > 1) {
 				barriers = false;
 			}
 
 			bounceBack = Mathf.Clamp (bounceBack, 0, Mathf.Infinity);
-			gameState = GameManager.GameState;
+			gameState = gameManager.GameState;
 
 			if (gameState != GameState.Pause || gameState != GameState.GameOver || gameState != GameState.MissionEvent) {
-				if (Input.GetAxis ("Vertical_R") >= 0.1f) {
-					verticalInput = Input.GetAxis ("Vertical_R");
-					Rising ();
-					if (this.transform.childCount < 2) {
-						if (!IsInvoking ("SummonWind")) {
-							Invoke ("SummonWind", 0);
+				if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+					if (Input.GetAxis (gameManager.controllerTypeVertical_R) >= 0.1f) {
+						verticalInput = Input.GetAxis (gameManager.controllerTypeVertical_R);
+						Rising ();
+						if (this.transform.childCount < 2) {
+							if (!IsInvoking ("SummonWind")) {
+								Invoke ("SummonWind", 0);
+							}
+						}
+					}
+				} else if (gameManager.ControllerType == ControllerType.Keyboard) {
+					if (Input.GetButton (gameManager.controllerTypeVertical_R) && Input.GetAxisRaw(gameManager.controllerTypeVertical_R) > 0.1f) {
+						verticalInput = 1;
+
+						Rising ();
+						if (this.transform.childCount < 2) {
+							if (!IsInvoking ("SummonWind")) {
+								Invoke ("SummonWind", 0);
+							}
 						}
 					}
 				}
+
+
 
 //---------------------------- RAYCASTING STUFF -----------------------------------------------------------------------
 
@@ -109,14 +130,16 @@ namespace Player.PhysicsStuff
 						if (hit.collider.tag == "Terrain" && hit.distance > maxTerrainDistance) {
 							if (!onceOnly) {
 								tutorialAnim.SetBool ("Fall", true);
+
 								onceOnly = true;
-								offIslandSnapShot.TransitionTo(snapshotTransitionSpeed/2);
+								offIslandSnapShot.TransitionTo (snapshotTransitionSpeed / 2);
 
 							}
 
 						} else {
-							defaultSnapShot.TransitionTo(snapshotTransitionSpeed);
+							defaultSnapShot.TransitionTo (snapshotTransitionSpeed);
 							tutorialAnim.SetBool ("Fall", false);
+											
 						}
 
 
@@ -140,7 +163,7 @@ namespace Player.PhysicsStuff
 					hitTerrain = false;
 					tooHigh = false;
 
-					offIslandSnapShot.TransitionTo(snapshotTransitionSpeed);
+					offIslandSnapShot.TransitionTo (snapshotTransitionSpeed);
 
 					tutorialAnim.SetBool ("Fall", false);
 

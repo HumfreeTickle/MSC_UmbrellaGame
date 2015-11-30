@@ -3,6 +3,7 @@ using System.Collections;
 
 public class OpenChurchDoor : MonoBehaviour {
 
+
 	public Animator Opener;
 
 	// Use this for initialization

@@ -30,11 +30,13 @@ namespace NPC
 			}
 		}
 
+		private GmaeManage gameManager;
 		private NPC_Class npc_class = new NPC_Class ();
 		private bool talking;
 
 		void Start ()
 		{
+			gameManager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>();
 			npcAudioSource = GetComponent<AudioSource> ();
 		}
 	
@@ -56,7 +58,7 @@ namespace NPC
 		void OnTriggerStay (Collider col)
 		{
 			if (col.gameObject.tag == "Player") {
-				if (Input.GetButtonDown ("Talk")) {
+				if (Input.GetButtonDown (gameManager.controllerTalk)) {
 					talking = true;
 				}
 				if (talking) {

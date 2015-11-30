@@ -43,7 +43,6 @@ namespace Player
 		private Color transparentColorStart = Color.white;
 		private Color transparentColorEnd = new Color (1, 1, 1, 0.5f);
 		public float distanceFromTerrain;
-
 		private bool playSFX;
 
 		void Start ()
@@ -53,8 +52,9 @@ namespace Player
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			cameraController = GameObject.Find ("Follow Camera").GetComponent<Controller> ();
 			upForce = GetComponent<upwardForce> ();
-			controllerTypeVertical = gameManager.ControllerTypeVertical;
-			controllerTypeHorizontal = gameManager.ControllerTypesHorizontal;
+			controllerTypeVertical = gameManager.controllerTypeVertical_L;
+			controllerTypeHorizontal = gameManager.controllerTypeHorizontal_L;
+
 			umbrellaAnim = GameObject.Find ("Umbrella").GetComponent<Animator> ();
 			rotationAnim = GameObject.Find ("Rotation_Sphere").GetComponent<Animator> ();
 			defaultUpForce = upForce.upwardsforce;
@@ -75,12 +75,6 @@ namespace Player
 				rb.angularDrag = 5;
 		
 				Movement ();
-
-//				hitTerrain = GetComponent<CreateWind> ().hitTerrain;
-//				if (hitTerrain) {
-//					hit = GetComponent<CreateWind> ().RaycastingInfo;
-//				}
-
 				TheDescent ();
 
 
@@ -90,6 +84,7 @@ namespace Player
 				rb.mass = 10000;
 				umbrellaAnim.SetBool ("Falling", true);
 				rotate = false;
+
 
 			} else if (gameManager.GameState == GameState.MissionEvent) {
 				Stabilize ();
@@ -105,6 +100,7 @@ namespace Player
 			if (Input.GetAxis (controllerTypeVertical) > 0.1f) { // Probably should only use forward for this and have back be a kind of breaking system
 				rb.AddForce (transform.TransformDirection (Vector3.forward) * Input.GetAxis (controllerTypeVertical) * speed); //Add force in the direction it is facing
 				rotate = true;
+				print (Input.GetAxis (controllerTypeVertical));
 
 			} else {
 				rotationAnim.SetFloat ("Speed", rb.velocity.magnitude);
@@ -112,53 +108,69 @@ namespace Player
 			}
 			
 			if (Input.GetAxis (controllerTypeVertical) < 0.1f) { // Probably should only use forward for this and have back be a kind of breaking system
-
 				rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime);
+				print (Input.GetAxis (controllerTypeVertical));
+
 			}
 				
 			if (Mathf.Abs (Input.GetAxis (controllerTypeHorizontal)) > 0) { //This shoould rotate the player rather than move sideways
 				rb.AddTorque (transform.up * Input.GetAxis (controllerTypeHorizontal) * turningSpeed);
 				cameraController.LastHorizontalInput = Input.GetAxis (controllerTypeHorizontal);
+				print (Input.GetAxis (controllerTypeHorizontal));
 			}
 
-			if (!Input.anyKeyDown) {
+			if (!Input.anyKey) {
 				rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * slowDownSpeed);
-				rb.angularVelocity = Vector3.Lerp (rb.angularVelocity, Vector3.zero, Time.fixedDeltaTime * 10);
+				rb.angularVelocity = Vector3.Lerp (rb.angularVelocity, Vector3.zero, Time.fixedDeltaTime * slowDownSpeed);
+				if(gameManager.controllerType == ControllerType.Keyboard){
+					Input.ResetInputAxes();
+				}
 			}
 		}
 		
 		void TheDescent () //allow the umbrella to go down
 		{
-			// ------------ Standard on/off for the descent ---------------
-//			if (hit.collider.gameObject.tag == "Terrain" && hit.distance < Mathf.Clamp (distanceFromTerrain, 0, Mathf.Infinity) && !GetComponent<CreateWind> ().tooHigh) { 
-//				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce * 1.25f, Time.deltaTime * 5);
-//				upForce.enabled = true;
-//
-//			} else {
+			if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+				if (Input.GetAxis (gameManager.controllerTypeVertical_R) <= -0.9f) {
+					upForce.enabled = false;
+					//-----------------------//
+					leftside.GetComponent<LineRenderer> ().enabled = true;
+					rightside.GetComponent<LineRenderer> ().enabled = true;
+					//-----------------------//
 
-
-			if (Input.GetAxis ("Vertical_R") <= -0.9f) {
-				upForce.enabled = false;
-//				playSFX = true;
-				//-----------------------//
-				leftside.GetComponent<LineRenderer> ().enabled = true;
-				rightside.GetComponent<LineRenderer> ().enabled = true;
-
-
-				//-----------------------//
-
-			} else if (Input.GetAxis ("Vertical_R") <= -0.1f) {
-				upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 0, Time.deltaTime);
-			} else {
-				if (!GetComponent<CreateWind> ().tooHigh) {
-					upForce.enabled = true;
-					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
+				} else if (Input.GetAxis (gameManager.controllerTypeVertical_R) <= -0.1f) {
+					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 0, Time.deltaTime);
+				} else { //Ceiling stuff
+					if (!GetComponent<CreateWind> ().tooHigh) {
+						upForce.enabled = true;
+						upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
+					}
 				}
+
+			}else if(gameManager.ControllerType == ControllerType.Keyboard){
+				if (Input.GetButton (gameManager.controllerTypeVertical_R) 
+				    && Input.GetAxisRaw(gameManager.controllerTypeVertical_R) < -0.1f) {
+					upForce.enabled = false;
+
+					//-----------------------//
+					leftside.GetComponent<LineRenderer> ().enabled = true;
+					rightside.GetComponent<LineRenderer> ().enabled = true;
+					//-----------------------//
+					
+				} else if (Input.GetButtonUp (gameManager.controllerTypeVertical_R)) {
+					upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, 0, Time.deltaTime);
+				} else { //Ceiling stuff
+					if (!GetComponent<CreateWind> ().tooHigh) {
+						upForce.enabled = true;
+						upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
+					}
+				}
+
 			}
-//			}
 
 
 
+			//------------------------------------------------------//
 			if (!upForce.isActiveAndEnabled) {
 				Physics.gravity = new Vector3 (0, -gravityDrop, 0);
 				rb.mass = 10000;
@@ -171,7 +183,7 @@ namespace Player
 				leftside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
 				rightside.GetComponent<LineRenderer> ().SetColors (transparentColorStart, transparentColorEnd);
 
-				if(playSFX){
+				if (playSFX) {
 					playSFX = false;
 					leftside.GetComponent<AudioSource> ().PlayOneShot (leftside.GetComponent<AudioSource> ().clip);
 				}
@@ -197,8 +209,13 @@ namespace Player
 
 		void Stabilize ()
 		{
-			rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * 10);
+			if (Vector3.Distance (rb.velocity, Vector3.zero) < 5) {
+				rb.velocity = Vector3.zero;
+			} else {
+				rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * 10);
+			}
 			rb.angularDrag = Mathf.Lerp (rb.angularDrag, 100, Time.fixedDeltaTime * 10);
+			rb.useGravity = false;
 			umbrellaAnim.SetBool ("Falling", false);
 			rotationAnim.SetBool ("Input_V", false);
 			rotationAnim.SetBool ("Input_H", false);
@@ -206,7 +223,7 @@ namespace Player
 			Physics.gravity = new Vector3 (0, -18.36f, 0);
 
 			upForce.upwardsforce = Mathf.Lerp (upForce.upwardsforce, defaultUpForce, Time.deltaTime);
-			upForce.enabled = true;
+			upForce.enabled = false;
 		}
 
 		void ClampPhysics ()
