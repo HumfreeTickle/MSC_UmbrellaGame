@@ -13,7 +13,6 @@ public class Credits : MonoBehaviour
 	private int j = 0;
 	private bool startCoroutine;
 	private GameObject cmaera;
-	public float transitionSpeed;
 	public float scrollSpeed;
 	private GameObject creditScroll;
 	private Text creditsText;
@@ -72,18 +71,22 @@ public class Credits : MonoBehaviour
 		"Voice Actor - NPC_Cat \t Jennifer Lawrence \n" +
 		"Voice Actor - NPC_Boxes \t Cate Blanchett \n" +
 		"Voice Actor - NPC_LightHouseKeeper \t Michael Caine \n" +
+		"Voice Actor - Priest \t Tom Hanks \n" +
+		"Voice Actor - Npc_HorseGuy \t Clint Eastwood \n" +
 		"Voice Actor - Kitten \t Ryan Gosling \n" +
 		"Voice Actor - Molly the Brolly \t Dame Judy Dench \n";
 	private string creditsList6 = 
 		"Created by \t Stephen Larkin & Peter Cantwell \n";
 	private Image TitleCard;
 
+	private string StartButton;
+	private GmaeManage gameManager;
 	void Start ()
 	{
 		cmaera = GameObject.Find ("Follow Camera");
 		cameraMarkers = GameObject.Find ("CameraPoints").transform;
 		cameraPoints = new Transform[cameraMarkers.childCount];
-
+		gameManager = cmaera.GetComponent<GmaeManage>();
 
 		for (int child = 0; child < cameraMarkers.childCount; child++) {
 			cameraPoints [child] = cameraMarkers.GetChild (child).transform; 
@@ -103,13 +106,23 @@ public class Credits : MonoBehaviour
 		creditList.Add (creditsList6);
 
 		TitleCard = GameObject.Find ("Title Card").GetComponent<Image> ();
+
+		if(gameManager.controllerType == ControllerType.ConsoleContoller){
+			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+				StartButton = "Submit_1";
+			}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
+				StartButton = "Submit_2";
+			}
+		}else{
+			StartButton = "Submit_1";
+		}
 	}
 	
 	void Update ()
 	{	
 		StartCoroutine (creditsScroll ());
 
-		if(Input.GetButtonDown("Submit")){
+		if(Input.GetButtonDown(StartButton)){
 			Application.LoadLevel ("Start_Screen");
 		}
 		
@@ -153,23 +166,9 @@ public class Credits : MonoBehaviour
 				yield return new WaitForEndOfFrame ();
 
 			}
-//			while (cmaera.GetComponent<VignetteAndChromaticAberration>().intensity < 2000) {
-//				cmaera.GetComponent<VignetteAndChromaticAberration> ().intensity = Mathf.Lerp (cmaera.GetComponent<VignetteAndChromaticAberration> ().intensity, 4000, Time.deltaTime / 2);
-//				yield return null;
-//			}
-
-			
+				
 			i += 1;
 			j += 1;
-//			yield return null;
-//
-//			while (cmaera.GetComponent<VignetteAndChromaticAberration>().intensity >= 0.11f) {
-//				cmaera.GetComponent<VignetteAndChromaticAberration> ().intensity = Mathf.Lerp (cmaera.GetComponent<VignetteAndChromaticAberration> ().intensity, 0, Time.deltaTime * 2);
-//				yield return null;
-//
-//			}
-//
-//			cmaera.GetComponent<VignetteAndChromaticAberration> ().intensity = 0.11f;
 
 			yield return null;
 		}

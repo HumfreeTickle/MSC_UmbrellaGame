@@ -77,32 +77,11 @@ public enum UmbrellaType
 
 public class GmaeManage : MonoBehaviour
 {
-
-	// Doesn't allow another instance of GmaeManage to be used within the scene --- http://rusticode.com/2013/12/11/creating-game-manager-using-state-machine-and-singleton-pattern-in-unity3d/
-
-//	protected GmaeManage ()
-//	{
-//		//not sure why this is empty
-//	}
-//
-//	private static GmaeManage _instance = null;
-//	
-//	// Singleton pattern implementation
-//	public static GmaeManage Instance { 
-//		get {
-//			if (GmaeManage._instance == null) {
-//				GmaeManage._instance = new GmaeManage (); 
-//			}  
-//			return GmaeManage._instance;
-//		} 
-//	}
-
-
+	
 
 //------------------------------------------- Inherited Classes ------------------------------------//
 
 	public FadeScript fading = new FadeScript ();
-//	private NPCManage npcManager;
 //--------------------------------------------------------------------------------------------------//
 
 
@@ -111,9 +90,8 @@ public class GmaeManage : MonoBehaviour
 	//--- Audio Stuff ---
 	private AudioClip harpIntroClip;
 	private AudioSource harpIntroSource;
-	public AudioMixerSnapshot start;
+//	public AudioMixerSnapshot start;
 	private AudioClip mainThemeMusic;
-//	private GameObject backgroundMusic;
 	public AudioMixerSnapshot PausedSnapShot;
 	public AudioMixerSnapshot InGameSnapShot;
 
@@ -274,16 +252,18 @@ public class GmaeManage : MonoBehaviour
 			controllerTypeVertical_L = "Vertical_L";
 			controllerTypeHorizontal_L = "Horizontal_L";
 			controllerTypeVertical_R = "Vertical_R";
+
 			if (consoleControllerType == ConsoleControllerType.PS3) {
 				controllerTypeHorizontal_R = "Horizontal_R_PS3";
 			} else if (consoleControllerType == ConsoleControllerType.XBox) {
 				controllerTypeHorizontal_R = "Horizontal_R_XBox";
 			}
 
-		} else if (Input.GetJoystickNames ().Length == 0) {
+		} else if (Input.GetJoystickNames ().Length <= 0) {
 			ControllerType = ControllerType.Keyboard;
 			controllerTypeVertical_L = "Vertical";
 			controllerTypeHorizontal_L = "Horizontal";
+			controllerTypeVertical_R = "Vertical_R_Keyboard";
 
 		} else {
 			ControllerType = ControllerType.NullState;
@@ -300,12 +280,29 @@ public class GmaeManage : MonoBehaviour
 
 		}
 
+		if (Application.loadedLevelName != "Controller Select") {
+			if (consoleControllerType == ConsoleControllerType.PS3) {
+				controllerInteract = "Interact_1";
+				controllerTalk = "Talk_1";
+				controllerStart = "Submit_1";
+				
+			} else if (consoleControllerType == ConsoleControllerType.XBox) {
+				controllerInteract = "Interact_2";
+				controllerTalk = "Talk_2";
+				controllerStart = "Submit_2";
+			} else {
+				controllerInteract = "Interact_1";
+				controllerTalk = "Talk_1";
+				controllerStart = "Submit_1";
+			}
+		}
+
 
 		if (Application.loadedLevelName == "Start_Screen") { //Start screen
 
-			if (PlayerPrefs.HasKey("controller")) {
+			if (PlayerPrefs.HasKey ("controller")) {
 				consoleControllerType = (ConsoleControllerType)System.Enum.Parse (typeof(ConsoleControllerType), PlayerPrefs.GetString ("controller"));
-			}else{
+			} else {
 				consoleControllerType = ConsoleControllerType.PS3;
 			}
 
@@ -316,6 +313,7 @@ public class GmaeManage : MonoBehaviour
 			harpIntroSource = GameObject.Find ("Harp intro").GetComponent<AudioSource> ();
 			harpIntroClip = harpIntroSource.clip;
 			harpIntroSource.pitch = -0.6f;
+
 
 			rain = GetComponent<AudioSource> ();
 			rain.volume = 0f;
@@ -331,7 +329,7 @@ public class GmaeManage : MonoBehaviour
 		} else if (Application.loadedLevelName == "Boucing") { //Main screen
 			if (PlayerPrefs.HasKey ("controller")) {
 				consoleControllerType = (ConsoleControllerType)System.Enum.Parse (typeof(ConsoleControllerType), PlayerPrefs.GetString ("controller"));
-			}else{
+			} else {
 				consoleControllerType = ConsoleControllerType.PS3;
 			}
 
@@ -383,7 +381,7 @@ public class GmaeManage : MonoBehaviour
 		} else {
 			if (PlayerPrefs.HasKey ("controller")) {
 				consoleControllerType = (ConsoleControllerType)System.Enum.Parse (typeof(ConsoleControllerType), PlayerPrefs.GetString ("controller"));
-			}else{
+			} else {
 				consoleControllerType = ConsoleControllerType.PS3;
 			}
 			gameState = GameState.NullState;
@@ -402,7 +400,8 @@ public class GmaeManage : MonoBehaviour
 			Application.Quit ();
 		}
 
-		if (controllerType == ControllerType.ConsoleContoller) {
+		if (Application.loadedLevelName == "Controller Select") {
+
 			ControllerUpdate ();
 		}
 
@@ -412,9 +411,9 @@ public class GmaeManage : MonoBehaviour
 
 		if (Application.loadedLevelName == "Boucing") {
 
-//			if (Input.GetButtonDown ("Undefined")) {
-//				progression += 1;
-//			}
+			if (Input.GetButtonDown ("Undefined")) {
+				progression += 1;
+			}
 
 			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
 				_oldWidth = Screen.width;
@@ -453,18 +452,18 @@ public class GmaeManage : MonoBehaviour
 	
 	void StartGame ()
 	{
-
-
 		if (Application.loadedLevelName == "Start_Screen") { //Opening screen
-			if (Input.GetButtonDown (controllerStart)) {
-				if (!startButton) {
-					Debug.LogError ("No start button");
-					return;
-				}
+			if (Time.time > 2f) {
+				if (Input.GetButtonDown (controllerStart)) {
+					if (!startButton) {
+						Debug.LogError ("No start button");
+						return;
+					}
 				
-				timeStart = true;
-				startButton.GetComponent<Animator> ().enabled = false;
+					timeStart = true;
+					startButton.GetComponent<Animator> ().enabled = false;
 
+				}
 			}
 			
 			if (timeStart) {
@@ -474,9 +473,9 @@ public class GmaeManage : MonoBehaviour
 				fading.FadeINandOUT (umbrellaGame, 1.5f);
 				Invoke ("FlyUmbrellaFly", 0.5f);
 
-				start.TransitionTo (40);
-
 				harpIntroSource.volume = Mathf.Lerp (harpIntroSource.volume, 0, Time.deltaTime / 5);
+				rain.volume = Mathf.Lerp (rain.volume, 0, Time.deltaTime / 5);
+
 				if (harpIntroSource.volume < 0.2f) {
 					fading.FadeIN (WhiteScreen, 1.5f);
 					Invoke ("whichLevel", harpIntroClip.length / 2);
@@ -727,66 +726,54 @@ public class GmaeManage : MonoBehaviour
 
 	void ControllerUpdate ()
 	{
-		if (Application.loadedLevelName != "Controller Select") {
-			if (consoleControllerType == ConsoleControllerType.PS3) {
-				controllerInteract = "Interact_1";
-				controllerTalk = "Talk_1";
-				controllerStart = "Submit_1";
-
-			} else if (consoleControllerType == ConsoleControllerType.XBox) {
-				controllerInteract = "Interact_2";
-				controllerTalk = "Talk_2";
-				controllerStart = "Submit_2";
-			}
-		} else {
-			if (Mathf.Abs (Input.GetAxisRaw ("Horizontal_L")) > 0.1f) {
-				choose = true;
-			}
-
-			Color defaultColor = new Color (1, 1, 1, 0.3f);
-			Vector3 seletedScale = new Vector3 (1.5f, 1.5f, 1.5f);
-			Vector3 smallScale = new Vector3 (0.5f, 0.5f, 0.5f);
-
-
-			if (choose) {
-				if (!IsInvoking ("WhiteScreenTransisitions")) {
-
-					controllers [isquared].color = Color.Lerp (controllers [isquared].color, Color.white, Time.deltaTime);
-					controllers [isquared].transform.localScale = Vector3.Lerp (controllers [isquared].transform.localScale, seletedScale, Time.deltaTime);
-
-					if (consoleControllerType == ConsoleControllerType.XBox) {
-						controllers [0].color = Color.Lerp (controllers [0].color, defaultColor, Time.deltaTime);
-						controllers [0].transform.localScale = Vector3.Lerp (controllers [0].transform.localScale, smallScale, Time.deltaTime);
-
-					} else if (consoleControllerType == ConsoleControllerType.PS3) {
-						controllers [1].color = Color.Lerp (controllers [1].color, defaultColor, Time.deltaTime);
-						controllers [1].transform.localScale = Vector3.Lerp (controllers [1].transform.localScale, smallScale, Time.deltaTime);
-
-					}
-				}
-
-				if (Input.anyKey) {
-					controllerselected = true;
-				}
-				if (controllerselected) {
-					PlayerPrefs.SetString ("controller", consoleControllerType.ToString ());
-					Invoke ("WhiteScreenTransisitions", 0.1f);
-				}
-			}
-
-			if (Input.GetAxisRaw ("Horizontal_L") > 0.1f) {
-				consoleControllerType = ConsoleControllerType.PS3;
-				isquared = 0;
-			} else if (Input.GetAxisRaw ("Horizontal_L") < -0.1f) {
-				consoleControllerType = ConsoleControllerType.XBox;
-				isquared = 1;
-			}
-
+		if (Mathf.Abs (Input.GetAxisRaw ("Horizontal_L")) > 0.1f) {
+			choose = true;
 		}
+
+		Color defaultColor = new Color (1, 1, 1, 0.3f);
+		Vector3 seletedScale = new Vector3 (1.5f, 1.5f, 1.5f);
+		Vector3 smallScale = new Vector3 (0.5f, 0.5f, 0.5f);
+
+
+		if (choose) {
+			if (!IsInvoking ("WhiteScreenTransisitions")) {
+
+				controllers [isquared].color = Color.Lerp (controllers [isquared].color, Color.white, Time.deltaTime);
+				controllers [isquared].transform.localScale = Vector3.Lerp (controllers [isquared].transform.localScale, seletedScale, Time.deltaTime);
+
+				if (consoleControllerType == ConsoleControllerType.XBox) {
+					controllers [0].color = Color.Lerp (controllers [0].color, defaultColor, Time.deltaTime);
+					controllers [0].transform.localScale = Vector3.Lerp (controllers [0].transform.localScale, smallScale, Time.deltaTime);
+
+				} else if (consoleControllerType == ConsoleControllerType.PS3) {
+					controllers [1].color = Color.Lerp (controllers [1].color, defaultColor, Time.deltaTime);
+					controllers [1].transform.localScale = Vector3.Lerp (controllers [1].transform.localScale, smallScale, Time.deltaTime);
+
+				}
+			}
+
+			if (Input.anyKey) {
+				controllerselected = true;
+			}
+			if (controllerselected) {
+				PlayerPrefs.SetString ("controller", consoleControllerType.ToString ());
+				Invoke ("WhiteScreenTransisitions", 0.1f);
+			}
+		}
+
+		if (Input.GetAxisRaw ("Horizontal_L") > 0.1f) {
+			consoleControllerType = ConsoleControllerType.PS3;
+			isquared = 0;
+		} else if (Input.GetAxisRaw ("Horizontal_L") < -0.1f) {
+			consoleControllerType = ConsoleControllerType.XBox;
+			isquared = 1;
+		}
+
 	}
 
-	void OnApplicationQuit(){
-		PlayerPrefs.DeleteKey("controller");
+	void OnApplicationQuit ()
+	{
+		PlayerPrefs.DeleteKey ("controller");
 	}
 
 }//End of Class
