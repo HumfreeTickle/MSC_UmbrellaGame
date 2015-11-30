@@ -39,7 +39,11 @@ public class SignBlow : MonoBehaviour
 			anim.SetBool ("SwingBack", false);
 			swinging = false;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			//audio2.Stop();
+=======
+			audio2.Stop ();
+>>>>>>> origin/master
 =======
 			audio2.Stop ();
 >>>>>>> origin/master

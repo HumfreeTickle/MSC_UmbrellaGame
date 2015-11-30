@@ -49,6 +49,12 @@ namespace Enivironment
 			if (other.gameObject.tag == "Player") {
 
 
+<<<<<<< HEAD
+=======
+				audio2.PlayOneShot (whoosh);
+				Debug.Log ("Whoosh");
+
+>>>>>>> origin/master
 				audio2.PlayOneShot (whoosh);
 				Debug.Log ("Whoosh");
 
