@@ -6,10 +6,16 @@ namespace Player
 	public class Player_Interaction : MonoBehaviour
 	{
 		private Tutuorial tutorial;
-
+		private GmaeManage gameManager;
 		void Start ()
 		{
-			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
+			gameManager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>();
+
+			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+				tutorial = GameObject.Find ("Tutorial_PS3").GetComponent<Tutuorial> ();
+			}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
+				tutorial = GameObject.Find ("Tutorial_XBox").GetComponent<Tutuorial> ();
+			}		
 		}
 	
 		void OnTriggerStay (Collider col)

@@ -44,34 +44,6 @@ public class BoxesSave : MonoBehaviour
 		}
 	}
 	
-//	void OnTriggerStay (Collider col)
-//	{
-//		if (col.gameObject.tag == "River") {
-//			if (GetComponent<BoxCollider> ()) {
-//				GetComponent<BoxCollider> ().isTrigger = true;
-//			}
-//			if (transform.parent.tag != "Player") {
-//				if (!IsInvoking ("Reset")) {
-//					Invoke ("Reset", 3);
-//				}
-//			}
-//		}
-//	}
-//	
-//	void OnTriggerExit (Collider col)
-//	{
-//		if (col.gameObject.tag == "River") {
-//			if (GetComponent<BoxCollider> ()) {
-//				GetComponent<BoxCollider> ().isTrigger = false;
-//			}
-//			if (transform.parent.tag != "Player") {
-//				if (IsInvoking ("Reset")) {
-//					CancelInvoke ("Reset");
-//				}
-//			}
-//		}
-//	}
-	
 	void Reset ()
 	{
 		if (GetComponent<Rigidbody> ()) {

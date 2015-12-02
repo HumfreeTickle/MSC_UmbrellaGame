@@ -111,6 +111,7 @@ namespace CameraScripts
 		
 		void FixedUpdate ()
 		{
+
 			if (!lookAt) {
 				return;
 			}
@@ -230,7 +231,7 @@ namespace CameraScripts
 		void RotatePitch ()
 		{
 			if (Mathf.Abs (Input.GetAxis (GameManager.controllerTypeVertical_R)) > 0) {
-				transform.RotateAround (lookAtTr.position, transform.TransformDirection (Vector3.right), -1 * Input.GetAxis (GameManager.controllerTypeVertical_R) * rotateSpeed); 
+				transform.RotateAround (lookAtTr.position, transform.TransformDirection (Vector3.right), Input.GetAxis (GameManager.controllerTypeVertical_R) * rotateSpeed); 
 			}
 		}
 		

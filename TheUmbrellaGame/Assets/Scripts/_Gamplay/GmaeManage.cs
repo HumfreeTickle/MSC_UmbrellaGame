@@ -92,9 +92,12 @@ public class GmaeManage : MonoBehaviour
 	private AudioSource harpIntroSource;
 //	public AudioMixerSnapshot start;
 	private AudioClip mainThemeMusic;
+
 	public AudioMixerSnapshot PausedSnapShot;
 	public AudioMixerSnapshot InGameSnapShot;
 
+	public AudioMixerSnapshot EnvironmentPausedSnapshot;
+	public AudioMixerSnapshot EnvironmentInGameSnapshot;
 
 	//-- Canvas Stuff ---
 	private Image PauseScreen; // pause screen image
@@ -189,7 +192,7 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	private GameState currentState = GameState.Intro;
-	public ControllerType controllerType;
+	private ControllerType controllerType;
 
 	public ControllerType ControllerType {
 		get {
@@ -201,7 +204,8 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	private ControllerType currentController = ControllerType.NullState;
-	public MissionController missionState;
+
+	private MissionController missionState;
 
 	public MissionController MissionState {
 		get {
@@ -211,10 +215,10 @@ public class GmaeManage : MonoBehaviour
 			missionState = value;
 		}
 	}
+	public ConsoleControllerType consoleControllerType{get; private set;}
 
-	public ConsoleControllerType consoleControllerType;
 	private MissionController currentMission = MissionController.Default;
-	public UmbrellaType umbrellaType = UmbrellaType.Umbrella;
+	private UmbrellaType umbrellaType = UmbrellaType.Umbrella;
 
 	//--------------------------------------------------------------------------------------------------//
 
@@ -239,6 +243,12 @@ public class GmaeManage : MonoBehaviour
 	{
 		Cursor.visible = false;
 
+		if (PlayerPrefs.HasKey ("controller")) {
+			consoleControllerType = (ConsoleControllerType)System.Enum.Parse (typeof(ConsoleControllerType), PlayerPrefs.GetString ("controller"));
+		} else {
+			consoleControllerType = ConsoleControllerType.XBox;
+		}
+
 		//-------------------- For the different controllers ---------------------------------
 
 		if (Input.GetJoystickNames ().Length > 0) {// checks to see if a controller is connected
@@ -251,6 +261,21 @@ public class GmaeManage : MonoBehaviour
 				controllerTypeHorizontal_R = "Horizontal_R_PS3";
 			} else if (consoleControllerType == ConsoleControllerType.XBox) {
 				controllerTypeHorizontal_R = "Horizontal_R_XBox";
+			}
+
+			if (Application.loadedLevelName != "Controller Select") {
+				
+				if (consoleControllerType == ConsoleControllerType.PS3) {
+					controllerInteract = "Interact_1";
+					controllerTalk = "Talk_1";
+					controllerStart = "Submit_1";
+					
+				} else if (consoleControllerType == ConsoleControllerType.XBox) {
+					controllerInteract = "Interact_2";
+					controllerTalk = "Talk_2";
+					controllerStart = "Submit_2";
+				}
+
 			}
 
 		} else if (Input.GetJoystickNames ().Length <= 0) {
@@ -275,31 +300,7 @@ public class GmaeManage : MonoBehaviour
 
 		}
 
-		if (Application.loadedLevelName != "Controller Select") {
-			if (consoleControllerType == ConsoleControllerType.PS3) {
-				controllerInteract = "Interact_1";
-				controllerTalk = "Talk_1";
-				controllerStart = "Submit_1";
-				
-			} else if (consoleControllerType == ConsoleControllerType.XBox) {
-				controllerInteract = "Interact_2";
-				controllerTalk = "Talk_2";
-				controllerStart = "Submit_2";
-			} else {
-				controllerInteract = "Interact_1";
-				controllerTalk = "Talk_1";
-				controllerStart = "Submit_1";
-			}
-		}
-
-
 		if (Application.loadedLevelName == "Start_Screen") { //Start screen
-
-			if (PlayerPrefs.HasKey ("controller")) {
-				consoleControllerType = (ConsoleControllerType)System.Enum.Parse (typeof(ConsoleControllerType), PlayerPrefs.GetString ("controller"));
-			} else {
-				consoleControllerType = ConsoleControllerType.PS3;
-			}
 
 			GameState = GameState.Intro; 
 			startButton = GameObject.Find ("Start Button").GetComponent<Image> ();
@@ -326,6 +327,14 @@ public class GmaeManage : MonoBehaviour
 				consoleControllerType = (ConsoleControllerType)System.Enum.Parse (typeof(ConsoleControllerType), PlayerPrefs.GetString ("controller"));
 			} else {
 				consoleControllerType = ConsoleControllerType.PS3;
+			}
+
+			if(consoleControllerType == ConsoleControllerType.PS3){
+				GameObject.Find("Tutorial_XBox").SetActive(false);
+				GameObject.Find("Tutorial_PS3").SetActive(true);
+			}else if(consoleControllerType == ConsoleControllerType.XBox){
+				GameObject.Find("Tutorial_XBox").SetActive(true);
+				GameObject.Find("Tutorial_PS3").SetActive(false);
 			}
 
 			Terrain.activeTerrain.detailObjectDensity = 0;
@@ -389,8 +398,7 @@ public class GmaeManage : MonoBehaviour
 
 	void Update ()
 	{
-
-//----------- Quits Game from any Screen --------//
+		//----------- Quits Game from any Screen --------//
 		if (Input.GetKey ("escape")) {
 			Application.Quit ();
 		}
@@ -406,9 +414,9 @@ public class GmaeManage : MonoBehaviour
 
 		if (Application.loadedLevelName == "Boucing") {
 
-			if (Input.GetButtonDown ("Undefined")) {
-				progression += 1;
-			}
+//			if (Input.GetButtonDown ("Undefined")) {
+//				progression += 1;
+//			}
 
 			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
 				_oldWidth = Screen.width;
@@ -510,15 +518,15 @@ public class GmaeManage : MonoBehaviour
 
 			if (GameState == GameState.Game) {
 				GameState = GameState.Pause;
-				PausedSnapShot.TransitionTo (0);
+				PausedSnapShot.TransitionTo (0.1f);
+				EnvironmentPausedSnapshot.TransitionTo(0.1f);
 
 			} else if (GameState == GameState.Pause) {
-//				if(Button == 0){
 				GameState = GameState.Game;
 				autoPauseTimer = 0;
 				NotPaused ();
-				InGameSnapShot.TransitionTo (0);
-//			}
+				InGameSnapShot.TransitionTo (0.1f);
+				EnvironmentInGameSnapshot.TransitionTo(0f);
 			}
 		}
 
@@ -552,14 +560,6 @@ public class GmaeManage : MonoBehaviour
 		//			backgroundMusic.GetComponent<AudioSource>().pitch = -1;
 		//		}
 
-//		// Movement with
-//		if (Input.GetAxisRaw ("Vertical_L") > 0) {
-//			//move up one in the button array
-//			//if greater then 2 move to 0
-//		} else if (Input.GetAxisRaw ("Vertical_L") > 0) {
-//			//move down one in the button array
-//			//if less then 0 move to 2
-//		}
 	}
 	
 	void NotPaused ()
@@ -620,7 +620,7 @@ public class GmaeManage : MonoBehaviour
 	void CheckStates ()
 	{
 		if (ControllerType != currentController) {
-			Debug.Log (ControllerType);
+			Debug.Log (ControllerType + ": " + consoleControllerType);
 		}
 		
 		if (GameState != currentState) {

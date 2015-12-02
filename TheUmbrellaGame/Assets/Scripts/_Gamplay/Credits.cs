@@ -107,7 +107,7 @@ public class Credits : MonoBehaviour
 
 		TitleCard = GameObject.Find ("Title Card").GetComponent<Image> ();
 
-		if(gameManager.controllerType == ControllerType.ConsoleContoller){
+		if(gameManager.ControllerType == ControllerType.ConsoleContoller){
 			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
 				StartButton = "Submit_1";
 			}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){

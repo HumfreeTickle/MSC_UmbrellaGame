@@ -65,7 +65,12 @@ namespace Player.PhysicsStuff
 			gameState = gameManager.GameState;
 			rb = gameObject.GetComponent<Rigidbody> ();
 			if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
-				tutorialAnim = GameObject.Find ("Tutorial").GetComponent<Animator> ();
+
+				if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+					tutorialAnim = GameObject.Find ("Tutorial_PS3").GetComponent<Animator> ();
+				}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
+					tutorialAnim = GameObject.Find ("Tutorial_XBox").GetComponent<Animator> ();
+				}
 			} else if (gameManager.ControllerType == ControllerType.Keyboard) {
 				tutorialAnim = GameObject.Find ("Down_tutorial").GetComponent<Animator> ();
 			}

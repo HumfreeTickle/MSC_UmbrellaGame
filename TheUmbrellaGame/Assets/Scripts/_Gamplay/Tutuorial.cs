@@ -26,13 +26,27 @@ public class Tutuorial : MonoBehaviour
 		gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
 		if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
-			windAnim = GetComponent<Animator> ();
 
-			Talk_Button = GameObject.Find ("L1_tutorial").GetComponent<Image> ();
-			Interact_Button = GameObject.Find ("R1_tutorial").GetComponent<Image> ();
+			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+				windAnim = GameObject.Find("Tutorial_PS3").GetComponent<Animator> ();
+				Talk_Button = GameObject.Find ("L1_tutorial").GetComponent<Image> ();
+				Interact_Button = GameObject.Find ("R1_tutorial").GetComponent<Image> ();
+				
+				Talk_Animator = GameObject.Find ("L1_tutorial").GetComponent<Animator> ();
+				Interact_Animator = GameObject.Find ("R1_tutorial").GetComponent<Animator> ();
 
-			Talk_Animator = GameObject.Find ("L1_tutorial").GetComponent<Animator> ();
-			Interact_Animator = GameObject.Find ("R1_tutorial").GetComponent<Animator> ();
+
+			}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
+				windAnim = GameObject.Find("Tutorial_XBox").GetComponent<Animator> ();
+				Talk_Button = GameObject.Find ("LB_tutorial").GetComponent<Image> ();
+				Interact_Button = GameObject.Find ("RB_tutorial").GetComponent<Image> ();
+				
+				Talk_Animator = GameObject.Find ("LB_tutorial").GetComponent<Animator> ();
+				Interact_Animator = GameObject.Find ("RB_tutorial").GetComponent<Animator> ();
+				Debug.Log(windAnim);
+
+			}
+
 
 		} else if (gameManager.ControllerType == ControllerType.Keyboard) {
 			Talk_Button = GameObject.Find ("Q_tutorial").GetComponent<Image> ();
@@ -94,7 +108,7 @@ public class Tutuorial : MonoBehaviour
 		}
 	}
 
-	public void StartingPositions ()
+	void StartingPositions ()
 	{
 		windAnim.SetBool ("Wind", true);
 	}

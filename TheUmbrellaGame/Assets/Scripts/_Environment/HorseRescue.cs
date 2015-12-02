@@ -69,7 +69,7 @@ public class HorseRescue : MonoBehaviour
 
 	void Update ()
 	{
-		if (gameManager.missionState == MissionController.HorsesMission) {
+		if (gameManager.MissionState == MissionController.HorsesMission) {
 			horse.tag = "Interaction";
 		} else {
 			horse.tag = "Untagged";

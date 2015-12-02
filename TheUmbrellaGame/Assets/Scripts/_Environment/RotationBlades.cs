@@ -34,8 +34,13 @@ namespace Environment
 
 		void Start ()
 		{
-			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
-			npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
+			gameManager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>();
+			
+			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+				tutorial = GameObject.Find ("Tutorial_PS3").GetComponent<Tutuorial> ();
+			}else if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+				tutorial = GameObject.Find ("Tutorial_XBox").GetComponent<Tutuorial> ();
+			}				npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
 			caughtPiece = transform.parent.transform.FindChild ("Pickup_pole").gameObject;
 
 			activeLight = transform.FindChild ("Activate").GetComponent<Light> (); //finds the light attahed to the caughtpiece
@@ -43,7 +48,6 @@ namespace Environment
 
 			handle = GameObject.Find ("handle").transform;
 
-			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
 			moveTo = GameObject.Find ("MoveTo").transform;
 			GetComponent<AudioSource> ().enabled = false;
@@ -60,7 +64,7 @@ namespace Environment
 					CameraMove ();
 				}
 			}
-			if (gameManager.missionState == MissionController.TutorialMission) {
+			if (gameManager.MissionState == MissionController.TutorialMission) {
 				if (caughtPiece.transform.parent == handle.transform) {
 					activeLight.enabled = false;
 					lightsOn = false;

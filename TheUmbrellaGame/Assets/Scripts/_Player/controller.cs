@@ -64,10 +64,10 @@ namespace Player
 				upForce.enabled = true;
 			}
 
-			if (gameManager.controllerType == ControllerType.ConsoleContoller) {
+			if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
 				speed = 50;
 				turningSpeed = 70;
-			} else if (gameManager.controllerType == ControllerType.Keyboard) {
+			} else if (gameManager.ControllerType == ControllerType.Keyboard) {
 				speed = 25;
 				turningSpeed = 35;
 			}
@@ -76,6 +76,8 @@ namespace Player
 		void FixedUpdate ()
 		{
 			ClampPhysics ();
+
+
 
 			if (gameManager.GameState == GameState.Game) {
 				handle.GetComponent<CapsuleCollider> ().enabled = true;
@@ -127,7 +129,7 @@ namespace Player
 			if (!Input.anyKey) {
 				rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * slowDownSpeed);
 				rb.angularVelocity = Vector3.Lerp (rb.angularVelocity, Vector3.zero, Time.fixedDeltaTime * slowDownSpeed);
-				if (gameManager.controllerType == ControllerType.Keyboard) {
+				if (gameManager.ControllerType == ControllerType.Keyboard) {
 					Input.ResetInputAxes ();
 				}
 			}

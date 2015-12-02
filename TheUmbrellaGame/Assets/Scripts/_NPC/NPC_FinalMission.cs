@@ -323,7 +323,6 @@ namespace NPC
 				System.Action dialogue3 = () => {
 					final_X = 5;
 					currentPerson = lightHouseKeeper;
-
 				};
 
 				finalCoroutine = talkCoroutine.Talking (Priest_Dialogue2, dialogue3);
@@ -379,7 +378,6 @@ namespace NPC
 
 			// Stealing the pickaxe
 			case 8:
-
 				pickupTool.transform.FindChild ("Activate").GetComponent<Light> ().enabled = true;
 				finalMission = false;
 				break;
@@ -482,11 +480,13 @@ namespace NPC
 					cmaera.GetComponent<Controller> ().lookAt = umbrella; // changes the camera's focus
 
 					if (moveCmarea) {
+
 						moveCmarea = false;
 					}
 					if (final_X == 13 && !finalMission) {
 						gameManager.Progression = 6;
 					}
+
 				
 					lookAt = null;
 					moveTo = null;

@@ -71,6 +71,7 @@ public class CatSave : MonoBehaviour
 	{
 		if (GetComponent<Rigidbody> ()) {
 			rb.velocity = Vector3.zero;
+			rb.isKinematic = true;
 			transform.position = startingPos;
 			transform.rotation = startingRotation;
 		}

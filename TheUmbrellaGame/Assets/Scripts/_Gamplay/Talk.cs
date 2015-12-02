@@ -47,9 +47,13 @@ public class Talk : MonoBehaviour
 		npc_TalkBox = GetComponent<Image> ();
 
 		if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
 			Talk_Click = this.transform.GetChild (0).GetComponent<Animator> ();
+			}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
+				Talk_Click = this.transform.GetChild (1).GetComponent<Animator> ();
+			}
 		}else if(gameManager.ControllerType == ControllerType.Keyboard) {
-			Talk_Click = this.transform.GetChild (1).GetComponent<Animator> ();
+			Talk_Click = this.transform.GetChild (2).GetComponent<Animator> ();
 		}
 
 		cameraMove = GameObject.Find ("Follow Camera").GetComponent<_MoveCamera> ();

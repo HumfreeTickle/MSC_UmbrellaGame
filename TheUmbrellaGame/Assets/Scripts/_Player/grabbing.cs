@@ -32,7 +32,12 @@ namespace Player
 		{
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			umbrella = GameObject.Find ("main_Sphere");
-			tutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
+			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+				tutorial = GameObject.Find ("Tutorial_PS3").GetComponent<Tutuorial> ();
+			}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
+				tutorial = GameObject.Find ("Tutorial_XBox").GetComponent<Tutuorial> ();
+			}
+
 			achieves = GameObject.Find ("Follow Camera").GetComponent<Achievements> ();
 			rb = umbrella.GetComponent<Rigidbody> ();
 			umbrellaCol = umbrella.GetComponent<Collider> ();

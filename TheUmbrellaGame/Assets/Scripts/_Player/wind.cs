@@ -6,6 +6,7 @@ namespace Player
 {
 	public class wind : MonoBehaviour
 	{
+		private GmaeManage gameManager;
 		private DestroyObject destroyObject = new Inheritence.DestroyObject ();
 		public Transform umbrellaObject;
 		private Animator umbrellaModel;
@@ -13,11 +14,17 @@ namespace Player
 		public GameState gameState;
 		private Tutuorial gameTutorial;
 
-		void Awake ()
+		void Start ()
 		{
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			umbrellaObject = GameObject.Find ("Umbrella").transform;
 			umbrellaModel = umbrellaObject.GetComponent<Animator> ();
-			gameTutorial = GameObject.Find ("Tutorial").GetComponent<Tutuorial> ();
+			if (gameManager.consoleControllerType == ConsoleControllerType.PS3) {
+				gameTutorial = GameObject.Find ("Tutorial_PS3").GetComponent<Tutuorial> ();
+			} else if (gameManager.consoleControllerType == ConsoleControllerType.XBox) {
+				gameTutorial = GameObject.Find ("Tutorial_XBox").GetComponent<Tutuorial> ();
+
+			}
 
 		}
 
