@@ -27,7 +27,6 @@ public class SignBlow : MonoBehaviour
 			brolly = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
 		}
 		audio2 = GetComponent<AudioSource> ();
-
 		Creaky = audio2.clip;
 	}
 	
@@ -38,13 +37,6 @@ public class SignBlow : MonoBehaviour
 			anim.SetBool ("Swing", false);
 			anim.SetBool ("SwingBack", false);
 			swinging = false;
-<<<<<<< HEAD:TheUmbrellaGame/Assets/Scripts/_Environment/SignBlow.cs
-<<<<<<< HEAD:TheUmbrellaGame/Assets/SignBlow.cs
-=======
-=======
->>>>>>> origin/master:TheUmbrellaGame/Assets/Scripts/_Environment/SignBlow.cs
-
->>>>>>> origin/master:TheUmbrellaGame/Assets/Scripts/_Environment/SignBlow.cs
 			timer = 10;
 
 		}
@@ -68,7 +60,6 @@ public class SignBlow : MonoBehaviour
 				anim.SetBool ("SwingBack", true);
 				swinging = true;
 				audio2.PlayOneShot (Creaky);
-
 			}
 	
 		}

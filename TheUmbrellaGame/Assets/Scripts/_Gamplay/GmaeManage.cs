@@ -92,10 +92,8 @@ public class GmaeManage : MonoBehaviour
 	private AudioSource harpIntroSource;
 //	public AudioMixerSnapshot start;
 	private AudioClip mainThemeMusic;
-
 	public AudioMixerSnapshot PausedSnapShot;
 	public AudioMixerSnapshot InGameSnapShot;
-
 	public AudioMixerSnapshot EnvironmentPausedSnapshot;
 	public AudioMixerSnapshot EnvironmentInGameSnapshot;
 
@@ -127,7 +125,6 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	private int currentProgress = 1;
-
 	private Vector3 startingPos;
 	//-----------------------------------------------//
 	public List<Material> allTheColoursOfTheUmbrella;
@@ -204,7 +201,6 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	private ControllerType currentController = ControllerType.NullState;
-
 	private MissionController missionState;
 
 	public MissionController MissionState {
@@ -215,7 +211,8 @@ public class GmaeManage : MonoBehaviour
 			missionState = value;
 		}
 	}
-	public ConsoleControllerType consoleControllerType{get; private set;}
+
+	public ConsoleControllerType consoleControllerType{ get; private set; }
 
 	private MissionController currentMission = MissionController.Default;
 	private UmbrellaType umbrellaType = UmbrellaType.Umbrella;
@@ -236,7 +233,10 @@ public class GmaeManage : MonoBehaviour
 	private int isquared = 0;
 	private bool choose;
 	private bool controllerselected;
-
+	public AudioClip controllerSelectSFX;
+	public AudioClip controllerSelectHarp;
+	private bool playControllerSelect;
+	private float playedTime;
 //-------------------------------------- The Setup ----------------------------------------------------------------//
 
 	void Awake ()
@@ -323,18 +323,18 @@ public class GmaeManage : MonoBehaviour
 			}
 
 		} else if (Application.loadedLevelName == "Boucing") { //Main screen
-			if (PlayerPrefs.HasKey ("controller")) {
-				consoleControllerType = (ConsoleControllerType)System.Enum.Parse (typeof(ConsoleControllerType), PlayerPrefs.GetString ("controller"));
-			} else {
-				consoleControllerType = ConsoleControllerType.PS3;
-			}
+//			if (PlayerPrefs.HasKey ("controller")) {
+//				consoleControllerType = (ConsoleControllerType)System.Enum.Parse (typeof(ConsoleControllerType), PlayerPrefs.GetString ("controller"));
+//			} else {
+//				consoleControllerType = ConsoleControllerType.XBox;
+//			}
 
-			if(consoleControllerType == ConsoleControllerType.PS3){
-				GameObject.Find("Tutorial_XBox").SetActive(false);
-				GameObject.Find("Tutorial_PS3").SetActive(true);
-			}else if(consoleControllerType == ConsoleControllerType.XBox){
-				GameObject.Find("Tutorial_XBox").SetActive(true);
-				GameObject.Find("Tutorial_PS3").SetActive(false);
+			if (consoleControllerType == ConsoleControllerType.PS3) {
+				GameObject.Find ("Tutorial_XBox").SetActive (false);
+				GameObject.Find ("Tutorial_PS3").SetActive (true);
+			} else if (consoleControllerType == ConsoleControllerType.XBox) {
+				GameObject.Find ("Tutorial_XBox").SetActive (true);
+				GameObject.Find ("Tutorial_PS3").SetActive (false);
 			}
 
 			Terrain.activeTerrain.detailObjectDensity = 0;
@@ -421,7 +421,7 @@ public class GmaeManage : MonoBehaviour
 			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
 				_oldWidth = Screen.width;
 				_oldHeight = Screen.height;
-				npc_Talking.fontSize = Mathf.Clamp(Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / ratio), 15, 20);
+				npc_Talking.fontSize = Mathf.Clamp (Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / ratio), 15, 20);
 			}
 
 			if (progression > currentProgress) {
@@ -519,14 +519,14 @@ public class GmaeManage : MonoBehaviour
 			if (GameState == GameState.Game) {
 				GameState = GameState.Pause;
 				PausedSnapShot.TransitionTo (0.1f);
-				EnvironmentPausedSnapshot.TransitionTo(0.1f);
+				EnvironmentPausedSnapshot.TransitionTo (0.1f);
 
 			} else if (GameState == GameState.Pause) {
 				GameState = GameState.Game;
 				autoPauseTimer = 0;
 				NotPaused ();
 				InGameSnapShot.TransitionTo (0.1f);
-				EnvironmentInGameSnapshot.TransitionTo(0f);
+				EnvironmentInGameSnapshot.TransitionTo (0f);
 			}
 		}
 
@@ -746,8 +746,12 @@ public class GmaeManage : MonoBehaviour
 
 				}
 			}
-			if (Vector3.Distance (controllers [isquared].transform.localScale, seletedScale) <= 0.1f) { 
-				if (Input.anyKey) {
+			if (Vector3.Distance (controllers [isquared].transform.localScale, seletedScale) <= 0.3f) { 
+				if (Input.anyKeyDown) {
+					GetComponent<AudioSource> ().pitch = 1f;
+					GetComponent<AudioSource> ().volume = 0.4f;
+					GetComponent<AudioSource> ().PlayOneShot (controllerSelectHarp);
+
 					controllerselected = true;
 				}
 			}
@@ -758,13 +762,30 @@ public class GmaeManage : MonoBehaviour
 		}
 
 		if (Input.GetAxisRaw ("Horizontal_L") > 0.1f) {
-			consoleControllerType = ConsoleControllerType.PS3;
-			isquared = 0;
+			if (consoleControllerType != ConsoleControllerType.PS3) {
+				consoleControllerType = ConsoleControllerType.PS3;
+				isquared = 0;
+				playControllerSelect = true;
+				playedTime = Time.time;
+
+			}
 		} else if (Input.GetAxisRaw ("Horizontal_L") < -0.1f) {
-			consoleControllerType = ConsoleControllerType.XBox;
-			isquared = 1;
+			if (consoleControllerType != ConsoleControllerType.XBox) {
+				consoleControllerType = ConsoleControllerType.XBox;
+				isquared = 1;
+				playControllerSelect = true;
+				playedTime = Time.time;
+			}
 		}
 
+
+		if (playControllerSelect) {
+			if (Time.time - playedTime < controllerSelectSFX.length) {
+				GetComponent<AudioSource> ().pitch = 0.5f;
+				GetComponent<AudioSource> ().PlayOneShot (controllerSelectSFX);
+				playControllerSelect = false;
+			}
+		}
 	}
 
 	void OnApplicationQuit ()

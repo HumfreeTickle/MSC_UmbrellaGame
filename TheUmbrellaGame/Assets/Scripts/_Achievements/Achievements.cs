@@ -19,7 +19,7 @@ public class Achievements : MonoBehaviour
 	
 	//-------------------------------//
 
-	public List<string> achievements;// = new List<string> ();
+	public List<string> achievements;
 
 	private bool coroutineInMotion;
 
@@ -36,21 +36,21 @@ public class Achievements : MonoBehaviour
 	//-------------------------------//
 
 //
-	void OnValidate ()
-	{
-		if (achievements.Count < 9) {
-			achievements.Add ("Splish. Splash.");
-			achievements.Add ("Assassin's Jump");
-			achievements.Add ("Relaxing Bench");
-			achievements.Add ("Bach to basics");
-			achievements.Add ("Oh so corny");
-			achievements.Add ("Somewhere over the river");
-			achievements.Add ("Let there be light");
-			achievements.Add ("Like a prayer");
-			achievements.Add ("Ring the bell");
-		}
-
-	}
+//	void OnValidate ()
+//	{
+//		if (achievements.Count < 9) {
+//			achievements.Add ("Splish. Splash.");
+//			achievements.Add ("Assassin's Jump");
+//			achievements.Add ("Relaxing Bench");
+//			achievements.Add ("Bach to basics");
+//			achievements.Add ("Oh so corny");
+//			achievements.Add ("Somewhere over the river");
+//			achievements.Add ("Let there be light");
+//			achievements.Add ("Like a prayer");
+//			achievements.Add ("Ring the bell");
+//		}
+//
+//	}
 
 	void Start ()
 	{	

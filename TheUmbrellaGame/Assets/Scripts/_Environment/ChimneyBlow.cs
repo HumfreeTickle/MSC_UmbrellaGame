@@ -47,22 +47,8 @@ namespace Enivironment
 		void OnTriggerEnter (Collider other)
 		{
 			if (other.gameObject.tag == "Player") {
-
-<<<<<<< HEAD:TheUmbrellaGame/Assets/Scripts/_Environment/ChimneyBlow.cs
-<<<<<<< HEAD:TheUmbrellaGame/Assets/100101/_Environment/ChimneyBlow.cs
-
 				audio2.PlayOneShot (whoosh);
 				Debug.Log ("Whoosh");
-
-=======
-=======
->>>>>>> origin/master:TheUmbrellaGame/Assets/Scripts/_Environment/ChimneyBlow.cs
-				audio2.PlayOneShot (whoosh);
-				Debug.Log ("Whoosh");
->>>>>>> origin/master:TheUmbrellaGame/Assets/Scripts/_Environment/ChimneyBlow.cs
-
-
-
 			}
 		}
 
