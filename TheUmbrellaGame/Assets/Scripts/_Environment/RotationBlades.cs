@@ -22,7 +22,7 @@ namespace Environment
 		public GameObject lineTwo;
 		private Color transparentStart = Color.white;
 
-		public bool lightsOn{private get; set; }
+		public bool lightsOn{ private get; set; }
 
 		private Transform handle;
 		private GameObject cameraSet;
@@ -34,13 +34,14 @@ namespace Environment
 
 		void Start ()
 		{
-			gameManager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>();
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			
-			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+			if (gameManager.consoleControllerType == ConsoleControllerType.PS3) {
 				tutorial = GameObject.Find ("Tutorial_PS3").GetComponent<Tutuorial> ();
-			}else if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+			} else if (gameManager.consoleControllerType == ConsoleControllerType.XBox) {
 				tutorial = GameObject.Find ("Tutorial_XBox").GetComponent<Tutuorial> ();
-			}				npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
+			}
+			npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
 			caughtPiece = transform.parent.transform.FindChild ("Pickup_pole").gameObject;
 
 			activeLight = transform.FindChild ("Activate").GetComponent<Light> (); //finds the light attahed to the caughtpiece
@@ -76,7 +77,7 @@ namespace Environment
 					npc_TutorialMission.npc_Tutorial.tag = "NPC_talk";
 					npc_TutorialMission.tut_X = 2;
 					npc_TutorialMission.jumpAround_Tut = true;
-				}else {
+				} else {
 					if (lightsOn) {
 						activeLight.enabled = true;
 					}
