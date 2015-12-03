@@ -38,8 +38,11 @@ public class SignBlow : MonoBehaviour
 			anim.SetBool ("Swing", false);
 			anim.SetBool ("SwingBack", false);
 			swinging = false;
+<<<<<<< HEAD:TheUmbrellaGame/Assets/Scripts/_Environment/SignBlow.cs
 <<<<<<< HEAD:TheUmbrellaGame/Assets/SignBlow.cs
 =======
+=======
+>>>>>>> origin/master:TheUmbrellaGame/Assets/Scripts/_Environment/SignBlow.cs
 
 >>>>>>> origin/master:TheUmbrellaGame/Assets/Scripts/_Environment/SignBlow.cs
 			timer = 10;
