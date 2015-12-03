@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: b9a4f4c514cc24b34a4a38e56c50e8be
+timeCreated: 1435669214
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - windSystem: {fileID: 176072, guid: 2afef901ee05740fcac9490b5c8917ca, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

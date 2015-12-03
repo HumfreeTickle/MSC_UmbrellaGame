@@ -1,0 +1,171 @@
+fileFormatVersion: 2
+guid: bfcf33b43d82c45c6829a205e2df0993
+timeCreated: 1439818755
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Front_A
+    100004: Front_A.001
+    100006: Front_A.002
+    100008: Front_A.003
+    100010: Front_A.004
+    100012: Front_A.005
+    100014: Front_A.006
+    100016: Front_A.007
+    100018: Front_A.008
+    100020: Front_A.009
+    100022: Front_A.010
+    100024: Front_A.011
+    100026: Front_A.012
+    100028: Front_A.013
+    100030: Front_A.014
+    100032: Front_A.015
+    100034: Front_A.016
+    100036: Front_A.017
+    100038: Front_A.018
+    100040: Front_A.019
+    400000: //RootNode
+    400002: Front_A
+    400004: Front_A.001
+    400006: Front_A.002
+    400008: Front_A.003
+    400010: Front_A.004
+    400012: Front_A.005
+    400014: Front_A.006
+    400016: Front_A.007
+    400018: Front_A.008
+    400020: Front_A.009
+    400022: Front_A.010
+    400024: Front_A.011
+    400026: Front_A.012
+    400028: Front_A.013
+    400030: Front_A.014
+    400032: Front_A.015
+    400034: Front_A.016
+    400036: Front_A.017
+    400038: Front_A.018
+    400040: Front_A.019
+    2300000: Front_A
+    2300002: Front_A.001
+    2300004: Front_A.002
+    2300006: Front_A.003
+    2300008: Front_A.004
+    2300010: Front_A.005
+    2300012: Front_A.006
+    2300014: Front_A.007
+    2300016: Front_A.008
+    2300018: Front_A.009
+    2300020: Front_A.010
+    2300022: Front_A.011
+    2300024: Front_A.012
+    2300026: Front_A.013
+    2300028: Front_A.014
+    2300030: Front_A.015
+    2300032: Front_A.016
+    2300034: Front_A.017
+    2300036: Front_A.018
+    2300038: Front_A.019
+    3300000: Front_A
+    3300002: Front_A.001
+    3300004: Front_A.002
+    3300006: Front_A.003
+    3300008: Front_A.004
+    3300010: Front_A.005
+    3300012: Front_A.006
+    3300014: Front_A.007
+    3300016: Front_A.008
+    3300018: Front_A.009
+    3300020: Front_A.010
+    3300022: Front_A.011
+    3300024: Front_A.012
+    3300026: Front_A.013
+    3300028: Front_A.014
+    3300030: Front_A.015
+    3300032: Front_A.016
+    3300034: Front_A.017
+    3300036: Front_A.018
+    3300038: Front_A.019
+    4300000: Front_A.019
+    4300002: Front_A.018
+    4300004: Front_A.017
+    4300006: Front_A.016
+    4300008: Front_A.015
+    4300010: Front_A.014
+    4300012: Front_A.013
+    4300014: Front_A.012
+    4300016: Front_A.011
+    4300018: Front_A.010
+    4300020: Front_A.009
+    4300022: Front_A.008
+    4300024: Front_A.007
+    4300026: Front_A.006
+    4300028: Front_A.005
+    4300030: Front_A.004
+    4300032: Front_A.003
+    4300034: Front_A.002
+    4300036: Front_A.001
+    4300038: Front_A
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

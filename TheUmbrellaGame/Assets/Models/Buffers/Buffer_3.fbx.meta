@@ -1,0 +1,121 @@
+fileFormatVersion: 2
+guid: 723855b1919e345d283a09bb8da4223e
+timeCreated: 1439818753
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: Buffer-2Story_A-End
+    100002: Buffer-2Story_A-End.001
+    100004: Buffer-2Story_A-End.002
+    100006: Buffer-2Story_A-End.003
+    100008: Buffer-2Story_A-End.004
+    100010: Buffer-2Story_A-End.005
+    100012: Buffer-2Story_A-End.006
+    100014: Buffer-2Story_A-End.007
+    100016: Buffer-2Story_A-End.008
+    100018: Buffer-2Story_A-End.009
+    100020: //RootNode
+    400000: Buffer-2Story_A-End
+    400002: Buffer-2Story_A-End.001
+    400004: Buffer-2Story_A-End.002
+    400006: Buffer-2Story_A-End.003
+    400008: Buffer-2Story_A-End.004
+    400010: Buffer-2Story_A-End.005
+    400012: Buffer-2Story_A-End.006
+    400014: Buffer-2Story_A-End.007
+    400016: Buffer-2Story_A-End.008
+    400018: Buffer-2Story_A-End.009
+    400020: //RootNode
+    2300000: Buffer-2Story_A-End
+    2300002: Buffer-2Story_A-End.001
+    2300004: Buffer-2Story_A-End.002
+    2300006: Buffer-2Story_A-End.003
+    2300008: Buffer-2Story_A-End.004
+    2300010: Buffer-2Story_A-End.005
+    2300012: Buffer-2Story_A-End.006
+    2300014: Buffer-2Story_A-End.007
+    2300016: Buffer-2Story_A-End.008
+    2300018: Buffer-2Story_A-End.009
+    3300000: Buffer-2Story_A-End
+    3300002: Buffer-2Story_A-End.001
+    3300004: Buffer-2Story_A-End.002
+    3300006: Buffer-2Story_A-End.003
+    3300008: Buffer-2Story_A-End.004
+    3300010: Buffer-2Story_A-End.005
+    3300012: Buffer-2Story_A-End.006
+    3300014: Buffer-2Story_A-End.007
+    3300016: Buffer-2Story_A-End.008
+    3300018: Buffer-2Story_A-End.009
+    4300000: Buffer-2Story_A-End.009
+    4300002: Buffer-2Story_A-End.008
+    4300004: Buffer-2Story_A-End.007
+    4300006: Buffer-2Story_A-End.006
+    4300008: Buffer-2Story_A-End.005
+    4300010: Buffer-2Story_A-End.004
+    4300012: Buffer-2Story_A-End.003
+    4300014: Buffer-2Story_A-End.002
+    4300016: Buffer-2Story_A-End.001
+    4300018: Buffer-2Story_A-End
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
