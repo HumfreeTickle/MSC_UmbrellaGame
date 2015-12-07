@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+/// <summary>
+/// I think this is useless
+/// Moved to StayAchieve
+/// </summary>
 public class Bench : MonoBehaviour {
 
 	private Achievements achieves;
@@ -18,7 +23,7 @@ public class Bench : MonoBehaviour {
 	{
 		_timer += Time.deltaTime;
 		if (_timer > 2) {
-			if (!achieves.CoroutineInMotion) {
+			if (!achieves.coroutineInMotion) {
 				if (achieves.achievements.Contains (achievementName)) {
 					StartCoroutine (achieves.Notification (achieves.achievements [2]));
 				}

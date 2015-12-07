@@ -81,11 +81,11 @@ namespace NPC
 			npc_Animator.SetBool ("Play", jumpAround_Boxes);
 			overHereLight.SetActive (jumpAround_Boxes);
 
-			if (gameManager.MissionState == MissionController.BoxesMission) {
+			if (gameManager.missionState == MissionController.BoxesMission) {
 
 				if (boxes_X == 0) {
 					boxesGuy.tag = "NPC_talk";
-					npc_Interact.MissionDelegate = StartBoxesMission;
+					npc_Interact.missionDelegate = StartBoxesMission;
 					jumpAround_Boxes = true;
 				}
 
@@ -94,11 +94,11 @@ namespace NPC
 					BoxesMission ();
 				}
 
-			} else if (gameManager.MissionState == MissionController.HorsesMission) {
+			} else if (gameManager.missionState == MissionController.HorsesMission) {
 				jumpAround_Boxes = false;
 				boxesGuy.tag = "NPC";
 				boxesMission = false;
-				npc_Interact.MissionDelegate = null;
+				npc_Interact.missionDelegate = null;
 			}
 		}
 		
@@ -140,7 +140,7 @@ namespace NPC
 				
 			case 0:
 				//prevents multiple calls
-				if (talkCoroutine.StartCoroutineTalk) {
+				if (talkCoroutine.startCoroutineTalk) {
 					break;
 				}
 	
@@ -156,7 +156,7 @@ namespace NPC
 
 			case 1:
 				//prevents multiple calls
-				if (talkCoroutine.StartCoroutineTalk) {
+				if (talkCoroutine.startCoroutineTalk) {
 					break;
 				}
 				
@@ -181,7 +181,7 @@ namespace NPC
 				
 			case 3:
 				
-				if (talkCoroutine.StartCoroutineTalk)
+				if (talkCoroutine.startCoroutineTalk)
 					break;
 				System.Action tutorialDialogue2 = () => {
 					boxes_X = 4;};
@@ -196,7 +196,7 @@ namespace NPC
 				
 				
 			case 4:
-				gameManager.MissionState = MissionController.HorsesMission;
+				gameManager.missionState = MissionController.HorsesMission;
 				boxesMission = false;
 				break;
 				
@@ -208,7 +208,7 @@ namespace NPC
 
 		void CameraMove ()
 		{
-			if (!cmaeraMove.StartCoroutineCamera) {
+			if (!cmaeraMove.startCoroutineCamera) {
 				System.Action endCoroutine = () => {
 					moveCmarea = false;};
 				

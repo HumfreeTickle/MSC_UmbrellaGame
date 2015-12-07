@@ -4,24 +4,18 @@ using System.Collections;
 public class WaterwellSoundFX : MonoBehaviour {
 
 	private AudioClip Pouring;
-	private AudioSource audio2;
+	private AudioSource gameObjectAudio;
 
-	// Use this for initialization
-	void Start () {
-	
-		audio2 = GetComponent<AudioSource>();
-		Pouring = audio2.clip;
+	void Start () 
+	{
+		gameObjectAudio = GetComponent<AudioSource>();
+		Pouring = gameObjectAudio.clip;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 	void OnTriggerEnter(Collider other){
 
 		if (other.gameObject.tag == "NPC"){
-
-			audio2.PlayOneShot (Pouring);
+			gameObjectAudio.PlayOneShot (Pouring);
 		}
 	}
 }

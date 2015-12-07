@@ -2,45 +2,38 @@
 using System.Collections;
 
 public class BoatRocking : MonoBehaviour {
-	private Animator anim;
-	public float timer;
-	public bool Rock;
-	private AudioClip Splash;
-	private AudioSource audio2;
-
-
-	// Use this for initialization
+	private Animator boatAnim;
+	private float _timer;
+	private bool moveBoat;
+	private AudioClip splashSFX;
+	private AudioSource gameObjectAudio;
+	
 	void Start () {
-		timer = 500;
-		anim = gameObject.GetComponent<Animator> ();
-		Rock = false;
-		audio2 = GetComponent<AudioSource>();
-		Splash = audio2.clip;
-		//brolly = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
+		_timer = 500;
+		boatAnim = gameObject.GetComponent<Animator> ();
+		moveBoat = false;
+		gameObjectAudio = GetComponent<AudioSource>();
+		splashSFX = gameObjectAudio.clip;
 	}
 	
-	// Update is called once per frame
 	void Update () {
 	
-		if(timer <= 0){
-
-			timer = 500;
-			anim.SetBool("Rocking", false);
-			Rock = false;
+		if(_timer <= 0){
+			_timer = 500;
+			boatAnim.SetBool("Rocking", false);
+			moveBoat = false;
 		}
 
-		if(Rock == true){
-			timer --;
-
+		if(moveBoat == true){
+			_timer --;
 		}
 	}
 	void OnTriggerEnter (Collider col)
 	{
 		if ((col.gameObject.tag == "Player")) {
-			anim.SetBool ("Rocking", true);
-			Rock = true;
-			audio2.PlayOneShot (Splash);
-
+			boatAnim.SetBool ("Rocking", true);
+			moveBoat = true;
+			gameObjectAudio.PlayOneShot (splashSFX);
 		}
 	}
 }

@@ -20,7 +20,6 @@ namespace Player
 		private Achievements achieves;
 		private Tutuorial tutorial;
 		private DestroyObject destroy = new Inheritence.DestroyObject ();
-//		public bool interactTutorial = true; //stops the R1 tutorial from constantly activating
 
 		private Collider umbrellaCol;
 		private bool thrown;
@@ -202,7 +201,7 @@ namespace Player
 					if (!IsInvoking ("WaterEffects")) {
 						Invoke ("WaterEffects", 0.02f);
 					}
-					if (!achieves.CoroutineInMotion) {
+					if (!achieves.coroutineInMotion) {
 						if (achieves.achievements.Contains ("Splish. Splash.")) {
 							StartCoroutine (achieves.Notification (achieves.achievements [0]));
 						}

@@ -25,7 +25,7 @@ public class Boxes_dropOff : MonoBehaviour
 
 	void Update ()
 	{
-		if (gameManager.MissionState == MissionController.BoxesMission) {
+		if (gameManager.missionState == MissionController.BoxesMission) {
 			if (boxMission.boxesMission && boxMission.boxes_X == 0) {
 				GetComponent<MeshRenderer> ().enabled = true;
 			} 

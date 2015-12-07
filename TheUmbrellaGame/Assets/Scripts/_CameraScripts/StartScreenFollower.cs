@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+/// <summary>
+/// Can't remember if this is used or not
+/// </summary>
 public class StartScreenFollower : MonoBehaviour
 {
 	public float speed;
@@ -9,7 +13,5 @@ public class StartScreenFollower : MonoBehaviour
 	void Update ()
 	{
 		transform.LookAt(umbrella);
-//			Quaternion rotation = Quaternion.LookRotation (umbrella.position - transform.position);
-//			transform.rotation = Quaternion.Slerp (transform.rotation, rotation, Time.deltaTime / speed);
 	}
 }

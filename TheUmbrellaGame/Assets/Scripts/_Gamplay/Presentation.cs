@@ -6,9 +6,8 @@ using UnityStandardAssets.ImageEffects;
 
 public class Presentation : MonoBehaviour
 {
-
-	public List<Material> allTheColoursOfTheUmbrella;
-	private Material umbrellaColour;
+//	public List<Material> allTheColoursOfTheUmbrella;
+//	private Material umbrellaColour;
 	public enum slide
 	{
 		nullstate,
@@ -115,7 +114,6 @@ public class Presentation : MonoBehaviour
 		
 		case slide.firstSlide:
 			StartCoroutine (firstScene ());
-			
 			umbrellaAnim.SetBool ("Scene 1", Scene1);
 
 //			umbrellaColour = allTheColoursOfTheUmbrella [0];
@@ -124,9 +122,7 @@ public class Presentation : MonoBehaviour
 			break;
 		case slide.secondSlide:
 			StartCoroutine (secondScene ());
-		
 			umbrellaAnim.SetBool ("Scene 2", Scene2);
-
 			npcHands.SetBool ("Scene2", Scene2);
 			npcAnim.SetBool ("Scene2", Scene2);
 //			umbrellaColour = allTheColoursOfTheUmbrella [1];
@@ -137,7 +133,6 @@ public class Presentation : MonoBehaviour
 
 		case slide.thirdSlide:
 			StartCoroutine (thirdScene ());
-
 			umbrellaAnim.SetBool ("Scene 3", Scene3);
 
 
@@ -150,7 +145,6 @@ public class Presentation : MonoBehaviour
 		case slide.endPresentation:
 			StartCoroutine (transitionToNextScene ());
 //			umbrellaColour = allTheColoursOfTheUmbrella [3];
-
 //			ChangeColours (canopyCOlours);
 			progress = true;
 
@@ -202,14 +196,11 @@ public class Presentation : MonoBehaviour
 
 			yield return new WaitForSeconds (4);
 			
-			currentSlide = slide.secondSlide;
 			progress = true;
 		}
 
 		Scene2 = true;
 		theCanvas.transform.GetChild (1).GetComponent<Text> ().enabled = false;
-
-
 
 		yield break;
 
@@ -242,7 +233,6 @@ public class Presentation : MonoBehaviour
 
 		yield return new WaitForSeconds (4);
 
-		currentSlide = slide.thirdSlide;
 		progress = true;
 
 		yield break;
@@ -278,7 +268,6 @@ public class Presentation : MonoBehaviour
 
 		yield return new WaitForSeconds (4);
 
-		currentSlide = slide.endPresentation;
 		progress = true;
 
 		yield break;

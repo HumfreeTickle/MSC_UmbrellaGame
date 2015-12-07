@@ -32,11 +32,9 @@ namespace Player
 		private string controllerTypeHorizontal;
 
 //  ------------------------------------
-//		private RaycastHit hit;
 		private upwardForce upForce;
 		private bool rotate;
 		public float gravityDrop = 50f;
-//		private bool hitTerrain;
 		private bool tooLow;
 		public GameObject leftside;
 		public GameObject rightside;
@@ -64,10 +62,10 @@ namespace Player
 				upForce.enabled = true;
 			}
 
-			if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+			if (gameManager.controllerType == ControllerType.ConsoleContoller) {
 				speed = 50;
 				turningSpeed = 70;
-			} else if (gameManager.ControllerType == ControllerType.Keyboard) {
+			} else if (gameManager.controllerType == ControllerType.Keyboard) {
 				speed = 25;
 				turningSpeed = 35;
 			}
@@ -77,18 +75,16 @@ namespace Player
 		{
 			ClampPhysics ();
 
-
-
-			if (gameManager.GameState == GameState.Game) {
+			if (gameManager.gameState == GameState.Game) {
 				handle.GetComponent<CapsuleCollider> ().enabled = true;
 				rb.useGravity = true;
 				rb.angularDrag = 5;
 		
 				Movement ();
-				TheDescent ();
+				Descent ();
 
 
-			} else if (gameManager.GameState == GameState.GameOver) {
+			} else if (gameManager.gameState == GameState.GameOver) {
 				GetComponent<upwardForce> ().enabled = false;
 				Physics.gravity = new Vector3 (0, -50.0f, 0);
 				rb.mass = 10000;
@@ -96,12 +92,12 @@ namespace Player
 				rotate = false;
 
 
-			} else if (gameManager.GameState == GameState.MissionEvent) {
+			} else if (gameManager.gameState == GameState.MissionEvent) {
 				Stabilize ();
 			}
 		}
 		
-		//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
+		//----------------------------- OTHER FUNCTIONS -------------------------------//
 		
 		void Movement ()
 		{
@@ -123,21 +119,21 @@ namespace Player
 				
 			if (Mathf.Abs (Input.GetAxis (controllerTypeHorizontal)) > 0) { //This shoould rotate the player rather than move sideways
 				rb.AddTorque (transform.up * Input.GetAxis (controllerTypeHorizontal) * turningSpeed);
-				cameraController.LastHorizontalInput = Input.GetAxis (controllerTypeHorizontal);
+				cameraController.lastHorizontalInput = Input.GetAxis (controllerTypeHorizontal);
 			}
 
 			if (!Input.anyKey) {
 				rb.velocity = Vector3.Lerp (rb.velocity, Vector3.zero, Time.fixedDeltaTime * slowDownSpeed);
 				rb.angularVelocity = Vector3.Lerp (rb.angularVelocity, Vector3.zero, Time.fixedDeltaTime * slowDownSpeed);
-				if (gameManager.ControllerType == ControllerType.Keyboard) {
+				if (gameManager.controllerType == ControllerType.Keyboard) {
 					Input.ResetInputAxes ();
 				}
 			}
 		}
 		
-		void TheDescent () //allow the umbrella to go down
+		void Descent ()
 		{
-			if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+			if (gameManager.controllerType == ControllerType.ConsoleContoller) {
 				if (Input.GetAxis (gameManager.controllerTypeVertical_R) <= -0.9f) {
 					upForce.enabled = false;
 					//-----------------------//
@@ -154,7 +150,7 @@ namespace Player
 					}
 				}
 
-			} else if (gameManager.ControllerType == ControllerType.Keyboard) {
+			} else if (gameManager.controllerType == ControllerType.Keyboard) {
 				if (Input.GetButton (gameManager.controllerTypeVertical_R) 
 					&& Input.GetAxisRaw (gameManager.controllerTypeVertical_R) < -0.1f) {
 					upForce.enabled = false;
@@ -174,8 +170,6 @@ namespace Player
 				}
 
 			}
-
-
 
 			//------------------------------------------------------//
 			if (!upForce.isActiveAndEnabled) {

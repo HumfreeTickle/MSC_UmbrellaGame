@@ -1,20 +1,22 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+//Not sure about this one
 namespace Environment
 {
 	public class BlowAway : MonoBehaviour
 	{
 		public float blow;
 
-		//-------------------------------------- Spins the windmill blade ---------------------------------------------
+		//-------------------------------------- Spins the windmill blade ---------------------------------------------//
 
 		void Update ()
 		{
 			transform.Rotate (new Vector3 (15, 30, 45) * Time.deltaTime * .25f); //
 		}
 
-//--------------------------------------- Blows Player Back -------------------------------------------------------
+		//--------------------------------------- Blows Player Back ---------------------------------------------------//
 
 		void OnTriggerEnter (Collider other)
 		{

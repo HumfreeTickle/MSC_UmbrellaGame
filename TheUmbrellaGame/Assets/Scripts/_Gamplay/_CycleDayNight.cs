@@ -14,10 +14,6 @@ namespace Environment
 
 	public class _CycleDayNight : MonoBehaviour
 	{  
-		private int i = 0;
-
-		private List<MissionController> listOFMissionTesting = new List<MissionController> (); 
-
 		/// current day phase  
 		public DayPhase currentPhase{ get; private set; }
 
@@ -30,9 +26,6 @@ namespace Environment
 		/// The scene fog color to use at night.  
 		public Color nightSun = new Color (12.0f / 255.0f, 15.0f / 255.0f, 91.0f / 255.0f); 
 
-		// The amount of blending that occurs between each skybox
-		private float blendRatio;
-
 		/// One quarter the value of dayCycleLength.  
 		private float quarterDay;
 		private float halfquarterDay;  
@@ -42,8 +35,6 @@ namespace Environment
 		public Flare coldSunFlare;
 		private Transform mapCentre; 
 
-		// blend value of skybox using SkyBoxBlend Shader in render settings range 0-1  
-		private float SkyboxBlendFactor = 0.0f;
 		public Material dawn;
 		public Material day;
 		public Material evening;
@@ -55,21 +46,14 @@ namespace Environment
 		public bool updateSkyboxes;
 		public float ambientIntensity = 0.3f;
 		public bool testing;
+
 		/// Initializes working variables and performs starting calculations.  
 		void Initialize ()
 		{  
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
-			missionState = gameManager.MissionState;
+			missionState = gameManager.missionState;
 			mapCentre = GameObject.Find ("Centre of Map").transform;  
 			sun = GetComponent<Light> ();
-
-			listOFMissionTesting.Add (MissionController.Default);
-			listOFMissionTesting.Add (MissionController.TutorialMission);
-			listOFMissionTesting.Add (MissionController.CatMission);
-			listOFMissionTesting.Add (MissionController.BoxesMission);
-			listOFMissionTesting.Add (MissionController.HorsesMission);
-			listOFMissionTesting.Add (MissionController.FinalMission);
-
 		}  
 	
 		/// Sets the script control fields to reasonable default values for an acceptable day/night cycle effect.  
@@ -88,29 +72,9 @@ namespace Environment
 	
 		void Update ()
 		{  
-			//------------------------------------------------------//
-			//For testing purposes only
-			if (testing) {
-				if (Input.GetButtonDown ("Undefined")) {
-					if (i < listOFMissionTesting.Count - 1) {
-						i += 1;
-					} else {
-						i = 0;
-					}
-				}
-
-				if (Input.GetButtonUp ("Undefined")) {
-					gameManager.MissionState = listOFMissionTesting [i];
-
-				}
-			}
-			//------------------------------------------------------//
-
 			if (gameManager.gameState != GameState.NullState) {
-				missionState = gameManager.MissionState;
-			} else {
-				missionState = listOFMissionTesting [2];
-			}
+				missionState = gameManager.missionState;
+			} 
 
 			switch (missionState) {
 
@@ -118,43 +82,31 @@ namespace Environment
 			case MissionController.Default:
 				SetDawn ();  
 				SetSun (350);
-				blendRatio = 0;
-				
 				break;
 
 			case MissionController.TutorialMission:
 				SetDay (0.6f); //early morning 
 				SetSun (45);
-				blendRatio = 0.7f;
-
 				break;
 
 			case MissionController.CatMission:
 				SetDay (0.6f); //mid-day 
 				SetSun (90);
-				blendRatio = 1;
-
 				break;
 
 			case MissionController.BoxesMission:
 				SetDusk (0.6f); //mid afternoon 
 				SetSun (160);
-				blendRatio = 0.7f;
-
 				break;
 
 			case MissionController.HorsesMission:
 				SetDusk (0.5f); //mid afternoon 
 				SetSun (160);
-				blendRatio = 0.7f;
-
 				break;
 
 			case MissionController.FinalMission:
 				SetNight (); 
 				SetSun (270);
-				blendRatio = 1;
-
 				break;
 
 			default:
@@ -162,14 +114,8 @@ namespace Environment
 				break;
 
 			}
-
 			// Perform standard updates:    
 			UpdateFog (); 
-
-			if (updateSkyboxes) {
-				UpdateSkyboxBlendFactor (blendRatio);
-			}
-		
 		}  
 	
 		/// Sets the currentPhase to Dawn, turning on the directional light, if any.  
@@ -203,7 +149,6 @@ namespace Environment
 			if (RenderSettings.skybox != day && updateSkyboxes) {
 				RenderSettings.skybox = day;
 			}
-
 		}  
 	
 		/// Sets the currentPhase to Dusk.  
@@ -212,7 +157,6 @@ namespace Environment
 			if (sun != null) {
 				sun.intensity = Mathf.Lerp (sun.intensity, lighting, Time.deltaTime);
 				sun.flare = coldSunFlare;
-
 			} 
 			RenderSettings.ambientIntensity = ambientIntensity;
 
@@ -220,7 +164,6 @@ namespace Environment
 			if (RenderSettings.skybox != evening && updateSkyboxes) {
 				RenderSettings.skybox = evening;
 			}
-
 		}  
 	
 		/// Sets the currentPhase to Night, ensuring full night color ambient light, and  
@@ -230,16 +173,13 @@ namespace Environment
 			if (sun != null) {
 				sun.intensity = Mathf.Lerp (sun.intensity, 0.3f, Time.deltaTime);
 				sun.flare = null;
-
 			} 
 			RenderSettings.ambientIntensity = 0.9f;
 
-			
 			currentPhase = DayPhase.Night;  
 			if (RenderSettings.skybox != night && updateSkyboxes) {
 				RenderSettings.skybox = night;
 			}
-
 		}  
 
 		/// <summary>
@@ -256,7 +196,6 @@ namespace Environment
 	 
 		private void UpdateFog ()
 		{  
-
 			if (currentPhase == DayPhase.Dawn) {  
 				sun.color = Color.Lerp (dawnDuskSun, daySun, Time.deltaTime);
 
@@ -270,38 +209,36 @@ namespace Environment
 				sun.color = Color.Lerp (nightSun, dawnDuskSun, Time.deltaTime);
 			}  
 		}  
-	
-
-		/// <summary>
-		/// Can be left alone for the new day/night cycle stuff
-		/// </summary>
-		private void UpdateSkyboxBlendFactor (float blend = 0)
-		{  
-			switch (currentPhase) {
-
-			case DayPhase.Dawn: 
-				SkyboxBlendFactor = Mathf.Lerp (SkyboxBlendFactor, blend, Time.deltaTime); // 0
-				break;
-
-			case DayPhase.Day:
-				SkyboxBlendFactor = Mathf.Lerp (SkyboxBlendFactor, blend, Time.deltaTime); // 1
-				break;
-
-			case DayPhase.Dusk: 
-				SkyboxBlendFactor = Mathf.Lerp (SkyboxBlendFactor, blend, Time.deltaTime); // 0
-				break;
-
-			case DayPhase.Night: 
-				SkyboxBlendFactor = Mathf.Lerp (SkyboxBlendFactor, blend, Time.deltaTime); // 1
-				break;
-
-			default:
-				break;
-			
-
-			}
-
-			RenderSettings.skybox.SetFloat ("_Blend", SkyboxBlendFactor);
-		}
+//	
+//
+//		/// <summary>
+//		/// Can be left alone for the new day/night cycle stuff
+//		/// </summary>
+//		private void UpdateSkyboxBlendFactor (float blend = 0)
+//		{  
+//			switch (currentPhase) {
+//
+//			case DayPhase.Dawn: 
+//				SkyboxBlendFactor = Mathf.Lerp (SkyboxBlendFactor, blend, Time.deltaTime); // 0
+//				break;
+//
+//			case DayPhase.Day:
+//				SkyboxBlendFactor = Mathf.Lerp (SkyboxBlendFactor, blend, Time.deltaTime); // 1
+//				break;
+//
+//			case DayPhase.Dusk: 
+//				SkyboxBlendFactor = Mathf.Lerp (SkyboxBlendFactor, blend, Time.deltaTime); // 0
+//				break;
+//
+//			case DayPhase.Night: 
+//				SkyboxBlendFactor = Mathf.Lerp (SkyboxBlendFactor, blend, Time.deltaTime); // 1
+//				break;
+//
+//			default:
+//				break;
+//			}
+//
+//			RenderSettings.skybox.SetFloat ("_Blend", SkyboxBlendFactor);
+//		}
 	}
 }

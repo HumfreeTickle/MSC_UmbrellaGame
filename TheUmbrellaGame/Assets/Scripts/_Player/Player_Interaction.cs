@@ -7,6 +7,7 @@ namespace Player
 	{
 		private Tutuorial tutorial;
 		private GmaeManage gameManager;
+
 		void Start ()
 		{
 			gameManager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>();
@@ -23,7 +24,6 @@ namespace Player
 			if (col.gameObject.tag == "NPC_talk") {
 					tutorial.objectTag = col.gameObject.tag;
 
-				// I have a feeling this will be a problem with interactions
 			} else if (col.gameObject.tag == "NPC") {
 				tutorial.objectTag = "";
 			}

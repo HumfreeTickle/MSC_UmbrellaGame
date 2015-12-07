@@ -14,24 +14,24 @@ namespace Player
 
 		void Start ()
 		{
-			gameManager = GameObject.Find("Follow Camera").GetComponent<GmaeManage>();
+			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			rb = GetComponent<Rigidbody> ();
 		}
 	
 		void FixedUpdate ()
 		{
-			if (gameManager.GameState != GameState.Pause){
-				if(gameManager.GameState != GameState.Intro) {
-				SineWave ();
-				Vector3 force = Vector3.up * upwardsforce;
-				rb.AddForce (force);
+			if (gameManager.gameState != GameState.Pause) {
+				if (gameManager.gameState != GameState.Intro) {
+					Bobbing ();
+					Vector3 force = Vector3.up * upwardsforce;
+					rb.AddForce (force);
 				}
 			}
 		}
 
-		//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
+		//----------------------------- OTHER FUNCTIONS --------------------------------//
 
-		void SineWave ()
+		void Bobbing ()
 		{
 			if (Time.timeScale != 0) {
 				if (sine >= (Mathf.Sin (Mathf.PI / 2))) {

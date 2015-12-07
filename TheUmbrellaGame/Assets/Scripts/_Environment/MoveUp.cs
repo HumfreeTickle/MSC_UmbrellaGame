@@ -1,16 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
+//not sure what this is for
 public class MoveUp : MonoBehaviour {
 
 	public GameObject theDestination;
 	public float speed;
 	private Rigidbody rb;
 
-
-	// Use this for initialization
 	void Start () {
-	
 		rb = GetComponent<Rigidbody>();
 		rb.AddForce(transform.up * speed);
 	}
@@ -20,7 +19,6 @@ public class MoveUp : MonoBehaviour {
 
 		if (other.gameObject.tag == "StartTrigger"){
 			Debug.Log ("Should Start");
-
 		}
 	}
 }

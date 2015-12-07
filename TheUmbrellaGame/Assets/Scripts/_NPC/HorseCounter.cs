@@ -22,7 +22,7 @@ public class HorseCounter : MonoBehaviour
 
 	void Update ()
 	{
-		if (gameManager.MissionState == MissionController.HorsesMission) {
+		if (gameManager.missionState == MissionController.HorsesMission) {
 			if (numberOfHorseHome >= 2) {
 				GateClose.SetBool ("Close", true);
 				horseMission.horseReturned = true;
@@ -37,12 +37,15 @@ public class HorseCounter : MonoBehaviour
 	void OnTriggerEnter (Collider col)
 	{
 		if (col.gameObject.tag == "Interaction") {
-			print (col.name);
 			numberOfHorseHome += 1;
 			Instantiate (dropParticle, col.gameObject.transform.position, Quaternion.identity);
 
 			if (col.transform.FindChild ("Activate").GetComponent<Light> ()) {
 				col.transform.FindChild ("Activate").GetComponent<Light> ().enabled = false;
+			}
+
+			if(col.gameObject.GetComponent<Animator>()){
+				col.gameObject.GetComponent<Animator>().enabled = false;
 			}
 
 		}

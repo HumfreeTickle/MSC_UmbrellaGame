@@ -5,52 +5,65 @@ using UnityEngine.UI;
 
 public class HorseRescue : MonoBehaviour
 {
-
 	public Transform[] destinations = new Transform[4];
 	private GmaeManage gameManager;
-	private NavMeshAgent horse;
+	private NavMeshAgent horseNav;
 	public float timer;
-	private Animator anim;
-	private Transform Brolly;
+	private Animator horseAnim;
+	private Transform umbrellaTr;
 	public bool atdestination;
 	public float speed;
+	public float runHorse1;
+	public float runHorse2;
 	public float run;
 	public bool isMoving;
-
 	[SerializeField]
-	private AudioClip Neigh;
+<<<<<<< HEAD
+	private AudioClip
+		Neigh;
+=======
+	private AudioClip neighSFX;
+>>>>>>> origin/master
 	[SerializeField]
+	private AudioClip gallopSFX;
 
-	private AudioClip Gallop;
+<<<<<<< HEAD
+	private AudioClip
+		Gallop;
 	private AudioSource audio2;
+=======
+	private AudioSource gameObjectAudio;
+>>>>>>> origin/master
 	private bool play = true;
 	private Transform horse1Destinations;
 	private Transform horse2Destinations;
 	private float clipTimer;
-
 	public AudioClip Idle;
 	public AudioClip Running;
-
 	public AudioMixerSnapshot Stand;
 	public AudioMixerSnapshot Run;
+<<<<<<< HEAD
 
-
+	private string horseName;
+=======
+>>>>>>> origin/master
 	
-	//public Transform currentDestination;// where is the horse now
 	public Transform nextDestination;//where is the horse going next if moving forward
 	public Transform lastDestination;//where was the horse before
 
 	void Start ()
 	{
+	
 		gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
 		clipTimer = Time.time;
 		horse1Destinations = GameObject.Find ("Horse1Destinations").transform;
 		horse2Destinations = GameObject.Find ("Horse2Destinations").transform;
+
 		if (destinations.Length != 4) {
 			destinations = new Transform[4];
 		}
-		//currentDestination = destination0;//horse will start at 0
+
 		if (this.name == "Horse1") {
 			for (int child = 0; child < horse1Destinations.childCount; child++) {
 				destinations [child] = horse1Destinations.GetChild (child); 
@@ -62,128 +75,211 @@ public class HorseRescue : MonoBehaviour
 			}
 		}
 
-
-		horse = gameObject.GetComponent<NavMeshAgent> ();
-		horse.SetDestination (destinations [0].position);
+		horseNav = gameObject.GetComponent<NavMeshAgent> ();
+		horseNav.SetDestination (destinations [0].position);
 
 		timer = 500;
-		audio2 = GetComponent<AudioSource> ();
-		//Idle = audio2.clip;
+		gameObjectAudio = GetComponent<AudioSource> ();
 
-		anim = gameObject.GetComponent<Animator> ();
+		horseAnim = gameObject.GetComponent<Animator> ();
 		nextDestination = destinations [1];
-		Brolly = GameObject.Find ("main_Sphere").transform;
+		umbrellaTr = GameObject.Find ("main_Sphere").transform;
 
-		Stand.TransitionTo(0.5f);
+		horseName = this.name;
+
 	}
 
 	void Update ()
 	{
-		if (gameManager.MissionState == MissionController.HorsesMission) {
-			horse.tag = "Interaction";
-		} 
-		else {
-			horse.tag = "Untagged";
+<<<<<<< HEAD
+//		if (this.name == "Horse1") {
+//			if (runHorse1 >= 5) {
+//				Run.TransitionTo (0);
+//			} else if (runHorse1 < 5) {
+//				Stand.TransitionTo (0);
+//			}
+//		} else if (this.name == "Horse2") {
+//			if (runHorse2 >= 5) {
+//				Run.TransitionTo (0);
+//			} else if (runHorse2 < 5) {
+//				Stand.TransitionTo (0);
+//			}
+//		}
+
+
+		switch(horseName){
+			
+		case ("Horse1"):
+			if(run > 5 ){
+				audio2.volume = 1;
+			}else if(run<5){
+				audio2.volume = 0;
+			}
+			
+			break;
+			
+		case ("Horse2"):
+			if(run > 5 ){
+				audio2.volume = 1;
+			}else if(run<5){
+				audio2.volume = 0;
+				
+			}
+			runHorse2 --;
+			break;
+		default:
+			Debug.LogError("Couldn't find horse - " + this.gameObject);
+			break;
 		}
 
 
+		if (gameManager.MissionState == MissionController.HorsesMission) {
+			horse.tag = "Interaction";
+		} else {
+			horse.tag = "Untagged";
+=======
+		if (gameManager.missionState == MissionController.HorsesMission) {
+			horseNav.tag = "Interaction";
+		} 
+		else {
+			horseNav.tag = "Untagged";
+>>>>>>> origin/master
+		}
+
 		speed = Mathf.Clamp (speed, 0, Mathf.Infinity);
-		anim.SetFloat ("SPEED", speed);
+		horseAnim.SetFloat ("SPEED", speed);
 
 		run = Mathf.Clamp (run, 0, Mathf.Infinity);
-		anim.SetFloat ("SpeedRun", run);
+		horseAnim.SetFloat ("SpeedRun", run);
 
-		if (Vector3.Distance (horse.transform.position, destinations [0].position) <= 5f) {
+		if (Vector3.Distance (horseNav.transform.position, destinations [0].position) <= 5f) {
 			nextDestination = destinations [1];
 			speed--;
 			run--;
-			Stand.TransitionTo(0.1f);
+<<<<<<< HEAD
+
+
+			//Stand.TransitionTo(0.1f);
 //			audio2.PlayOneShot(Idle);
+=======
+			Stand.TransitionTo(0.1f);
+>>>>>>> origin/master
 		}
 
-		if (Vector3.Distance (horse.transform.position, destinations [1].position) <= 5f) {
+		if (Vector3.Distance (horseNav.transform.position, destinations [1].position) <= 5f) {
 			lastDestination = destinations [0];
 			nextDestination = destinations [2];
 			speed--;
 			run--;
 			timer--;
+<<<<<<< HEAD
+
 			//audio2.clip = Idle;
-			Stand.TransitionTo(0.1f);
+			//Stand.TransitionTo(0.1f);
 //			audio2.PlayOneShot(Idle);
+=======
+			Stand.TransitionTo(0.1f);
+>>>>>>> origin/master
 		}
 
-		if (Vector3.Distance (horse.transform.position, destinations [2].position) <= 5f) {
+		if (Vector3.Distance (horseNav.transform.position, destinations [2].position) <= 5f) {
 			lastDestination = destinations [1];
 			nextDestination = destinations [3];
 			speed--;
 			run--;
 			timer--;
-			Stand.TransitionTo(0.1f);
+<<<<<<< HEAD
+		
+
+			//Stand.TransitionTo(0.1f);
 			//audio2.clip = Idle;
 //			audio2.PlayOneShot(Idle);
 		}
 
 		if (Vector3.Distance (horse.transform.position, destinations [3].position) <= 5f) {
+			speed --;
+			run --;
+			timer = 500;
+		
+
+=======
+			Stand.TransitionTo(0.1f);
+		}
+
+		if (Vector3.Distance (horseNav.transform.position, destinations [3].position) <= 5f) {
 			speed = 0;
 			run = 0;
 			timer = 500;
 			Stand.TransitionTo(0.1f);
-			//audio2.clip = Idle;
-//			audio2.PlayOneShot(Idle);
+>>>>>>> origin/master
 		}
 
 
 		if (timer == 0) {
-			horse.SetDestination (lastDestination.position);
+			horseNav.SetDestination (lastDestination.position);
 			timer = 500;
 			speed = 0;
 			run = 80;
+<<<<<<< HEAD
 			horse.speed = 35;
-			Run.TransitionTo(0.1f);
+
 			if (play) {
 				Debug.Log ("Played");
-//				audio2.PlayOneShot (Neigh);
+=======
+			horseNav.speed = 35;
+			Run.TransitionTo(0.1f);
+			if (play) {
+>>>>>>> origin/master
 				play = false;
 			}
 
-			if (Vector3.Distance (horse.transform.position, lastDestination.position) <= 35f) {
+			if (Vector3.Distance (horseNav.transform.position, lastDestination.position) <= 35f) {
 				run = 0;
 				speed = 10;
+<<<<<<< HEAD
 				horse.speed = 10;
+
+=======
+				horseNav.speed = 10;
+>>>>>>> origin/master
 			}
 		}
 
-		if (Vector3.Distance (horse.transform.position, nextDestination.position) <= 35f) {
+		if (Vector3.Distance (horseNav.transform.position, nextDestination.position) <= 35f) {
 			run = 0;
 			speed = 10;
+<<<<<<< HEAD
 			horse.speed = 10;
-		}
 
-//		if ((Time.time - clipTimer) > 8f && Vector3.Distance (Brolly.position, this.transform.position) <= 20) {
-//			clipTimer = Time.time;
-//
-//			if (speed <= 0) {
-//				audio2.PlayOneShot (Neigh);
-//				Invoke ("", audio2.clip.length);
-//
-//			} else {
-//				audio2.PlayOneShot (Gallop);
-//			}
-//		}
+=======
+			horseNav.speed = 10;
+>>>>>>> origin/master
+		}
 	}
 
 	void OnTriggerStay (Collider col)
 	{
 		if (col.gameObject.tag == "Player") {
+<<<<<<< HEAD
+
 			if ((Input.GetButton (gameManager.controllerInteract)) & (Vector3.Distance (horse.transform.position, Brolly.position) <= 20f)) {
+=======
+			if ((Input.GetButton (gameManager.controllerInteract)) & (Vector3.Distance (horseNav.transform.position, umbrellaTr.position) <= 20f)) {
+>>>>>>> origin/master
 				timer = 500;
-				horse.SetDestination (nextDestination.position);
+				horseNav.SetDestination (nextDestination.position);
 				run = 80;
+<<<<<<< HEAD
 				horse.speed = 35;
+
+
+
+
+
+=======
+				horseNav.speed = 35;
 				Run.TransitionTo(0.1f);
-
-//				audio2.PlayOneShot(Running);
-
+>>>>>>> origin/master
 			}
 		}
 	}

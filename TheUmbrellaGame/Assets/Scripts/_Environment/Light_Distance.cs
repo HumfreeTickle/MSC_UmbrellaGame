@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Light_Distance : MonoBehaviour
 {
-
 	private Vector3 baseSize = new Vector3 (3, 3, 3);
 	private Vector3 maxSize;
 	private Transform umbrella;
@@ -28,13 +27,11 @@ public class Light_Distance : MonoBehaviour
 
 		float distanceFrom = Mathf.Round ((Vector3.Distance (transform.position, umbrella.position) / 100) * 100) / 100 - threshold;
 
-		
 		float emission = Mathf.Lerp (0, intensity, distanceFrom);
 
 		Color finalColor = mainColour * Mathf.LinearToGammaSpace (emission);
 		
 		mat.SetColor ("_EmissionColor", finalColor);
-
 
 
 		GetComponent<MeshRenderer> ().enabled = true;

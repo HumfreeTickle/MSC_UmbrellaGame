@@ -22,7 +22,7 @@ public class CatSave : MonoBehaviour
 		RaycastHit hit;
 		if (Physics.Raycast (transform.position, Vector3.down, out hit, Mathf.Infinity, cat.value)) {
 			//------------- DEBUGGING -----------------------------
-			Debug.DrawRay (transform.position, Vector3.down, Color.yellow, 10, false);
+//			Debug.DrawRay (transform.position, Vector3.down, Color.yellow, 10, false);
 			if (hit.collider.tag != "River") {
 
 				if (IsInvoking ("Reset")) {

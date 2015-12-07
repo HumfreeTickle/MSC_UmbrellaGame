@@ -9,8 +9,8 @@ namespace Enivironment
 		public float push;
 		private float savedPush;
 		private Animator umbrellaAnim;
-		private AudioClip whoosh;
-		private AudioSource audio2;
+		private AudioClip chimneySFX;
+		private AudioSource gameObjectAudio;
 
 		void Start ()
 		{
@@ -19,14 +19,8 @@ namespace Enivironment
 				umbrellaAnim = GameObject.Find ("Umbrella").GetComponent<Animator> ();
 			}
 
-			audio2 = GetComponent<AudioSource> ();
-			whoosh = audio2.clip;
-
-//			if (GetComponent<AudioSource> ()) {
-//				audio2 = GetComponent<AudioSource> ();
-//				whoosh = audio2.clip;
-//			}
-
+			gameObjectAudio = GetComponent<AudioSource> ();
+			chimneySFX = gameObjectAudio.clip;
 		}
 
 		void OnTriggerStay (Collider other)
@@ -47,8 +41,7 @@ namespace Enivironment
 		void OnTriggerEnter (Collider other)
 		{
 			if (other.gameObject.tag == "Player") {
-				audio2.PlayOneShot (whoosh);
-				Debug.Log ("Whoosh");
+				gameObjectAudio.PlayOneShot (chimneySFX);
 			}
 		}
 
@@ -56,7 +49,6 @@ namespace Enivironment
 		{
 			if (other.gameObject.tag == "Player") {
 				umbrellaAnim.SetBool ("Hit", false);
-
 				push = savedPush;
 				
 			}

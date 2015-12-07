@@ -2,34 +2,31 @@
 using System.Collections;
 using CameraScripts;
 
+/// <summary>
+/// Coroutine for moving camera during the mission events
+/// </summary>
 public class _MoveCamera : MonoBehaviour
 {
+	//---------------------------//
 	private GmaeManage gameManager;
 	private Controller cmaera;
 	private GameObject cmaeraSet;
 	private GameObject umbrella;
-
 	private Talk talkCoroutine;
-	private bool startCoroutineCamera = false;
-
+	//--------------------------//
 	/// <summary>
 	/// Sets a value indicating whether this <see cref="Talk"/> start coroutine.
 	/// **The getter is only for testing**
 	/// </summary>
 	/// <value><c>true</c> if start coroutine; otherwise, <c>false</c>.</value>
-	public bool StartCoroutineCamera {
-		get {
-			return startCoroutineCamera;
-		}
-		private set{ startCoroutineCamera = value;}
-	}
+	public bool startCoroutineCamera{ get; set; }// = false;
 
 	void Start ()
 	{
 		gameManager = GetComponent<GmaeManage> ();
 		cmaera = GetComponent<Controller> ();
 		umbrella = GameObject.Find ("main_Sphere");
-		talkCoroutine = GameObject.Find("NPC_TalkBox").GetComponent<Talk>();
+		talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
 	}
 
 	/// <summary>
@@ -47,15 +44,15 @@ public class _MoveCamera : MonoBehaviour
 
 		startCoroutineCamera = true;
 
-		if (gameManager.GameState != GameState.MissionEvent) {
-			gameManager.GameState = GameState.MissionEvent;
+		if (gameManager.gameState != GameState.MissionEvent) {
+			gameManager.gameState = GameState.MissionEvent;
 		}
 
 		yield return null;
 
 		cmaeraSet = lookAT; // assigns the cameraSet ot lookAT
 		cmaera.lookAt = cmaeraSet; // changes the camera's focus
-		cmaera.MoveYerself = false; // stops part of the camera controller script from happening so the camera doesn't move it's own position
+		cmaera.move = false; // stops part of the camera controller script from happening so the camera doesn't move it's own position
 
 
 		if (moveTo != null) {// is there a location to move to 
@@ -80,11 +77,11 @@ public class _MoveCamera : MonoBehaviour
 			}
 		}
 
-		cmaera.MoveYerself = true; // stops part of the camera controller script from happening so the camera doesn't move it's own position
+		cmaera.move = true; // stops part of the camera controller script from happening so the camera doesn't move it's own position
 
-		if (!talkCoroutine.StartCoroutineTalk) {
-			if (gameManager.GameState == GameState.MissionEvent) {
-				gameManager.GameState = GameState.Game; // default play state
+		if (!talkCoroutine.startCoroutineTalk) {
+			if (gameManager.gameState == GameState.MissionEvent) {
+				gameManager.gameState = GameState.Game; // default play state
 			}
 		}
 
@@ -100,7 +97,4 @@ public class _MoveCamera : MonoBehaviour
 		
 		yield break;
 	}
-
-
-	// needs an overload so I can just use a list to access different camera positions and focuses
 }

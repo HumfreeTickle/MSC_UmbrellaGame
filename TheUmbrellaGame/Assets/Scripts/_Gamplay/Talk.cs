@@ -4,9 +4,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
+/// <summary>
+/// Coroutine to display the mission event dialogue
+/// </summary>
 public class Talk : MonoBehaviour
 {
 	private GmaeManage gameManager;
+	private _MoveCamera cameraMove;
 
 	//--------------------------//
 	private string npc_Message;
@@ -24,21 +28,12 @@ public class Talk : MonoBehaviour
 	private Vector4 colourFadeIN;
 	private Vector4 colourFadeOUT;
 	//--------------------------//
-
-	private bool startCoroutine = false;
 	/// <summary>
 	/// Sets a value indicating whether this <see cref="Talk"/> start coroutine.
 	/// **The getter is only for testing**
 	/// </summary>
 	/// <value><c>true</c> if start coroutine; otherwise, <c>false</c>.</value>
-	public bool StartCoroutineTalk {
-		get {
-			return startCoroutine;
-		}
-		private set{ startCoroutine = value;}
-	}
-
-	private _MoveCamera cameraMove;
+	public bool startCoroutineTalk{get; set;}
 
 	void Start ()
 	{
@@ -46,13 +41,13 @@ public class Talk : MonoBehaviour
 		npc_Talking = GameObject.Find ("NPC_Talking").GetComponent<Text> ();
 		npc_TalkBox = GetComponent<Image> ();
 
-		if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+		if (gameManager.controllerType == ControllerType.ConsoleContoller) {
 			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
 			Talk_Click = this.transform.GetChild (0).GetComponent<Animator> ();
 			}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
 				Talk_Click = this.transform.GetChild (1).GetComponent<Animator> ();
 			}
-		}else if(gameManager.ControllerType == ControllerType.Keyboard) {
+		}else if(gameManager.controllerType == ControllerType.Keyboard) {
 			Talk_Click = this.transform.GetChild (2).GetComponent<Animator> ();
 		}
 
@@ -81,16 +76,16 @@ public class Talk : MonoBehaviour
 	public IEnumerator Talking (string[] whatToSay, System.Action finishedCallBack = null)
 	{
 		// Doesn't allow for multiple calls.
-		if (startCoroutine) {
+		if (startCoroutineTalk) {
 			Debug.LogError ("Already Talking");
 			yield break;
 		}
 
-		i = 0;// resets i
-		StartCoroutineTalk = true;
+		i = 0; //resets i
+		startCoroutineTalk = true;
 
-		if (gameManager.GameState != GameState.MissionEvent) {
-			gameManager.GameState = GameState.MissionEvent;
+		if (gameManager.gameState != GameState.MissionEvent) {
+			gameManager.gameState = GameState.MissionEvent;
 		}
 
 		// 
@@ -127,9 +122,9 @@ public class Talk : MonoBehaviour
 		Talk_Click.SetBool ("proceed", false);
 
 		//------------------------------------//
-		if (!cameraMove.StartCoroutineCamera) {
-			if (gameManager.GameState == GameState.MissionEvent) {
-				gameManager.GameState = GameState.Game; // default play state
+		if (!cameraMove.startCoroutineCamera) {
+			if (gameManager.gameState == GameState.MissionEvent) {
+				gameManager.gameState = GameState.Game; // default play state
 			}
 		}
 
@@ -139,7 +134,7 @@ public class Talk : MonoBehaviour
 			// useful to allow the coroutine to be generic
 		}
 
-		startCoroutine = false; // stops coroutine
+		startCoroutineTalk = false; // stops coroutine
 		yield break;
 	}
 }

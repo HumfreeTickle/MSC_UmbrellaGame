@@ -7,29 +7,18 @@ namespace CameraScripts
 	{
 		private GmaeManage GameManager;
 		private GameState gameState;
+
 		private Camera camrea;
+		private GameObject cameraSet;
+
 		private float newCameraFOV;
 
 		//----------------- UmbrellaStuff ---------------//
-		public GameObject lookAt;
-		private Transform lookAtTr;
-
-		/// <summary>
-		/// The transform of what ever you want the camera to be pointed at
-		/// </summary>
-		/// <value>The look at transform.</value>
-		public Transform lookAtTransform {
-			get {
-				return lookAtTr;
-			}
-
-			set {
-				lookAtTr = value;
-			}
-		}
+		public GameObject lookAt{get; set;}
+		public Transform lookAtTr{get;set;}
+		private Rigidbody lookAtRb;
 
 		public float threshold;
-		private Rigidbody lookAtRb;
 		//-----------------------------------------------//
 
 		public float speed;
@@ -49,54 +38,40 @@ namespace CameraScripts
 		// How much we want to damp the movement
 		public float heightDamping = 2.0f;
 		public float rotationDamping = 3.0f;
+
+		//--------- See through objct -----------//
 		public Material transparent;
 		public Material backupMaterial;
 		private Tutuorial tutorialObject;
-		public bool moveYerself = true;
-
-		public bool MoveYerself {
-			get {
-				return moveYerself;
-			}
-
-			set {
-				moveYerself = value;
-			}
-		}
+		public bool move {get;set;}
 
 		private float overSteer = 0f;
 		public float maxOverSteer = 10;
-		private float lastHorizontalInput;
-
-		public float LastHorizontalInput {
-			set {
-				lastHorizontalInput = value;
-			}
-		}
-
-		private GameObject cameraSet;
+		public float lastHorizontalInput{private get; set;}
 
 		void Start ()
 		{
 			GameManager = GetComponent<GmaeManage> ();
-			gameState = GameManager.GameState;
+			gameState = GameManager.gameState;
 			camrea = GetComponent<Camera> ();
 
 			lookAt = GameObject.Find ("main_Sphere");
 			lookAtTr = lookAt.transform;
 			lookAtRb = lookAt.GetComponent<Rigidbody> ();
+			move = true;
 			height = 3f;
 			distance = 2.5f;
 		}
 		
 		void Update ()
 		{
-			gameState = GameManager.GameState;
+			gameState = GameManager.gameState;
 			RayCastView ();
 
 
 			if (gameState == GameState.Pause) {
-				if (GameManager.ControllerType != ControllerType.Keyboard) {
+				if (GameManager.controllerType != ControllerType.Keyboard) {
+					// Allows the player to move camera when in puase mode
 					RotateYaw ();
 					RotatePitch ();
 				}
@@ -193,7 +168,7 @@ namespace CameraScripts
 					currentHeight = Mathf.Lerp (currentHeight, wantedHeight, Time.fixedDeltaTime);
 
 					// Set the height of the camera
-					if (moveYerself) {
+					if (move) {
 						transform.position = new Vector3 (transform.position.x, currentHeight, transform.position.z);
 					}
 
@@ -203,11 +178,11 @@ namespace CameraScripts
 					transform.rotation = Quaternion.Slerp (transform.rotation, rotation, Time.deltaTime * (speed / 10));
 				}
 			}
-				//-------------------------------------------- Camera Changes on Death -------------------------------------------------------//
+		//-------------------------------------- Camera Changes on Death ------------------------------------------------//
 				
 				else if (gameState == GameState.GameOver) {
 
-				if (GameManager.gameOver_Timer > 2) {
+				if (GameManager._gameOverTimer > 2) {
 					transform.position = transform.position + new Vector3 (xAway, yAway, zAway);
 					transform.LookAt (lookAtTr);
 				} else {
@@ -217,7 +192,7 @@ namespace CameraScripts
 			}
 		}
 		
-		//-------------------------------------------- Right Analouge Stick Stuff -------------------------------------------------------//
+		//----------------------------------- Right Analouge Stick Stuff ------------------------------------------------//
 		
 		void RotateYaw ()
 		{
@@ -236,12 +211,10 @@ namespace CameraScripts
 		}
 		
 		
-		//-------------------------------------------- Stops Blocked View -------------------------------------------------------//
+		//------------------------------------------- Stops Blocked View -----------------------------------------------//
 
 		/// <summary>
 		/// When the camera goes behind an object this replaces the material with a transparent version
-		/// Doesn't really work. Especially since alot of stuff is broken up into tiny pieces
-		/// :(
 		/// </summary>
 		void RayCastView ()
 		{
@@ -277,6 +250,9 @@ namespace CameraScripts
 								whatAmIHitting = hit.collider.gameObject;
 								backupMaterial = whatAmIHitting.GetComponent<MeshRenderer> ().sharedMaterial;
 								whatAmIHitting.GetComponent<MeshRenderer> ().sharedMaterial = transparent;
+
+								// was supposed to also make the children of the gameobject transparent
+								// but never set the materials back properly
 //								if (whatAmIHitting.gameObject.transform.childCount > 0) {
 //
 //									for (int i = 0; i < whatAmIHitting.gameObject.transform.childCount; i++) {
@@ -294,7 +270,7 @@ namespace CameraScripts
 					} else if (hit.collider.tag == "Player") {
 						// ----- Checks to see if its empty ----//
 						if (whatAmIHitting != null) {
-							//--- returns object to original state -----
+						//--- returns object to original state ---//
 							whatAmIHitting.GetComponent<MeshRenderer> ().material = backupMaterial;
 							if (whatAmIHitting.gameObject.transform.childCount > 0) {
 								for (int i = 0; i < whatAmIHitting.gameObject.transform.childCount; i++) {

@@ -7,7 +7,6 @@ public class destroyParticle : MonoBehaviour {
 	public float time = 3;
 	
 //------------------------------ Destroys particles -----------------------------------
-
 	void Update () {
 		destroy.DestroyOnTimer(this.gameObject, time);
 	}

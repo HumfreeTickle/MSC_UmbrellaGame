@@ -17,23 +17,31 @@ using UnityEditor;
 /// </summary>
 public enum GameState // sets what game state is currently being viewed
 {
+	/// <summary>
+	/// Default state
+	/// </summary>
 	NullState,
+
 	/// <summary>
 	/// The beginning state of each scene. Player cannont move. 
 	/// </summary>
 	Intro,
+
 	/// <summary>
 	/// Time = 0. Screen is overlayed with pause image. Camera can be freely moved about
 	/// </summary>
 	Pause,
+
 	/// <summary>
 	/// The player cannot move and the camera can change look at target
 	/// </summary>
 	MissionEvent,
+
 	/// <summary>
 	/// Main state of the game. Allows for full controller over the umbrella
 	/// </summary>
 	Game,
+
 	/// <summary>
 	/// Game Over :(
 	/// </summary>
@@ -50,6 +58,9 @@ public enum ControllerType
 	ConsoleContoller
 }
 
+/// <summary>
+/// Console controller type.
+/// </summary>
 public enum ConsoleControllerType
 {
 	PS3,
@@ -69,6 +80,10 @@ public enum MissionController
 	Default
 }
 
+/// <summary>
+/// Umbrella type.
+/// Based on whether the player skipped the opening scene or not
+/// </summary>
 public enum UmbrellaType
 {
 	Umbrella,
@@ -77,38 +92,36 @@ public enum UmbrellaType
 
 public class GmaeManage : MonoBehaviour
 {
-	
-
-//------------------------------------------- Inherited Classes ------------------------------------//
-
+	//------------- Inherited Classes ---------------------//
 	public FadeScript fading = new FadeScript ();
-//--------------------------------------------------------------------------------------------------//
+	//-----------------------------------------------------//
 
+	private GameObject cameraController;
 
-	private GameObject cameraController; // 
-
-	//--- Audio Stuff ---
+	//--- Audio Stuff ---//
 	private AudioClip harpIntroClip;
 	private AudioSource harpIntroSource;
-//	public AudioMixerSnapshot start;
 	private AudioClip mainThemeMusic;
 	public AudioMixerSnapshot PausedSnapShot;
 	public AudioMixerSnapshot InGameSnapShot;
 	public AudioMixerSnapshot EnvironmentPausedSnapshot;
 	public AudioMixerSnapshot EnvironmentInGameSnapshot;
 
-	//-- Canvas Stuff ---
+	//-- Canvas Stuff --//
 	private Image PauseScreen; // pause screen image
 	private Image WhiteScreen;
 	private Image umbrellaGame;
 	private Image startButton;
 
-	//-- The rest :) --
+	//-- Umbrella Stuff--//
 	private GameObject umbrella;
 	private Rigidbody umbrellaRb;
+
+	//-- Timers --//
 	public float autoPauseTimer; // idle timer till game auto pauses
 	public float transitionSpeed; // speed of transitions
-	public float _gameOverTimer; // 
+	public float _gameOverTimer{ get; private set; }
+
 	private Image StartPlay;
 
 	//---------------- Progression ------------------//
@@ -125,16 +138,17 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	private int currentProgress = 1;
-	private Vector3 startingPos;
 	//-----------------------------------------------//
+
+	//-- Colour changing --//
 	public List<Material> allTheColoursOfTheUmbrella;
-//	public List<Transform> canopyColours;
 	public Transform canopyColour;
 	private Material umbrellaColour;
-	public float thresholdVector;
-	//Start script Stuff
-	private bool nextLevel; // has the transtion to Level-1 been activated
-	public bool timeStart;
+	//---------------------//
+	public float _progresssionThreshold;
+
+	//--Start script Stuff--//
+	private bool _startScreen;
 
 	public string controllerTypeVertical_L{ get; private set; }
 
@@ -149,72 +163,33 @@ public class GmaeManage : MonoBehaviour
 	public string controllerTalk{ get; private set; }
 
 	public string controllerStart{ get; private set; }
-
-	//-----------------------
+	//-----------------------//
 
 	private NPC_Interaction npc_Interact;
+
+	//-- Text stuff--//
+	private Text npc_Talking;
 	private float _oldHeight;
 	private float _oldWidth;
-	public float ratio = 30;
-	private Text npc_Talking;
-	//Missions
-	public float textSpeed;
+	public float fontRatio = 30;
 
-	public float TextSpeed {
-		get {
-			return textSpeed;
-		}
-	}
-
-
-//------------------------------------ Getters and Setters -----------------------------------------------------------//
-
-	//Needs to be renamed to gameOverTimer
-	public float gameOver_Timer { //timer used elsewhere to end the game
-		get {
-			return _gameOverTimer;
-		}
-	}
-
+	public float textSpeed{ get; private set; }
+	
 	//------------------------------------------ State Checks ------------------------------------------//
-	public GameState gameState;
-
-	public GameState GameState {
-		get {
-			return gameState;
-		}
-		set {
-			gameState = value;
-		}
-	}
+	public GameState gameState{ get; set; }
 
 	private GameState currentState = GameState.Intro;
-	private ControllerType controllerType;
 
-	public ControllerType ControllerType {
-		get {
-			return controllerType;
-		}
-		set {
-			controllerType = value;
-		}
-	}
+	public ControllerType controllerType{ get; set; }
 
 	private ControllerType currentController = ControllerType.NullState;
-	private MissionController missionState;
 
-	public MissionController MissionState {
-		get {
-			return missionState;
-		}
-		set {
-			missionState = value;
-		}
-	}
+	public MissionController missionState{ get; set; }
+
+	private MissionController currentMission = MissionController.Default;
 
 	public ConsoleControllerType consoleControllerType{ get; private set; }
 
-	private MissionController currentMission = MissionController.Default;
 	private UmbrellaType umbrellaType = UmbrellaType.Umbrella;
 
 	//--------------------------------------------------------------------------------------------------//
@@ -222,13 +197,20 @@ public class GmaeManage : MonoBehaviour
 
 	//------Presentation Stuff-------//
 	private string umbrellaObject;
+
+	//--- Progression Feedback ---//
 	private bool playParticles = true;
 	private GameObject particales;
 	public List<GameObject> particles;
-	private AudioSource rain;
 	private AudioSource progressionSFX;
 	private AudioClip progressionClip;
 	private bool playSFX;
+
+	//---  ---//
+	private AudioSource mainAudioSource;
+
+
+	//--- Controller selection stuff ---//
 	private Image[] controllers = new Image[2];
 	private int isquared = 0;
 	private bool choose;
@@ -237,6 +219,7 @@ public class GmaeManage : MonoBehaviour
 	public AudioClip controllerSelectHarp;
 	private bool playControllerSelect;
 	private float playedTime;
+
 //-------------------------------------- The Setup ----------------------------------------------------------------//
 
 	void Awake ()
@@ -252,7 +235,7 @@ public class GmaeManage : MonoBehaviour
 		//-------------------- For the different controllers ---------------------------------
 
 		if (Input.GetJoystickNames ().Length > 0) {// checks to see if a controller is connected
-			ControllerType = ControllerType.ConsoleContoller;
+			controllerType = ControllerType.ConsoleContoller;
 			controllerTypeVertical_L = "Vertical_L";
 			controllerTypeHorizontal_L = "Horizontal_L";
 			controllerTypeVertical_R = "Vertical_R";
@@ -279,14 +262,17 @@ public class GmaeManage : MonoBehaviour
 			}
 
 		} else if (Input.GetJoystickNames ().Length <= 0) {
-			ControllerType = ControllerType.Keyboard;
+			controllerType = ControllerType.Keyboard;
 			controllerTypeVertical_L = "Vertical";
 			controllerTypeHorizontal_L = "Horizontal";
 			controllerTypeVertical_R = "Vertical_R_Keyboard";
+			controllerStart = "Submit_1";
+			controllerTalk = "Talk_1";
+			controllerInteract = "Interact_1";
 
 		} else {
-			ControllerType = ControllerType.NullState;
-			Debug.Log ("Disconnected");
+			controllerType = ControllerType.NullState;
+			Debug.LogError ("Disconnected");
 		}
 
 		//-------------------- For the different Scenes ---------------------------------
@@ -298,11 +284,9 @@ public class GmaeManage : MonoBehaviour
 			controllers [1].color = new Color (1, 1, 1, 0.3f);
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
 
-		}
+		} else if (Application.loadedLevelName == "Start_Screen") { //Start screen
 
-		if (Application.loadedLevelName == "Start_Screen") { //Start screen
-
-			GameState = GameState.Intro; 
+			gameState = GameState.Intro; 
 			startButton = GameObject.Find ("Start Button").GetComponent<Image> ();
 			umbrellaGame = GameObject.Find ("Umbrella Logo").GetComponent<Image> ();
 			WhiteScreen = GameObject.Find ("WhiteScreen").GetComponent<Image> ();
@@ -310,9 +294,8 @@ public class GmaeManage : MonoBehaviour
 			harpIntroClip = harpIntroSource.clip;
 			harpIntroSource.pitch = -0.6f;
 
-
-			rain = GetComponent<AudioSource> ();
-			rain.volume = 0f;
+			mainAudioSource = GetComponent<AudioSource> ();
+			mainAudioSource.volume = 0f;
 
 			umbrellaObject = umbrellaType.ToString ();
 			umbrella = GameObject.Find (umbrellaObject);
@@ -323,12 +306,6 @@ public class GmaeManage : MonoBehaviour
 			}
 
 		} else if (Application.loadedLevelName == "Boucing") { //Main screen
-//			if (PlayerPrefs.HasKey ("controller")) {
-//				consoleControllerType = (ConsoleControllerType)System.Enum.Parse (typeof(ConsoleControllerType), PlayerPrefs.GetString ("controller"));
-//			} else {
-//				consoleControllerType = ConsoleControllerType.XBox;
-//			}
-
 			if (consoleControllerType == ConsoleControllerType.PS3) {
 				GameObject.Find ("Tutorial_XBox").SetActive (false);
 				GameObject.Find ("Tutorial_PS3").SetActive (true);
@@ -338,7 +315,7 @@ public class GmaeManage : MonoBehaviour
 			}
 
 			Terrain.activeTerrain.detailObjectDensity = 0;
-			GameState = GameState.Intro; 
+			gameState = GameState.Intro; 
 			if (PauseScreen == null) {
 				PauseScreen = GameObject.Find ("Pause Screen").GetComponent<Image> ();
 			}
@@ -365,12 +342,8 @@ public class GmaeManage : MonoBehaviour
 			if (PlayerPrefs.HasKey ("Mission")) {
 				missionState = (MissionController)System.Enum.Parse (typeof(MissionController), PlayerPrefs.GetString ("Mission"));
 			}
-//			else{
-//				missionState = MissionController.Default;
-//			}
 
 			StartPlay = GameObject.Find ("PressStart").GetComponent<Image> ();
-
 			progressionSFX = GameObject.Find ("main_Sphere").GetComponent<AudioSource> ();
 			progressionClip = progressionSFX.clip;
 
@@ -394,7 +367,7 @@ public class GmaeManage : MonoBehaviour
 		}
 	}
 
-//-------------------------------------- All the calls -----------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------------//
 
 	void Update ()
 	{
@@ -402,31 +375,26 @@ public class GmaeManage : MonoBehaviour
 		if (Input.GetKey ("escape")) {
 			Application.Quit ();
 		}
+		//-----------------------------------------------//
 
 		if (Application.loadedLevelName == "Controller Select") {
-
 			ControllerUpdate ();
-		}
 
-		if (Application.loadedLevelName == "Start_Screen") {
+		} else if (Application.loadedLevelName == "Start_Screen") {
 			StartGame ();
-		}
 
-		if (Application.loadedLevelName == "Boucing") {
-
-//			if (Input.GetButtonDown ("Undefined")) {
-//				progression += 1;
-//			}
+		} else if (Application.loadedLevelName == "Boucing") {
 
 			if (_oldWidth != Screen.width || _oldHeight != Screen.height) {
 				_oldWidth = Screen.width;
 				_oldHeight = Screen.height;
-				npc_Talking.fontSize = Mathf.Clamp (Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / ratio), 15, 20);
+				npc_Talking.fontSize = Mathf.Clamp (Mathf.RoundToInt (Mathf.Min (Screen.width, Screen.height) / fontRatio), 15, 20);
 			}
 
 			if (progression > currentProgress) {
 				Progress ();
 				playParticles = true;
+
 				if (!playSFX) {
 					progressionSFX.PlayOneShot (progressionClip);
 					playSFX = true;
@@ -434,15 +402,15 @@ public class GmaeManage : MonoBehaviour
 
 			}
 
-			if (GameState == GameState.Intro) {
+			if (gameState == GameState.Intro) {
 				StartGame ();
 				Terrain.activeTerrain.detailObjectDensity = Mathf.Lerp (Terrain.activeTerrain.detailObjectDensity, 1, Time.deltaTime);// what is this ???
-				MissionState = MissionController.Default;
+				missionState = MissionController.Default;
 
-			} else if (GameState != GameState.Intro) {
+			} else if (gameState != GameState.Intro) {
 				RestartGame ();
 
-				if (GameState != GameState.GameOver) {//so the player can't pause when they die
+				if (gameState != GameState.GameOver) {//so the player can't pause when they die
 					PauseGame ();
 				}
 				EndGame ();
@@ -451,7 +419,7 @@ public class GmaeManage : MonoBehaviour
 		}
 	}
 
-//-------------------------------------- Start Game is elsewhere for some reason -----------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------------------//
 	
 	void StartGame ()
 	{
@@ -463,13 +431,13 @@ public class GmaeManage : MonoBehaviour
 						return;
 					}
 				
-					timeStart = true;
+					_startScreen = true;
 					startButton.GetComponent<Animator> ().enabled = false;
 
 				}
 			}
 			
-			if (timeStart) {
+			if (_startScreen) {
 				harpIntroSource.pitch = 0.6f;
 
 				fading.FadeOUT (startButton, 3);
@@ -477,52 +445,51 @@ public class GmaeManage : MonoBehaviour
 				Invoke ("FlyUmbrellaFly", 0.5f);
 
 				harpIntroSource.volume = Mathf.Lerp (harpIntroSource.volume, 0, Time.deltaTime / 5);
-				rain.volume = Mathf.Lerp (rain.volume, 0, Time.deltaTime / 5);
+				mainAudioSource.volume = Mathf.Lerp (mainAudioSource.volume, 0, Time.deltaTime / 5);
 
 				if (harpIntroSource.volume < 0.2f) {
 					fading.FadeIN (WhiteScreen, 1.5f);
-					Invoke ("whichLevel", harpIntroClip.length / 2);
+					Invoke ("delayedLevelChange", harpIntroClip.length / 2);
 				}
 			} else {
 				harpIntroSource.volume = Mathf.Lerp (harpIntroSource.volume, 0.5f, Time.deltaTime / 5);
-				rain.volume = Mathf.Lerp (rain.volume, 0.4f, Time.deltaTime / 5);
+				mainAudioSource.volume = Mathf.Lerp (mainAudioSource.volume, 0.4f, Time.deltaTime / 5);
 			}
 
-		} else if (Application.loadedLevelName == "Boucing") { //Main game screen
-			Physics.gravity = new Vector3 (0, -18.36f, 0);
+		} else if (Application.loadedLevelName == "Boucing") {
+			Physics.gravity = new Vector3 (0, -18.36f, 0); //resets the gravity
 			WhiteScreenTransisitions ();
 		}
 	}
 
-//-------------------------------------- Resets the game -----------------------------------------------------------------
+//-------------------------------------- Resets the game -----------------------------------------------------------------//
 	
 	void RestartGame ()
 	{
 		if (Input.GetKeyDown (KeyCode.R)) {
-			GameState = GameState.GameOver;
+			gameState = GameState.GameOver;
 			PlayerPrefs.DeleteAll ();
-			print ("Reset");
 		} else if (umbrella.transform.position.y <= -200f) {
 			PlayerPrefs.SetInt ("PlayerProgression", progression);
 			PlayerPrefs.SetString ("Mission", currentMission.ToString ());
-			GameState = GameState.GameOver;
-			print ("Too Low");
+			gameState = GameState.GameOver;
 		}
 	}
 
-//-------------------------------------- Pauses the game -----------------------------------------------------------------
+//-------------------------------------- Pauses the game -----------------------------------------------------------------//
 	
 	void PauseGame ()
 	{
 		if (Input.GetButtonDown (controllerStart)) {
 
-			if (GameState == GameState.Game) {
-				GameState = GameState.Pause;
+			//------------ Game/Pause switch ------------//
+			if (gameState == GameState.Game) {
+				gameState = GameState.Pause;
 				PausedSnapShot.TransitionTo (0.1f);
 				EnvironmentPausedSnapshot.TransitionTo (0.1f);
 
-			} else if (GameState == GameState.Pause) {
-				GameState = GameState.Game;
+			} else if (gameState == GameState.Pause) {
+				gameState = GameState.Game;
 				autoPauseTimer = 0;
 				NotPaused ();
 				InGameSnapShot.TransitionTo (0.1f);
@@ -530,17 +497,17 @@ public class GmaeManage : MonoBehaviour
 			}
 		}
 
-		if (GameState == GameState.Pause) {
+		if (gameState == GameState.Pause) {
 			Paused ();
-		} else if (GameState != GameState.Pause) {
+		} else if (gameState != GameState.Pause) {
 			NotPaused ();
 		}
 
-		if (GameState == GameState.Game) {
-			FixedPause ();	
+		if (gameState == GameState.Game) {
+			AutoPause ();	
 		}
 	}
-	//------------------------------------- Pause State Calls ------------------------------------------------------------
+	//------------------------------------- Pause State Calls ------------------------------------------------------------//
 	
 	void Paused ()
 	{
@@ -552,6 +519,7 @@ public class GmaeManage : MonoBehaviour
 		GameObject.Find ("Achievements_Box").GetComponent<Image> ().enabled = false;
 		GameObject.Find ("Achievemts_text").GetComponent<Text> ().enabled = false;
 
+		//----------- Defunct background music changes --------------//
 		//		if (backgroundMusic.transform.childCount > 0) {
 		//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
 		//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = -1;
@@ -573,10 +541,7 @@ public class GmaeManage : MonoBehaviour
 		GameObject.Find ("Achievements_Box").GetComponent<Image> ().enabled = true;
 		GameObject.Find ("Achievemts_text").GetComponent<Text> ().enabled = true;
 
-
-
-		//might need to add something in here for the buttons as well
-
+		//----------- Defunct background music changes --------------//
 		//		if (backgroundMusic.transform.childCount > 0) {
 		//			for (int i =0; i < backgroundMusic.transform.childCount; i++) {
 		//				backgroundMusic.transform.GetChild(i).GetComponent<AudioSource>().pitch = 1;
@@ -587,7 +552,7 @@ public class GmaeManage : MonoBehaviour
 		//		backgroundMusic.pitch = 1;
 	}
 	
-	void FixedPause ()
+	void AutoPause ()
 	{
 		if (umbrellaRb.velocity.magnitude <= 2) {
 			{
@@ -595,7 +560,7 @@ public class GmaeManage : MonoBehaviour
 			}
 			
 			if (autoPauseTimer >= 45) {
-				GameState = GameState.Pause;
+				gameState = GameState.Pause;
 			}
 			
 		} else if (umbrellaRb.velocity.magnitude > 2) {
@@ -604,11 +569,11 @@ public class GmaeManage : MonoBehaviour
 	}
 
 	
-//-------------------------------------- Ending the game is here (sort of) -----------------------------------------------------------------
+//-----------------------------------------------------------------------------------------//
 	
 	void EndGame ()
 	{
-		if (GameState == GameState.GameOver) {
+		if (gameState == GameState.GameOver) {
 
 			_gameOverTimer += Time.deltaTime;
 			PauseScreen.enabled = false;
@@ -616,27 +581,32 @@ public class GmaeManage : MonoBehaviour
 		}
 	}
 
-//-------------------------------------- State Checking ---------------------------------------------------------------------------
+//-------------------------------------- State Checking -----------------------------------------------------------------//
 	void CheckStates ()
 	{
-		if (ControllerType != currentController) {
-			Debug.Log (ControllerType + ": " + consoleControllerType);
+		if (controllerType != currentController) {
+			if (Input.GetJoystickNames ().Length > 0) {
+				Debug.Log (controllerType + ": " + consoleControllerType);
+			} else {
+				Debug.Log (controllerType);
+
+			}
 		}
 		
-		if (GameState != currentState) {
-			Debug.Log (GameState);
+		if (gameState != currentState) {
+			Debug.Log (gameState);
 		}
 
-		if (MissionState != currentMission) {
-			Debug.Log (MissionState);
+		if (missionState != currentMission) {
+			Debug.Log (missionState);
 		}
 		
-		currentState = GameState;
-		currentController = ControllerType;
-		currentMission = MissionState;
+		currentState = gameState;
+		currentController = controllerType;
+		currentMission = missionState;
 	}
 	
-//----------------------------------------------- Other Funcitons ------------------------------------------
+	//----------------------------------------------- Other Funcitons ------------------------------------------//
 
 	void FlyUmbrellaFly ()
 	{
@@ -644,7 +614,7 @@ public class GmaeManage : MonoBehaviour
 	}
 	
 
-	//-------------------------------------- White Screen Stuff -----------------------------------------------------------------
+	//-------------------------------------- White Screen Transition -----------------------------------------------//
 	void WhiteScreenTransisitions ()
 	{
 		if (Application.loadedLevelName == "Controller Select") {
@@ -656,10 +626,10 @@ public class GmaeManage : MonoBehaviour
 		}
 
 
-		if (GameState == GameState.Intro) {
+		if (gameState == GameState.Intro) {
 			fading.FadeOUT (WhiteScreen, 3);
 			
-		} else if (GameState == GameState.GameOver) {
+		} else if (gameState == GameState.GameOver) {
 			if (_gameOverTimer > 2) {
 				fading.FadeIN (WhiteScreen, 1);
 
@@ -678,10 +648,14 @@ public class GmaeManage : MonoBehaviour
 		}
 	}
 
-	void whichLevel ()
+	//-------------------------------------- Delayed Main Level Change -----------------------------------------------//
+	void delayedLevelChange ()
 	{
 		Application.LoadLevel ("Boucing"); //Changes to the next scene
 	}
+
+
+	//-------------------------------------- Game Progression Funcitons -----------------------------------------------//
 
 	void Progress ()
 	{
@@ -690,7 +664,7 @@ public class GmaeManage : MonoBehaviour
 			particales = particles [progression - 2];
 			ChangeColours (canopyColour);
 		} else {
-			GameState = GameState.GameOver;
+			gameState = GameState.GameOver;
 		}
 	}
 
@@ -709,7 +683,8 @@ public class GmaeManage : MonoBehaviour
 							Instantiate (particales, umbrella.transform.position + new Vector3 (0, 1f, 0), Quaternion.Euler (new Vector3 (270, 0, 0)));
 							playParticles = false;
 						}
-						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= thresholdVector) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
+
+						if (Vector4.Distance (umbrellaChild.material.color, umbrellaColour.color) <= _progresssionThreshold) { // || umbrellaChild.material.color.g >= umbrellaColour.color.g - 0.001f || umbrellaChild.material.color.b >= umbrellaColour.color.b - 0.001f) {
 							currentProgress = progression;
 							playSFX = false;
 						}
@@ -719,6 +694,7 @@ public class GmaeManage : MonoBehaviour
 		}
 	}
 
+	//-------------------------------------- Controller -----------------------------------------------//
 	void ControllerUpdate ()
 	{
 		if (Mathf.Abs (Input.GetAxisRaw ("Horizontal_L")) > 0.1f) {
@@ -787,11 +763,13 @@ public class GmaeManage : MonoBehaviour
 			}
 		}
 	}
-
+	
 	void OnApplicationQuit ()
 	{
 		PlayerPrefs.DeleteKey ("controller");
 	}
+
+	//---------------------------------------------------------------------------------------------------------//
 
 }//End of Class
 

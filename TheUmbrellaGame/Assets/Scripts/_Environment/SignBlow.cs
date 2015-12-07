@@ -4,33 +4,28 @@ using UnityEngine.Audio;
 
 public class SignBlow : MonoBehaviour
 {
-
 	private Animator anim;
 	private float timer;
 	private bool swinging;
-	private Rigidbody brolly;
-	private AudioClip Creaky;
-	private AudioSource audio2;
+	private Rigidbody umbrellaRb;
+	private AudioClip swingingSFX;
+	private AudioSource gameObjectAudio;
 
-
-
-	// Use this for initialization
 	void Start ()
 	{
 		anim = gameObject.GetComponent<Animator> ();
 
 		timer = 100;
-		audio2 = GetComponent<AudioSource> ();
+		gameObjectAudio = GetComponent<AudioSource> ();
 
 		timer = 10;
 		if (GameObject.Find ("main_Sphere")) {
-			brolly = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
+			umbrellaRb = GameObject.Find ("main_Sphere").GetComponent<Rigidbody> ();
 		}
-		audio2 = GetComponent<AudioSource> ();
-		Creaky = audio2.clip;
+		gameObjectAudio = GetComponent<AudioSource> ();
+		swingingSFX = gameObjectAudio.clip;
 	}
 	
-	// Update is called once per frame
 	void Update ()
 	{
 		if (timer <= 0) {
@@ -43,23 +38,22 @@ public class SignBlow : MonoBehaviour
 		if (swinging) {
 			timer--;
 		}
-
 	}
 
 	void OnTriggerEnter (Collider col)
 	{
 		if ((col.gameObject.tag == "Player")) {
 		
-			if (brolly.velocity.x > 1) {
+			if (umbrellaRb.velocity.x > 1) {
 				anim.SetBool ("Swing", true);
 				swinging = true;
-				audio2.PlayOneShot (Creaky);
+				gameObjectAudio.PlayOneShot (swingingSFX);
 			}
 				
-			if (brolly.velocity.x < -1) {
+			if (umbrellaRb.velocity.x < -1) {
 				anim.SetBool ("SwingBack", true);
 				swinging = true;
-				audio2.PlayOneShot (Creaky);
+				gameObjectAudio.PlayOneShot (swingingSFX);
 			}
 	
 		}

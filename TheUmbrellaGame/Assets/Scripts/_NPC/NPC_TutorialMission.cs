@@ -82,7 +82,7 @@ namespace NPC
 			}
 			overHereLight = npc_Tutorial.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;//where ever the light is on the NPC_Talk characters. 
 			npc_Interact = npc_Tutorial.GetComponent<NPC_Interaction> (); // 
-			npc_Interact.MissionDelegate = StartTutorialMission; // changes the delegate so talking activates that mission.
+			npc_Interact.missionDelegate = StartTutorialMission; // changes the delegate so talking activates that mission.
 
 			talkCoroutine = GameObject.Find ("NPC_TalkBox").GetComponent<Talk> ();
 
@@ -100,7 +100,8 @@ namespace NPC
 			npc_Animator.SetBool ("PLay", jumpAround_Tut);
 			overHereLight.SetActive (jumpAround_Tut);
 
-			if (gameManager.MissionState == MissionController.TutorialMission || gameManager.MissionState == MissionController.Default) {
+			if (gameManager.missionState == MissionController.TutorialMission 
+			    || gameManager.missionState == MissionController.Default) {
 				if (tutorialMission) {
 					npc_Tutorial.tag = "NPC"; // sets the NPC to the blank npc tag so the player can no longer talk to him
 					TutorialMission ();
@@ -109,7 +110,7 @@ namespace NPC
 				jumpAround_Tut = false;
 				npc_Tutorial.tag = "NPC";
 				tutorialMission = false;
-				npc_Interact.MissionDelegate = null;
+				npc_Interact.missionDelegate = null;
 			}
 		}
 
@@ -128,7 +129,7 @@ namespace NPC
 			case 0:
 
 				//prevents multiple calls
-				if (talkCoroutine.StartCoroutineTalk) {
+				if (talkCoroutine.startCoroutineTalk) {
 					break;
 				}
 
@@ -151,7 +152,7 @@ namespace NPC
 
 			case 2:
 
-				if (talkCoroutine.StartCoroutineTalk) {
+				if (talkCoroutine.startCoroutineTalk) {
 					break;
 				}
 				System.Action dialogue2 = () => {
@@ -164,7 +165,7 @@ namespace NPC
 				break;
 
 			case 3:
-				if (talkCoroutine.StartCoroutineTalk) {
+				if (talkCoroutine.startCoroutineTalk) {
 					break;
 				}
 
@@ -181,7 +182,7 @@ namespace NPC
 				break;
 
 			case 4:
-				gameManager.MissionState = MissionController.CatMission;
+				gameManager.missionState = MissionController.CatMission;
 				tutorialMission = false;
 				break;
 
@@ -193,7 +194,7 @@ namespace NPC
 
 		void CameraMove ()
 		{
-			if (!cmaeraMove.StartCoroutineCamera) {
+			if (!cmaeraMove.startCoroutineCamera) {
 				System.Action endCoroutine = () => {
 					moveCmarea = false;};
 				

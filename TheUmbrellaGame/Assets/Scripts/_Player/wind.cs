@@ -23,19 +23,16 @@ namespace Player
 				gameTutorial = GameObject.Find ("Tutorial_PS3").GetComponent<Tutuorial> ();
 			} else if (gameManager.consoleControllerType == ConsoleControllerType.XBox) {
 				gameTutorial = GameObject.Find ("Tutorial_XBox").GetComponent<Tutuorial> ();
-
 			}
-
 		}
 
 		void Update ()
 		{
 			transform.LookAt (GameObject.Find ("main_Sphere").transform);
 			destroyObject.DestroyOnTimer (this.gameObject, 3f);
-
 		}
 
-		//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
+		//----------------------------- OTHER FUNCTIONS ----------------------------------------//
 
 		void OnParticleCollision (GameObject umbrella)
 		{
@@ -55,10 +52,11 @@ namespace Player
 		{
 			goGoAnimation = true;
 			umbrellaModel.SetBool ("Hit", true);
+
 			if (gameState == GameState.Intro) {
 				umbrellaModel.SetBool ("GameStart", true);
-				GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ().MissionState = MissionController.TutorialMission;
-				GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ().GameState = GameState.Game;
+				gameManager.missionState = MissionController.TutorialMission;
+				gameManager.gameState = GameState.Game;
 			}
 
 			yield return new WaitForSeconds (0.5f);

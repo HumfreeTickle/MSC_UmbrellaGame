@@ -3,7 +3,12 @@ using System.Collections;
 
 namespace NPC
 {
-//-------------------------------------- Behaviour AI stuff that needs to be redone and moved else where -----------------------------
+/// <summary>
+/// AI tests one during the alpha stage
+	/// Didn't really work well in the final game
+/// </summary>
+
+//-------------------------------------------------------------------//
 
 	public class _test : MonoBehaviour
 	{
