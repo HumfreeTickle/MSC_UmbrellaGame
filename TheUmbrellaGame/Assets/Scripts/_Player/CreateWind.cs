@@ -17,7 +17,6 @@ namespace Player.PhysicsStuff
 		private GameObject instatiatedWind;
 		private Vector3 spawnDistance;
 		//-----------------------------------//
-		private float progression;
 		public float maxTerrainDistance = 1.0f;
 
 		//-----------------------------------//
@@ -27,19 +26,6 @@ namespace Player.PhysicsStuff
 		private Animator tutorialAnim;
 		private float verticalInput;
 		//-----------------------------------//
-		public bool barriers = true;
-
-		/// <summary>
-		/// Turns on/off the barriers surrounding the first island
-		/// </summary>
-		/// <value><c>true</c> if barriers; otherwise, <c>false</c>.</value>
-		public bool Barriers {
-			set {
-				barriers = value;
-			}
-		}
-
-		public float bounceBack;
 		private RaycastHit hit;
 
 		public RaycastHit RaycastingInfo {
@@ -62,33 +48,26 @@ namespace Player.PhysicsStuff
 		void Start ()
 		{
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
-			gameState = gameManager.GameState;
+			gameState = gameManager.gameState;
 			rb = gameObject.GetComponent<Rigidbody> ();
-			if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+			if (gameManager.controllerType == ControllerType.ConsoleContoller) {
 
-				if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+				if (gameManager.consoleControllerType == ConsoleControllerType.PS3) {
 					tutorialAnim = GameObject.Find ("Tutorial_PS3").GetComponent<Animator> ();
-				}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
+				} else if (gameManager.consoleControllerType == ConsoleControllerType.XBox) {
 					tutorialAnim = GameObject.Find ("Tutorial_XBox").GetComponent<Animator> ();
 				}
-			} else if (gameManager.ControllerType == ControllerType.Keyboard) {
+			} else if (gameManager.controllerType == ControllerType.Keyboard) {
 				tutorialAnim = GameObject.Find ("Down_tutorial").GetComponent<Animator> ();
 			}
 		}
 
 		void Update ()
 		{
-			progression = gameManager.Progression;
-
-			if (progression > 1) {
-				barriers = false;
-			}
-
-			bounceBack = Mathf.Clamp (bounceBack, 0, Mathf.Infinity);
-			gameState = gameManager.GameState;
+			gameState = gameManager.gameState;
 
 			if (gameState != GameState.Pause || gameState != GameState.GameOver || gameState != GameState.MissionEvent) {
-				if (gameManager.ControllerType == ControllerType.ConsoleContoller) {
+				if (gameManager.controllerType == ControllerType.ConsoleContoller) {
 					if (Input.GetAxis (gameManager.controllerTypeVertical_R) >= 0.1f) {
 						verticalInput = Input.GetAxis (gameManager.controllerTypeVertical_R);
 						Rising ();
@@ -98,8 +77,8 @@ namespace Player.PhysicsStuff
 							}
 						}
 					}
-				} else if (gameManager.ControllerType == ControllerType.Keyboard) {
-					if (Input.GetButton (gameManager.controllerTypeVertical_R) && Input.GetAxisRaw(gameManager.controllerTypeVertical_R) > 0.1f) {
+				} else if (gameManager.controllerType == ControllerType.Keyboard) {
+					if (Input.GetButton (gameManager.controllerTypeVertical_R) && Input.GetAxisRaw (gameManager.controllerTypeVertical_R) > 0.1f) {
 						verticalInput = 1;
 
 						Rising ();
@@ -113,7 +92,7 @@ namespace Player.PhysicsStuff
 
 
 
-//---------------------------- RAYCASTING STUFF -----------------------------------------------------------------------
+       //---------------------------- RAYCASTING STUFF ------------------------------------//
 
 				Vector3 downRayDown = (Vector3.down * 100);
 				LayerMask clouds = 5;
@@ -172,15 +151,18 @@ namespace Player.PhysicsStuff
 
 					tutorialAnim.SetBool ("Fall", false);
 
-					if (barriers) {
-						rb.AddForce ((-bounceBack) * rb.velocity);
-					}
+
+					// Used to keep the player on the first island
+					// Testing made us realise this wasn't very fun
+//					if (barriers) {
+//						rb.AddForce ((-bounceBack) * rb.velocity);
+//					}
 				}
 			}
 		}
 
 
-//----------------------------- OTHER FUNCTIONS ------------------------------------------------------------------------
+//----------------------------- OTHER FUNCTIONS -------------------------------------------//
 
 		void Rising ()
 		{

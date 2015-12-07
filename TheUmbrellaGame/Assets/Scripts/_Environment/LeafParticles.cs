@@ -9,33 +9,28 @@ namespace Environment
 	public class LeafParticles : MonoBehaviour
 	{
 		private ParticleSystem leafParticle;
-		private AudioSource leafSound;
+		private AudioSource gameObjectAudio;
 		public GameObject leafParticleSystem;
 		private GameObject particleChild;
 		private GameObject treeTrunk;
-
-		void OnValidate ()
-		{
-
-		}
 
 		void Start ()
 		{
 			if (this.gameObject.transform.childCount > 0) {
 				leafParticle = this.gameObject.transform.GetChild (0).GetComponent<ParticleSystem> ();	
-				leafSound = this.gameObject.transform.GetChild (0).GetComponent<AudioSource> ();
+				gameObjectAudio = this.gameObject.transform.GetChild (0).GetComponent<AudioSource> ();
 			} else {
 				leafParticle = null;
-				leafSound = null;
+				gameObjectAudio = null;
 			}
 		}
 	
 		void OnTriggerEnter (Collider col)
 		{
 			if (col.gameObject.tag == "Player") {
-				if (leafParticle != null || leafSound != null) {
+				if (leafParticle != null || gameObjectAudio != null) {
 					leafParticle.Play ();
-					leafSound.PlayOneShot (leafSound.clip);
+					gameObjectAudio.PlayOneShot (gameObjectAudio.clip);
 				}
 			}
 		}
@@ -43,8 +38,7 @@ namespace Environment
 		void OnTriggerExit (Collider col)
 		{
 			if (col.gameObject.tag == "Player") {
-				if (leafParticle != null || leafSound != null) {
-
+				if (leafParticle != null || gameObjectAudio != null) {
 					leafParticle.Stop ();
 				}
 			}

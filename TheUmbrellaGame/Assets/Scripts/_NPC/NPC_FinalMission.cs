@@ -116,7 +116,7 @@ namespace NPC
 
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 
-			if (gameManager.GameState != GameState.NullState) {
+			if (gameManager.gameState != GameState.NullState) {
 				bridge_npc = GameObject.Find ("NPC_Bridge");
 				priest = GameObject.Find ("Priest");
 				lightHouseKeeper = GameObject.Find ("NPC_LightHouseKeeper");
@@ -153,7 +153,7 @@ namespace NPC
 				umbrella = GameObject.Find ("main_Sphere");
 
 				npc_Interact = bridge_npc.GetComponent<NPC_Interaction> ();
-				npc_Interact.MissionDelegate = StartFinalMission;
+				npc_Interact.missionDelegate = StartFinalMission;
 
 				npc_Animator = bridge_npc.GetComponent<Animator> ();
 
@@ -168,13 +168,13 @@ namespace NPC
 		
 		void Update ()
 		{
-			if (gameManager.MissionState == MissionController.FinalMission) {
+			if (gameManager.missionState == MissionController.FinalMission) {
 
 				bridge_npc.GetComponent<NavMeshMovement> ().FinalMission = true;
 				if (currentPerson != null) {
 					overHereLight = currentPerson.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;
 					npc_Interact = currentPerson.GetComponent<NPC_Interaction> ();
-					npc_Interact.MissionDelegate = StartFinalMission;
+					npc_Interact.missionDelegate = StartFinalMission;
 
 					overHereLight.SetActive (jumpAround_Final);
 					if (currentPerson.GetComponent<Animator> ()) {
@@ -253,7 +253,7 @@ namespace NPC
 			case 0:
 				
 				//prevents multiple calls
-				if (talkCoroutine.StartCoroutineTalk) {
+				if (talkCoroutine.startCoroutineTalk) {
 					break;
 				}
 				
@@ -293,7 +293,7 @@ namespace NPC
 				
 			case 2:
 				
-				if (talkCoroutine.StartCoroutineTalk)
+				if (talkCoroutine.startCoroutineTalk)
 					break;
 				System.Action dialogue2 = () => {
 					final_X = 3;};
@@ -312,7 +312,7 @@ namespace NPC
 				break;
 
 			case 4:
-				if (talkCoroutine.StartCoroutineTalk) {
+				if (talkCoroutine.startCoroutineTalk) {
 					break;
 				} else {
 					moveCmarea = true;
@@ -344,7 +344,7 @@ namespace NPC
 				break;
 
 			case 6:
-				if (talkCoroutine.StartCoroutineTalk)
+				if (talkCoroutine.startCoroutineTalk)
 					break;
 				System.Action dialogue4 = () => {
 					final_X = 7;
@@ -358,7 +358,7 @@ namespace NPC
 				break;
 
 			case 7:
-				if (talkCoroutine.StartCoroutineTalk) {
+				if (talkCoroutine.startCoroutineTalk) {
 					break;
 				} else {
 					lookAt = lookAtObjects [2];
@@ -383,7 +383,7 @@ namespace NPC
 				break;
 
 			case 9:
-				if (talkCoroutine.StartCoroutineTalk) {
+				if (talkCoroutine.startCoroutineTalk) {
 					break;
 				} else {
 					moveCmarea = true;
@@ -411,7 +411,7 @@ namespace NPC
 				break;
 
 			case 10:
-				if (talkCoroutine.StartCoroutineTalk)
+				if (talkCoroutine.startCoroutineTalk)
 					break;
 				System.Action lightup = () => {
 					final_X = 11;
@@ -448,7 +448,7 @@ namespace NPC
 			case 12:
 				overHereLight.SetActive (false);
 
-				if (talkCoroutine.StartCoroutineTalk)
+				if (talkCoroutine.startCoroutineTalk)
 					break;
 				System.Action dialogue6 = () => {
 					final_X = 13;
@@ -475,7 +475,7 @@ namespace NPC
 
 		void CameraMove (GameObject lookAt, Transform moveTo = null)
 		{
-			if (!cmaeraMove.StartCoroutineCamera) {
+			if (!cmaeraMove.startCoroutineCamera) {
 				System.Action endCoroutine = () => {
 					cmaera.GetComponent<Controller> ().lookAt = umbrella; // changes the camera's focus
 

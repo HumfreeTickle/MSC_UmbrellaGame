@@ -7,18 +7,26 @@ using UnityEngine.Audio;
 
 public class Credits : MonoBehaviour
 {
+	private GmaeManage gameManager;
+	private GameObject creditScroll;
+	//-----------------------------------------------------//
+	private Text creditsText;
+	private Image titleCard;
+	private string startButton;
+	//-----------------------------------------------------//
+	private GameObject cmaera;
+	private Vector3 startingPos;
 	private Transform cameraMarkers;
 	private Transform[] cameraPoints;
-	private int i = 0;
-	private int j = 0;
-	private bool startCoroutine;
-	private GameObject cmaera;
-	public float scrollSpeed;
-	private GameObject creditScroll;
-	private Text creditsText;
-	private Vector3 startingPos;
 	private List<string> creditList = new List<string> ();
+	//-----------------------------------------------------//
+	private int i = 0; //for cameraMarkers
+	private int j = 0; //for creditList
+	private bool startCoroutine;
+	public float scrollSpeed;
+	//-----------------------------------------------------//
 	private AudioSource rain;
+	//-----------------------------------------------------//
 	private string creditsList1 = 
 		"Animator \t Stephen Larkin  \n" +
 		"Animator \t Peter Cantwell  \n" +
@@ -77,10 +85,8 @@ public class Credits : MonoBehaviour
 		"Voice Actor - Molly the Brolly \t Dame Judy Dench \n";
 	private string creditsList6 = 
 		"Created by \t Stephen Larkin & Peter Cantwell \n";
-	private Image TitleCard;
+	//-----------------------------------------------------//
 
-	private string StartButton;
-	private GmaeManage gameManager;
 	void Start ()
 	{
 		cmaera = GameObject.Find ("Follow Camera");
@@ -105,16 +111,16 @@ public class Credits : MonoBehaviour
 		creditList.Add (creditsList5);
 		creditList.Add (creditsList6);
 
-		TitleCard = GameObject.Find ("Title Card").GetComponent<Image> ();
+		titleCard = GameObject.Find ("Title Card").GetComponent<Image> ();
 
-		if(gameManager.ControllerType == ControllerType.ConsoleContoller){
+		if(gameManager.controllerType == ControllerType.ConsoleContoller){
 			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
-				StartButton = "Submit_1";
+				startButton = "Submit_1";
 			}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
-				StartButton = "Submit_2";
+				startButton = "Submit_2";
 			}
 		}else{
-			StartButton = "Submit_1";
+			startButton = "Submit_1";
 		}
 	}
 	
@@ -122,16 +128,15 @@ public class Credits : MonoBehaviour
 	{	
 		StartCoroutine (creditsScroll ());
 
-		if(Input.GetButtonDown(StartButton)){
+		if(Input.GetButtonDown(startButton)){
 			Application.LoadLevel ("Start_Screen");
 		}
 		
-
 		if (i < cameraMarkers.childCount) {
 			cmaera.transform.position = cameraPoints [i].position;
 			cmaera.transform.rotation = cameraPoints [i].rotation;
 		} else {
-			if (Vector4.Distance (TitleCard.color, new Vector4 (1, 1, 1, 1)) <= 0.1f) {
+			if (Vector4.Distance (titleCard.color, new Vector4 (1, 1, 1, 1)) <= 0.1f) {
 				if (rain.clip.length - rain.time < 5f) {
 					rain.volume = Mathf.Lerp (rain.volume, 0, Time.deltaTime);
 				}
@@ -148,7 +153,6 @@ public class Credits : MonoBehaviour
 		if (startCoroutine) {
 			yield break;
 		}
-
 
 		startCoroutine = true;
 
@@ -173,8 +177,8 @@ public class Credits : MonoBehaviour
 			yield return null;
 		}
 
-		while (Vector4.Distance(TitleCard.color, new Vector4(1,1,1,1)) > 0.1f) {
-			TitleCard.color = Color.Lerp (TitleCard.color, Color.white, Time.deltaTime / 5);
+		while (Vector4.Distance(titleCard.color, new Vector4(1,1,1,1)) > 0.1f) {
+			titleCard.color = Color.Lerp (titleCard.color, Color.white, Time.deltaTime / 5);
 			yield return new WaitForEndOfFrame ();
 		}
 

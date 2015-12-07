@@ -10,7 +10,7 @@ public class LightOnRotate : MonoBehaviour {
 	void Update () {
 
 		if(lightHerUp){
-			transform.GetChild(0).gameObject.SetActive (true);// = true;
+			transform.GetChild(0).gameObject.SetActive (true);
 			transform.Rotate(0, 15* Time.deltaTime, 0);
 			GetComponent<MeshRenderer>().material = lighting;
 

@@ -81,7 +81,7 @@ namespace NPC
 	
 		void Update ()
 		{
-			if (gameManager.MissionState == MissionController.CatMission) {
+			if (gameManager.missionState == MissionController.CatMission) {
 				npc_Animator.SetBool ("Play", jumpAround_Cat);
 				overHereLight.SetActive(jumpAround_Cat);
 
@@ -90,11 +90,11 @@ namespace NPC
 					CatMission ();
 				} 
 			} 
-			else if(gameManager.MissionState == MissionController.BoxesMission) {
+			else if(gameManager.missionState == MissionController.BoxesMission) {
 				jumpAround_Cat = false;
 				NPC_dropoff.tag = "NPC";
 				catMission = false;
-				npc_Interact.MissionDelegate = null;
+				npc_Interact.missionDelegate = null;
 			}
 		}
 
@@ -121,14 +121,14 @@ namespace NPC
 			case 0:
 				catMission = false;
 				catDropOff.enabled = true;
-				npc_Interact.MissionDelegate = StartCatMission;
+				npc_Interact.missionDelegate = StartCatMission;
 				cat_Activate.enabled = true;
 				break;
 				
 			case 1:
 
 
-				if (talkCoroutine.StartCoroutineTalk)
+				if (talkCoroutine.startCoroutineTalk)
 					break;
 				System.Action catDialogue2 = () => {
 					cat_X = 2;};
@@ -143,7 +143,7 @@ namespace NPC
 				
 				
 			case 2:
-				gameManager.MissionState = MissionController.BoxesMission;
+				gameManager.missionState = MissionController.BoxesMission;
 				jumpAround_Cat = false; 
 				catMission = false;
 				break;

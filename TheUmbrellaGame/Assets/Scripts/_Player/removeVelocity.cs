@@ -14,7 +14,7 @@ namespace Player
 			rb = GetComponent<Rigidbody> ();
 		}
 
-//----------------------------------------- Allows the Umbrella to come to a gentle stop ------------------------------------------
+//----------------------------------------- Allows the Umbrella to come to a gentle stop ------------------------------------------//
 
 		void FixedUpdate ()
 		{

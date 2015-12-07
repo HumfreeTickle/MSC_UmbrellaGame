@@ -44,8 +44,8 @@ namespace Environment
 			npc_TutorialMission = GameObject.Find ("Missions").GetComponent<NPC_TutorialMission> ();
 			caughtPiece = transform.parent.transform.FindChild ("Pickup_pole").gameObject;
 
-			activeLight = transform.FindChild ("Activate").GetComponent<Light> (); //finds the light attahed to the caughtpiece
-			windParticles = activeLight.gameObject.transform.GetChild (0).gameObject; // not sure what this is used for
+			activeLight = GameObject.Find("Pickup_pole").transform.FindChild ("Activate").GetComponent<Light> (); //finds the light attahed to the caughtpiece
+			windParticles = transform.FindChild("Windmill Particle System").gameObject; // not sure what this is used for
 
 			handle = GameObject.Find ("handle").transform;
 
@@ -65,7 +65,7 @@ namespace Environment
 					CameraMove ();
 				}
 			}
-			if (gameManager.MissionState == MissionController.TutorialMission) {
+			if (gameManager.missionState == MissionController.TutorialMission) {
 				if (caughtPiece.transform.parent == handle.transform) {
 					activeLight.enabled = false;
 					lightsOn = false;
@@ -124,10 +124,10 @@ namespace Environment
 
 		void CameraMove ()
 		{
-			if (!cmaeraMove.StartCoroutineCamera) {
+			if (!cmaeraMove.startCoroutineCamera) {
 				System.Action endCoroutine = () => {
-					if (gameManager.GameState == GameState.MissionEvent) {
-						gameManager.GameState = GameState.Game;
+					if (gameManager.gameState == GameState.MissionEvent) {
+						gameManager.gameState = GameState.Game;
 					}
 					moveCmarea = false;};
 				

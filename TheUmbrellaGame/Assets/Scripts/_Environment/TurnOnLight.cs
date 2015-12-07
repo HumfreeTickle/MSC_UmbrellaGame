@@ -19,9 +19,9 @@ namespace Environment
 
 		void Update ()
 		{
-			currentMission = gameManager.MissionState;
+			currentMission = gameManager.missionState;
 
-			if (currentMission == MissionController.FinalMission /*|| sun.intensity < 0.5f*/) {
+			if (currentMission == MissionController.FinalMission) {
 				GetComponent<Light> ().enabled = true;
 
 			} else {

@@ -5,8 +5,7 @@ namespace Environment
 {
 	public class CloudBehave : MonoBehaviour
 	{
-
-		private Rigidbody cloud;
+		private Rigidbody cloudRb;
 		public float speedOfCloud;
 		public GameObject newCloud;
 
@@ -16,14 +15,14 @@ namespace Environment
 
 		void Start ()
 		{	
-			cloud = GetComponent<Rigidbody> ();
+			cloudRb = GetComponent<Rigidbody> ();
 		}
 
 //----------------------------------- Calls and movement stuff -------------------------------------------------------------//
 
 		void FixedUpdate ()
 		{
-			cloud.AddForce (Vector3.right * -1 * Time.fixedDeltaTime * speedOfCloud);
+			cloudRb.AddForce (Vector3.right * -1 * Time.fixedDeltaTime * speedOfCloud);
 			createSomeClouds ();
 			ignoreOthers ();
 		}

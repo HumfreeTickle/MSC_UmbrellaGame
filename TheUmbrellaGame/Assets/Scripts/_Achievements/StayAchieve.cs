@@ -4,7 +4,7 @@ using System.Collections;
 public class StayAchieve : MonoBehaviour
 {
 	private Achievements achieves;
-	public float _timer;
+	private float _timer;
 	public string achievementName;
 	private AudioClip environmentSFX;
 	private AudioSource audio2;
@@ -13,6 +13,7 @@ public class StayAchieve : MonoBehaviour
 	void Start ()
 	{
 		achieves = GameObject.Find ("Follow Camera").GetComponent<Achievements> ();
+
 		if (GetComponent<AudioSource> ()) {
 			audio2 = GetComponent<AudioSource> ();
 			environmentSFX = audio2.clip;
@@ -34,8 +35,9 @@ public class StayAchieve : MonoBehaviour
 				_timer += Time.deltaTime;
 
 				if (_timer > 2) {
-					if (!achieves.CoroutineInMotion) {
+					if (!achieves.coroutineInMotion) {
 						if (achieves.achievements.Contains (achievementName)) {
+
 							//Starts the message coroutine in Achievements script
 							StartCoroutine (achieves.Notification (achieves.achievements [achieves.achievements.IndexOf (achievementName)]));
 						}

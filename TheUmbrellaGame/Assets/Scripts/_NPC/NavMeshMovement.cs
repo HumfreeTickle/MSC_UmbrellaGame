@@ -46,7 +46,7 @@ public class NavMeshMovement : MonoBehaviour
 				}
 			} else {
 				agent.SetDestination (finalDestination.position);
-				if (Vector3.Distance (agent.transform.position, finalDestination.position) <= 4f) {
+				if (Vector3.Distance (agent.transform.position, finalDestination.position) <= 10f) {
 					agent.Stop ();
 				}
 			}

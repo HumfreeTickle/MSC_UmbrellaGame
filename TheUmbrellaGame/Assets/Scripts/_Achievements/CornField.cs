@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// I think this is useless
+/// Moved to StayAchieve
+/// </summary>
 public class CornField : MonoBehaviour
 {
 
@@ -17,7 +21,7 @@ public class CornField : MonoBehaviour
 	{
 		_timer += Time.deltaTime;
 		if (_timer > 2) {
-			if (!achieves.CoroutineInMotion) {
+			if (!achieves.coroutineInMotion) {
 				if (achieves.achievements.Contains ("Oh so corny")) {
 					StartCoroutine (achieves.Notification (achieves.achievements [4]));
 				}

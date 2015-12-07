@@ -2,13 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-//----------------------------------//
-//	Needs to be a coroutine rather 
-// 	Than a whole load of invokes
-//----------------------------------//
-
-
-
 namespace NPC
 {
 	public class NPC_Interaction : MonoBehaviour
@@ -21,14 +14,7 @@ namespace NPC
 		private AudioSource npcAudioSource;
 
 		public delegate void MissionDelegation ();
-
-		private MissionDelegation misssionDelegate;
-	
-		public MissionDelegation MissionDelegate {
-			set {
-				misssionDelegate = value;
-			}
-		}
+		public MissionDelegation missionDelegate{private get; set;}
 
 		private GmaeManage gameManager;
 		private NPC_Class npc_class = new NPC_Class ();
@@ -51,7 +37,6 @@ namespace NPC
 			}
 			if (col.gameObject.tag == "NPC") {
 				StartCoroutine (npc_class.Talk (talktime, npcAudioSource, c_AudioClip, e_AudioClip, g_AudioClip, b_AudioClip));
-				// stop whatever they're doing
 			}
 		}
 
@@ -63,8 +48,8 @@ namespace NPC
 				}
 				if (talking) {
 					if (this.gameObject.tag == "NPC_talk") {
-						if (misssionDelegate != null) {
-							misssionDelegate ();
+						if (missionDelegate != null) {
+							missionDelegate ();
 							talking = false;
 						}
 					}

@@ -6,62 +6,35 @@ using UnityEngine.Audio;
 
 public class Achievements : MonoBehaviour
 {
-
 	//-------------------------------//
-
 	private Image achievementNotification;
 	private Color startColourText;
 	private Color fullColourText;
 	private Color startColourBG;
 	private Color fullColourBG;
+
+	//-------------------------------//
 	private Text achievementText;
 	private AudioSource jingle;
 	
 	//-------------------------------//
-
 	public List<string> achievements;
-
-	private bool coroutineInMotion;
-
-	public bool CoroutineInMotion {
-		get {
-			return coroutineInMotion;
-		}
-
-		set {
-			coroutineInMotion = value;
-		}
-	}
+	public bool coroutineInMotion{get;set;}
 
 	//-------------------------------//
-
-//
-//	void OnValidate ()
-//	{
-//		if (achievements.Count < 9) {
-//			achievements.Add ("Splish. Splash.");
-//			achievements.Add ("Assassin's Jump");
-//			achievements.Add ("Relaxing Bench");
-//			achievements.Add ("Bach to basics");
-//			achievements.Add ("Oh so corny");
-//			achievements.Add ("Somewhere over the river");
-//			achievements.Add ("Let there be light");
-//			achievements.Add ("Like a prayer");
-//			achievements.Add ("Ring the bell");
-//		}
-//
-//	}
 
 	void Start ()
 	{	
 		achievementNotification = GameObject.Find ("Achievements_Box").GetComponent<Image> ();
 		achievementText = GameObject.Find ("Achievemts_text").GetComponent<Text> ();
+
 		startColourBG = achievementNotification.color;
 		fullColourBG = new Vector4 (startColourBG.r, startColourBG.g, startColourBG.b, 1);
-
 		startColourText = achievementText.color;
 		fullColourText = new Vector4 (startColourText.r, startColourText.g, startColourText.b, 1);
 	}
+
+
 	/// <summary>
 	/// Desplays the specified notificationText.
 	/// </summary>
