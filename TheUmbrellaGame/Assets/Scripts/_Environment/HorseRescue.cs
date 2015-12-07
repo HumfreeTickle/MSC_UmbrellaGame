@@ -19,6 +19,7 @@ public class HorseRescue : MonoBehaviour
 	public bool isMoving;
 	[SerializeField]
 <<<<<<< HEAD
+<<<<<<< HEAD
 	private AudioClip
 		Neigh;
 =======
@@ -34,6 +35,13 @@ public class HorseRescue : MonoBehaviour
 =======
 	private AudioSource gameObjectAudio;
 >>>>>>> origin/master
+=======
+	private AudioClip neighSFX;
+	[SerializeField]
+	private AudioClip gallopSFX;
+
+	private AudioSource gameObjectAudio;
+>>>>>>> origin/master
 	private bool play = true;
 	private Transform horse1Destinations;
 	private Transform horse2Destinations;
@@ -43,8 +51,11 @@ public class HorseRescue : MonoBehaviour
 	public AudioMixerSnapshot Stand;
 	public AudioMixerSnapshot Run;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	private string horseName;
+=======
+>>>>>>> origin/master
 =======
 >>>>>>> origin/master
 	
@@ -84,13 +95,17 @@ public class HorseRescue : MonoBehaviour
 		horseAnim = gameObject.GetComponent<Animator> ();
 		nextDestination = destinations [1];
 		umbrellaTr = GameObject.Find ("main_Sphere").transform;
+<<<<<<< HEAD
 
 		horseName = this.name;
+=======
+>>>>>>> origin/master
 
 	}
 
 	void Update ()
 	{
+<<<<<<< HEAD
 <<<<<<< HEAD
 //		if (this.name == "Horse1") {
 //			if (runHorse1 >= 5) {
@@ -138,11 +153,16 @@ public class HorseRescue : MonoBehaviour
 		} else {
 			horse.tag = "Untagged";
 =======
+=======
+>>>>>>> origin/master
 		if (gameManager.missionState == MissionController.HorsesMission) {
 			horseNav.tag = "Interaction";
 		} 
 		else {
 			horseNav.tag = "Untagged";
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 		}
 
@@ -157,10 +177,14 @@ public class HorseRescue : MonoBehaviour
 			speed--;
 			run--;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
 			//Stand.TransitionTo(0.1f);
 //			audio2.PlayOneShot(Idle);
+=======
+			Stand.TransitionTo(0.1f);
+>>>>>>> origin/master
 =======
 			Stand.TransitionTo(0.1f);
 >>>>>>> origin/master
@@ -173,10 +197,14 @@ public class HorseRescue : MonoBehaviour
 			run--;
 			timer--;
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 			//audio2.clip = Idle;
 			//Stand.TransitionTo(0.1f);
 //			audio2.PlayOneShot(Idle);
+=======
+			Stand.TransitionTo(0.1f);
+>>>>>>> origin/master
 =======
 			Stand.TransitionTo(0.1f);
 >>>>>>> origin/master
@@ -188,6 +216,7 @@ public class HorseRescue : MonoBehaviour
 			speed--;
 			run--;
 			timer--;
+<<<<<<< HEAD
 <<<<<<< HEAD
 		
 
@@ -206,11 +235,19 @@ public class HorseRescue : MonoBehaviour
 			Stand.TransitionTo(0.1f);
 		}
 
+=======
+			Stand.TransitionTo(0.1f);
+		}
+
+>>>>>>> origin/master
 		if (Vector3.Distance (horseNav.transform.position, destinations [3].position) <= 5f) {
 			speed = 0;
 			run = 0;
 			timer = 500;
 			Stand.TransitionTo(0.1f);
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 		}
 
@@ -221,10 +258,16 @@ public class HorseRescue : MonoBehaviour
 			speed = 0;
 			run = 80;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			horse.speed = 35;
 
 			if (play) {
 				Debug.Log ("Played");
+=======
+			horseNav.speed = 35;
+			Run.TransitionTo(0.1f);
+			if (play) {
+>>>>>>> origin/master
 =======
 			horseNav.speed = 35;
 			Run.TransitionTo(0.1f);
@@ -237,8 +280,12 @@ public class HorseRescue : MonoBehaviour
 				run = 0;
 				speed = 10;
 <<<<<<< HEAD
+<<<<<<< HEAD
 				horse.speed = 10;
 
+=======
+				horseNav.speed = 10;
+>>>>>>> origin/master
 =======
 				horseNav.speed = 10;
 >>>>>>> origin/master
@@ -249,8 +296,12 @@ public class HorseRescue : MonoBehaviour
 			run = 0;
 			speed = 10;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			horse.speed = 10;
 
+=======
+			horseNav.speed = 10;
+>>>>>>> origin/master
 =======
 			horseNav.speed = 10;
 >>>>>>> origin/master
@@ -260,6 +311,7 @@ public class HorseRescue : MonoBehaviour
 	void OnTriggerStay (Collider col)
 	{
 		if (col.gameObject.tag == "Player") {
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 			if ((Input.GetButton (gameManager.controllerInteract)) & (Vector3.Distance (horse.transform.position, Brolly.position) <= 20f)) {
@@ -277,6 +329,14 @@ public class HorseRescue : MonoBehaviour
 
 
 =======
+				horseNav.speed = 35;
+				Run.TransitionTo(0.1f);
+>>>>>>> origin/master
+=======
+			if ((Input.GetButton (gameManager.controllerInteract)) & (Vector3.Distance (horseNav.transform.position, umbrellaTr.position) <= 20f)) {
+				timer = 500;
+				horseNav.SetDestination (nextDestination.position);
+				run = 80;
 				horseNav.speed = 35;
 				Run.TransitionTo(0.1f);
 >>>>>>> origin/master
