@@ -415,7 +415,7 @@ public class GmaeManage : MonoBehaviour
 				}
 				EndGame ();
 			}
-			CheckStates ();
+//			CheckStates ();
 		}
 	}
 

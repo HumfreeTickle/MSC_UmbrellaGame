@@ -9,339 +9,156 @@ public class HorseRescue : MonoBehaviour
 	private GmaeManage gameManager;
 	private NavMeshAgent horseNav;
 	public float timer;
+	private float _timer;
 	private Animator horseAnim;
 	private Transform umbrellaTr;
-	public bool atdestination;
-	public float speed;
-	public float runHorse1;
-	public float runHorse2;
-	public float run;
-	public bool isMoving;
-	[SerializeField]
-<<<<<<< HEAD
-<<<<<<< HEAD
-	private AudioClip
-		Neigh;
-=======
+	private float speedRun;
 	private AudioClip neighSFX;
->>>>>>> origin/master
-	[SerializeField]
 	private AudioClip gallopSFX;
-
-<<<<<<< HEAD
-	private AudioClip
-		Gallop;
-	private AudioSource audio2;
-=======
 	private AudioSource gameObjectAudio;
->>>>>>> origin/master
-=======
-	private AudioClip neighSFX;
-	[SerializeField]
-	private AudioClip gallopSFX;
-
-	private AudioSource gameObjectAudio;
->>>>>>> origin/master
-	private bool play = true;
 	private Transform horse1Destinations;
 	private Transform horse2Destinations;
-	private float clipTimer;
-	public AudioClip Idle;
-	public AudioClip Running;
-	public AudioMixerSnapshot Stand;
-	public AudioMixerSnapshot Run;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
 	private string horseName;
-=======
->>>>>>> origin/master
-=======
->>>>>>> origin/master
+	private Transform nextDestination;//where is the horse going next if moving forward
+	private Transform lastDestination;//where was the horse before
+	private int i = 0;
+	private string destination;
 	
-	public Transform nextDestination;//where is the horse going next if moving forward
-	public Transform lastDestination;//where was the horse before
-
 	void Start ()
 	{
-	
+		
 		gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
-
-		clipTimer = Time.time;
+		_timer = timer;
 		horse1Destinations = GameObject.Find ("Horse1Destinations").transform;
 		horse2Destinations = GameObject.Find ("Horse2Destinations").transform;
-
+		
 		if (destinations.Length != 4) {
 			destinations = new Transform[4];
 		}
-
+		
 		if (this.name == "Horse1") {
 			for (int child = 0; child < horse1Destinations.childCount; child++) {
 				destinations [child] = horse1Destinations.GetChild (child); 
 			}
-
+			
 		} else if (this.name == "Horse2") {
 			for (int child = 0; child < horse2Destinations.childCount; child++) {
 				destinations [child] = horse2Destinations.GetChild (child); 
 			}
 		}
-
+		
 		horseNav = gameObject.GetComponent<NavMeshAgent> ();
 		horseNav.SetDestination (destinations [0].position);
-
-		timer = 500;
+		nextDestination = destinations [0];
 		gameObjectAudio = GetComponent<AudioSource> ();
-
+		
 		horseAnim = gameObject.GetComponent<Animator> ();
-		nextDestination = destinations [1];
+		
 		umbrellaTr = GameObject.Find ("main_Sphere").transform;
-<<<<<<< HEAD
-
+		
+		speedRun = 0;
 		horseName = this.name;
-=======
->>>>>>> origin/master
-
+		
+		destination = "nextDestination";
 	}
-
+	
 	void Update ()
 	{
-<<<<<<< HEAD
-<<<<<<< HEAD
-//		if (this.name == "Horse1") {
-//			if (runHorse1 >= 5) {
-//				Run.TransitionTo (0);
-//			} else if (runHorse1 < 5) {
-//				Stand.TransitionTo (0);
-//			}
-//		} else if (this.name == "Horse2") {
-//			if (runHorse2 >= 5) {
-//				Run.TransitionTo (0);
-//			} else if (runHorse2 < 5) {
-//				Stand.TransitionTo (0);
-//			}
-//		}
-
-
-		switch(horseName){
+		////////////////Switch statement to move the galloping sound volume up and down////////////////
+		switch (horseName) {
 			
 		case ("Horse1"):
-			if(run > 5 ){
-				audio2.volume = 1;
-			}else if(run<5){
-				audio2.volume = 0;
+			if (speedRun > 5) {
+				gameObjectAudio.volume = 1;
+			} else if (speedRun < 5) {
+				gameObjectAudio.volume = 0;
 			}
 			
 			break;
 			
 		case ("Horse2"):
-			if(run > 5 ){
-				audio2.volume = 1;
-			}else if(run<5){
-				audio2.volume = 0;
+			if (speedRun > 5) {
+				gameObjectAudio.volume = 1;
+			} else if (speedRun < 5) {
+				gameObjectAudio.volume = 0;
 				
 			}
-			runHorse2 --;
 			break;
 		default:
-			Debug.LogError("Couldn't find horse - " + this.gameObject);
+			Debug.LogError ("Couldn't find horse - " + this.gameObject);
 			break;
 		}
 
-
-		if (gameManager.MissionState == MissionController.HorsesMission) {
-			horse.tag = "Interaction";
-		} else {
-			horse.tag = "Untagged";
-=======
-=======
->>>>>>> origin/master
 		if (gameManager.missionState == MissionController.HorsesMission) {
 			horseNav.tag = "Interaction";
-		} 
-		else {
+		} else {
 			horseNav.tag = "Untagged";
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
->>>>>>> origin/master
 		}
 
-		speed = Mathf.Clamp (speed, 0, Mathf.Infinity);
-		horseAnim.SetFloat ("SPEED", speed);
-
-		run = Mathf.Clamp (run, 0, Mathf.Infinity);
-		horseAnim.SetFloat ("SpeedRun", run);
-
-		if (Vector3.Distance (horseNav.transform.position, destinations [0].position) <= 5f) {
-			nextDestination = destinations [1];
-			speed--;
-			run--;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-
-			//Stand.TransitionTo(0.1f);
-//			audio2.PlayOneShot(Idle);
-=======
-			Stand.TransitionTo(0.1f);
->>>>>>> origin/master
-=======
-			Stand.TransitionTo(0.1f);
->>>>>>> origin/master
-		}
-
-		if (Vector3.Distance (horseNav.transform.position, destinations [1].position) <= 5f) {
-			lastDestination = destinations [0];
-			nextDestination = destinations [2];
-			speed--;
-			run--;
-			timer--;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-			//audio2.clip = Idle;
-			//Stand.TransitionTo(0.1f);
-//			audio2.PlayOneShot(Idle);
-=======
-			Stand.TransitionTo(0.1f);
->>>>>>> origin/master
-=======
-			Stand.TransitionTo(0.1f);
->>>>>>> origin/master
-		}
-
-		if (Vector3.Distance (horseNav.transform.position, destinations [2].position) <= 5f) {
-			lastDestination = destinations [1];
-			nextDestination = destinations [3];
-			speed--;
-			run--;
-			timer--;
-<<<<<<< HEAD
-<<<<<<< HEAD
+		speedRun = Mathf.Clamp (speedRun, 0, Mathf.Infinity);
+		horseAnim.SetFloat ("SpeedRun", speedRun);
 		
-
-			//Stand.TransitionTo(0.1f);
-			//audio2.clip = Idle;
-//			audio2.PlayOneShot(Idle);
+		//////////////////// The following is what happens when the horse is at each of the 4 destinations ///////////
+		if (Vector3.Distance (horseNav.transform.position, destinations [3].position) <= 15f) {
+			speedRun = 0;
+			timer = _timer;
+			horseAnim.enabled = false;
+		} else if (Vector3.Distance (horseNav.transform.position, nextDestination.position) <= 5f) {
+			if (timer <= 0) {
+				timer = _timer;
+			}
+			timer -= Time.deltaTime;
+			speedRun -= Time.deltaTime;
+		} 
+		if (destination == "nextDestination") {
+			speedRun = Vector3.Distance (horseNav.transform.position, nextDestination.position);
+		}
+		if (destination == "lastDestination") {
+			speedRun = Vector3.Distance (horseNav.transform.position, lastDestination.position);
 		}
 
-		if (Vector3.Distance (horse.transform.position, destinations [3].position) <= 5f) {
-			speed --;
-			run --;
-			timer = 500;
 		
-
-=======
-			Stand.TransitionTo(0.1f);
-		}
-
-=======
-			Stand.TransitionTo(0.1f);
-		}
-
->>>>>>> origin/master
-		if (Vector3.Distance (horseNav.transform.position, destinations [3].position) <= 5f) {
-			speed = 0;
-			run = 0;
-			timer = 500;
-			Stand.TransitionTo(0.1f);
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
->>>>>>> origin/master
-		}
-
-
-		if (timer == 0) {
-			horseNav.SetDestination (lastDestination.position);
-			timer = 500;
-			speed = 0;
-			run = 80;
-<<<<<<< HEAD
-<<<<<<< HEAD
-			horse.speed = 35;
-
-			if (play) {
-				Debug.Log ("Played");
-=======
-			horseNav.speed = 35;
-			Run.TransitionTo(0.1f);
-			if (play) {
->>>>>>> origin/master
-=======
-			horseNav.speed = 35;
-			Run.TransitionTo(0.1f);
-			if (play) {
->>>>>>> origin/master
-				play = false;
+		//////////////////////This sends horse back to the previous Dest when the timer reaches 0/////////////////////////////////
+		
+		if (timer <= 0) {
+			if (lastDestination != null) {
+				horseNav.SetDestination (lastDestination.position);
+				destination = "lastDestination";
+				speedRun = Vector3.Distance (horseNav.transform.position, lastDestination.position);
+				i = i - 1;
 			}
-
-			if (Vector3.Distance (horseNav.transform.position, lastDestination.position) <= 35f) {
-				run = 0;
-				speed = 10;
-<<<<<<< HEAD
-<<<<<<< HEAD
-				horse.speed = 10;
-
-=======
-				horseNav.speed = 10;
->>>>>>> origin/master
-=======
-				horseNav.speed = 10;
->>>>>>> origin/master
-			}
+			
 		}
-
-		if (Vector3.Distance (horseNav.transform.position, nextDestination.position) <= 35f) {
-			run = 0;
-			speed = 10;
-<<<<<<< HEAD
-<<<<<<< HEAD
-			horse.speed = 10;
-
-=======
-			horseNav.speed = 10;
->>>>>>> origin/master
-=======
-			horseNav.speed = 10;
->>>>>>> origin/master
+	
+		if (speedRun >= 30) {
+			horseNav.speed = 35;
+		} else {
+			horseNav.speed = 15;
 		}
-	}
+	}		
 
+	//////////////////Interaction between player and horse///////////////////////////////
+	
+	
 	void OnTriggerStay (Collider col)
 	{
 		if (col.gameObject.tag == "Player") {
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-			if ((Input.GetButton (gameManager.controllerInteract)) & (Vector3.Distance (horse.transform.position, Brolly.position) <= 20f)) {
-=======
-			if ((Input.GetButton (gameManager.controllerInteract)) & (Vector3.Distance (horseNav.transform.position, umbrellaTr.position) <= 20f)) {
->>>>>>> origin/master
-				timer = 500;
-				horseNav.SetDestination (nextDestination.position);
-				run = 80;
-<<<<<<< HEAD
-				horse.speed = 35;
-
-
-
-
-
-=======
-				horseNav.speed = 35;
-				Run.TransitionTo(0.1f);
->>>>>>> origin/master
-=======
-			if ((Input.GetButton (gameManager.controllerInteract)) & (Vector3.Distance (horseNav.transform.position, umbrellaTr.position) <= 20f)) {
-				timer = 500;
-				horseNav.SetDestination (nextDestination.position);
-				run = 80;
-				horseNav.speed = 35;
-				Run.TransitionTo(0.1f);
->>>>>>> origin/master
+			if (Vector3.Distance (horseNav.transform.position, umbrellaTr.position) <= 30f) {
+				if (Input.GetButtonDown (gameManager.controllerInteract)) {
+					destination = "nextDestination";
+					horseNav.SetDestination (nextDestination.position);
+					speedRun = Vector3.Distance (horseNav.transform.position, nextDestination.position);
+					if (speedRun <= 5) {
+						i = i + 1;
+					}
+					timer = _timer;
+					nextDestination = destinations [i];
+					if (i > 0) {
+						lastDestination = destinations [i - 1];
+					}
+				}
 			}
 		}
 	}
-	
 }
+

@@ -4,8 +4,7 @@ using System.Collections;
 /// <summary>
 /// Creates wandering behaviour for a CharacterController 
 /// Doesn't contain a way to keep the NPC on the terrain
-/// Also doesn't pay attention to objects (Figured that out)
-/// Still needs work so it's not that jumpy
+/// No longer used. NavMesh was easier
 /// </summary>
 
 

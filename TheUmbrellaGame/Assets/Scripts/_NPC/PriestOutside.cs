@@ -32,9 +32,5 @@ public class PriestOutside : MonoBehaviour {
 			finalMission.final_X = 4;
 
 		}
-
-
 	}
-
-
 }

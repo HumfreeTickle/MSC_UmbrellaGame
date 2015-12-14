@@ -3,13 +3,15 @@ using System.Collections;
 
 namespace Environment
 {
+	//-- No longer used --//
+
 	public class Barriers : MonoBehaviour
 	{
 		private float _timer;
 		public float knockBack;
 		public Vector3 directionOfForce;
 
-//---------------------------- While the Umbrella is off the island --------------------------------------------------
+//---------------------------- While the Umbrella is off the island ---------------------------------------//
 
 		void OnTriggerStay (Collider barrier)
 		{
@@ -23,7 +25,7 @@ namespace Environment
 			}
 		}
 
-//---------------------------- When it's back -----------------------------------------------------------------------
+//---------------------------- When it's back -------------------------------------------//
 	
 		void OnTriggerExit (Collider barrier)
 		{

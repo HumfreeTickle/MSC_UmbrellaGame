@@ -2,6 +2,10 @@
 using System.Collections;
 using UnityEngine.Audio;
 
+// Not used anymore
+// Was meant to change the instrumentation in and out
+// Had lag issues, so the tracks didn't line up
+
 namespace Music
 {
 	public class ChangeSnapShot : MonoBehaviour

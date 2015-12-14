@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using CameraScripts;
@@ -56,6 +56,9 @@ namespace NPC
 		private IEnumerator finalCoroutine;
 		private Talk talkCoroutine;
 
+		private AudioSource workingSource;
+//		private AudioClip workingSFX;
+
 //-------------------------------------------- Dialougue Section -----------------------------------------------//
 		private string[] bridgeNPC_Dialouge = 
 		{
@@ -99,6 +102,7 @@ namespace NPC
 		{
 			"Thanks",
 			"You know for an umbrella, you're alright.",
+			"We hope you like it here."
 		};
 		public GameObject[] lookAtObjects = new GameObject[4];
 		private GameObject lookAt;
@@ -163,6 +167,9 @@ namespace NPC
 				cmaeraMove = cmaera.GetComponent<_MoveCamera> ();
 
 				handle = GameObject.Find ("handle");
+
+				workingSource = lighthouseRotate.transform.GetChild(1).GetComponent<AudioSource>();
+//				workingSFX = workingSource.clip;
 			}
 		}
 		
@@ -237,7 +244,7 @@ namespace NPC
 			}
 			
 			// when you picked up the tool
-			else if (currentPerson == lightHouseKeeper && toolPickedup && !lighthouseRotate.lightHerUp) {
+			else if (currentPerson == lightHouseKeeper && toolPickedup && !lighthouseRotate.lightsOn) {
 				final_X = 9;
 			}
 		}
@@ -282,6 +289,8 @@ namespace NPC
 				moveCmarea = false;
 
 				currentPerson = priest;
+				GameObject.Find ("Church_Roof").transform.GetChild(0).gameObject.GetComponent<MeshRenderer>().enabled = true;
+
 				if (!npc_Animator.isActiveAndEnabled) {
 					npc_Animator.enabled = true;
 				}
@@ -393,12 +402,16 @@ namespace NPC
 				}
 				System.Action lightHerUp = () => {
 					final_X = 10;
-					lighthouseRotate.lightHerUp = true;
+					lighthouseRotate.lightsOn = true;
+					workingSource.Stop();
 				};
 
 				finalCoroutine = talkCoroutine.Talking (LightHouseKeeper_Dialogue3, lightHerUp);
 				StartCoroutine (finalCoroutine);
 
+				workingSource.Play();
+				workingSource.loop = true;
+			
 				lightHouseKeeper.tag = "NPC";
 				pickupTool.transform.position = lightHouseKeeper.transform.FindChild ("Hand_R").transform.position;
 				pickupTool.transform.parent = lightHouseKeeper.transform.FindChild ("Hand_R").transform;
@@ -452,6 +465,7 @@ namespace NPC
 					break;
 				System.Action dialogue6 = () => {
 					final_X = 13;
+					bridgeDrop.playSFX = true;
 					bridgeDrop.drop = true;};
 				finalCoroutine = talkCoroutine.Talking (Priest_Dialogue3, dialogue6);
 				StartCoroutine (finalCoroutine);

@@ -48,6 +48,9 @@ namespace NPC
 		private IEnumerator tutorialCoroutine;
 		private string[] tutorialMissionDialogue = 
 		{
+			"Hey! Where’s all your colour?",
+			"Your from the grayscale world below??",
+			"If you want to stay here you will need some colour! We can give you some, but only if you do some favours for us.",
 		 	"Can you please help me restart the windmill?", 
 			"Not sure how you could do it but maybe if you get a closer look.",
 			"When you've fixed it come back to me."
@@ -101,7 +104,7 @@ namespace NPC
 			overHereLight.SetActive (jumpAround_Tut);
 
 			if (gameManager.missionState == MissionController.TutorialMission 
-			    || gameManager.missionState == MissionController.Default) {
+				|| gameManager.missionState == MissionController.Default) {
 				if (tutorialMission) {
 					npc_Tutorial.tag = "NPC"; // sets the NPC to the blank npc tag so the player can no longer talk to him
 					TutorialMission ();
@@ -198,7 +201,7 @@ namespace NPC
 				System.Action endCoroutine = () => {
 					moveCmarea = false;};
 				
-				cameraMoveCoroutine = cmaeraMove.cameraMove (kitten,endCoroutine, moveTo, 5f);
+				cameraMoveCoroutine = cmaeraMove.cameraMove (kitten, endCoroutine, moveTo, 5f);
 				StartCoroutine (cameraMoveCoroutine);
 			}
 		}

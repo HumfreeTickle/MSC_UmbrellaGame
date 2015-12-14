@@ -3,7 +3,6 @@ using System.Collections;
 
 public class BoxesSave : MonoBehaviour
 {
-
 	private Rigidbody rb;
 	private Vector3 startingPos;
 	private Quaternion startingRotation;

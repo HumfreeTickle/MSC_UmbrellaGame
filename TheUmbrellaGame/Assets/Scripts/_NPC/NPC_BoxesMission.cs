@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using CameraScripts;
 using UnityEngine.UI;
 using System;
+using Player;
 
 namespace NPC
 {
@@ -11,6 +12,8 @@ namespace NPC
 	{
 		private GmaeManage gameManager;
 		private MissionController missionStates;
+		private grabbing grabbingScriptFailsafe;
+
 
 		public GameObject boxesGuy{ get; private set; }
 
@@ -38,12 +41,14 @@ namespace NPC
 		private string[] boxesMissionDialogue2 = 
 		{
 			"Someone has stolen them and haphazardly placed them around the town.", 
-			"Can you please retrive them from their unusual locales?"
+			"Can you please retrieve them from their unusual locales?"
 		};
 		private string[] boxesMissionDialogue3 = 
 		{
 			"You are a saint of an umbrella.",
-			"Thank you so very much."
+			"Thank you so very much.",
+			"Head on over to the island behind me.",
+			"I think they might need help with some runaway horses!"
 		};
 		private _MoveCamera cmaeraMove;
 		private IEnumerator cameraMoveCoroutine;
@@ -57,6 +62,8 @@ namespace NPC
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			boxesGuy = GameObject.Find ("NPC_Boxes");
 		
+			grabbingScriptFailsafe = GameObject.Find("handle").GetComponent<grabbing>();
+
 			npc_Animator = boxesGuy.GetComponent<Animator> ();
 			if (!npc_Animator.isActiveAndEnabled) {
 				npc_Animator.enabled = true;
@@ -184,6 +191,7 @@ namespace NPC
 				if (talkCoroutine.startCoroutineTalk)
 					break;
 				System.Action tutorialDialogue2 = () => {
+					grabbingScriptFailsafe.pickupObject = null;
 					boxes_X = 4;};
 				boxesCoroutine = talkCoroutine.Talking (boxesMissionDialogue3, tutorialDialogue2);
 				StartCoroutine (boxesCoroutine);

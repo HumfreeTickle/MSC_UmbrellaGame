@@ -23,11 +23,11 @@ public class Tutuorial : MonoBehaviour
 	public string objectTag{ get; set; }
 	//------------------------------//
 	public Animator windAnim{ get; private set; }
+
 	private Animator Talk_Animator;
 	private Animator Interact_Animator;
 	private Image Talk_Button;
 	private Image Interact_Button;
-
 
 	void Start ()
 	{
@@ -35,8 +35,8 @@ public class Tutuorial : MonoBehaviour
 
 		if (gameManager.controllerType == ControllerType.ConsoleContoller) {
 
-			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
-				windAnim = GameObject.Find("Tutorial_PS3").GetComponent<Animator> ();
+			if (gameManager.consoleControllerType == ConsoleControllerType.PS3) {
+				windAnim = GameObject.Find ("Tutorial_PS3").GetComponent<Animator> ();
 				Talk_Button = GameObject.Find ("L1_tutorial").GetComponent<Image> ();
 				Interact_Button = GameObject.Find ("R1_tutorial").GetComponent<Image> ();
 				
@@ -44,15 +44,13 @@ public class Tutuorial : MonoBehaviour
 				Interact_Animator = GameObject.Find ("R1_tutorial").GetComponent<Animator> ();
 
 
-			}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
-				windAnim = GameObject.Find("Tutorial_XBox").GetComponent<Animator> ();
+			} else if (gameManager.consoleControllerType == ConsoleControllerType.XBox) {
+				windAnim = GameObject.Find ("Tutorial_XBox").GetComponent<Animator> ();
 				Talk_Button = GameObject.Find ("LB_tutorial").GetComponent<Image> ();
 				Interact_Button = GameObject.Find ("RB_tutorial").GetComponent<Image> ();
 				
 				Talk_Animator = GameObject.Find ("LB_tutorial").GetComponent<Animator> ();
 				Interact_Animator = GameObject.Find ("RB_tutorial").GetComponent<Animator> ();
-				Debug.Log(windAnim);
-
 			}
 
 
@@ -75,8 +73,8 @@ public class Tutuorial : MonoBehaviour
 
 		//----------------- Changes the tutorial animation ----------------//
 		if (gameManager.gameState == GameState.Intro) {
-			if(Time.time < secondsToStart*startDelay){
-				Input.ResetInputAxes(); // Stops the player from activating the umbrella too soon
+			if (Time.time < secondsToStart * startDelay) {
+				Input.ResetInputAxes (); // Stops the player from activating the umbrella too soon
 			}
 
 			if (!gameStart) {
@@ -92,8 +90,8 @@ public class Tutuorial : MonoBehaviour
 		//------------- Removes tutorial if game is paused or character is dead ---------------------//
 		if (windAnim != null && Talk_Button != null && Interact_Button != null) {
 			if (gameManager.gameState == GameState.Pause 
-			    || gameManager.gameState == GameState.GameOver
-			    || gameManager.gameState == GameState.MissionEvent) {
+				|| gameManager.gameState == GameState.GameOver
+				|| gameManager.gameState == GameState.MissionEvent) {
 
 				windAnim.enabled = false;
 				Talk_Button.enabled = false;
@@ -135,6 +133,12 @@ public class Tutuorial : MonoBehaviour
 
 		case "Interaction":
 		//-------------------R1 || RB------------------//
+			Talk_Animator.SetBool ("Talk", false);
+			Interact_Animator.SetBool ("Interact", true);
+			break;
+
+		case "Pickup":
+			//-------------------R1 || RB------------------//
 			Talk_Animator.SetBool ("Talk", false);
 			Interact_Animator.SetBool ("Interact", true);
 			break;

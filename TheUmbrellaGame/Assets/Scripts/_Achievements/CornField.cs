@@ -1,13 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-/// <summary>
-/// I think this is useless
-/// Moved to StayAchieve
-/// </summary>
+
 public class CornField : MonoBehaviour
 {
-
 	private Achievements achieves;
 	private float _timer;
 

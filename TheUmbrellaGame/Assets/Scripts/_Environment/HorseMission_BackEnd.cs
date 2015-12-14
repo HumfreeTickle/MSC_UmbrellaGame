@@ -11,22 +11,24 @@ namespace NPC
 	{
 		private GmaeManage gameManager;
 		private MissionController missionStates;
-		public GameObject horseGuy{get; private set;}
 
-		public bool horsesMission{get;set;}
-		public bool horseReturned{get;set;}
+		public GameObject horseGuy{ get; private set; }
+
+		public bool horsesMission{ get; set; }
+
+		public bool horseReturned{ get; set; }
 
 		private NPC_Interaction npc_Interact; //used to call the mission when the player talks to an NPC
 			
 		public int horse_X{ private get; set; } // for the case state
 	
-		public bool jumpAround_Horses{private get; set;}
+		public bool jumpAround_Horses{ private get; set; }
+
 		private Animator npc_Animator;
 		private GameObject overHereLight;
 		private Transform horses;
 		private IEnumerator horseCoroutine;
 		private MeshRenderer horseDropOff;
-
 		private Talk talkCoroutine;
 		private string[] horseMissionDialogue1 = 
 		{
@@ -36,7 +38,10 @@ namespace NPC
 		private string[] horseMissionDialogue2 = 
 		{
 			"Thanks",
-			"You know for an umbrella, you're alright.",
+			"Here is your final colour! Welcome to our world!", 
+			"Hey what's happpeing in the village down below?",
+			"There seems to be a big commotion going on!",
+			"Can you head down to see what is happening?"
 		};
 
 		void Start ()
@@ -47,7 +52,7 @@ namespace NPC
 			horseGuy.GetComponent<NPC_Interaction> ().missionDelegate = StartHorsesMission;// he will only give you the horse mission.
 		
 			overHereLight = horseGuy.transform.FindChild ("Sphere").transform.FindChild ("Activate").gameObject;
-			overHereLight.SetActive(false);
+			overHereLight.SetActive (false);
 
 			npc_Interact = horseGuy.GetComponent<NPC_Interaction> ();
 			if (horseGuy.GetComponent<Animator> ()) {
@@ -56,7 +61,7 @@ namespace NPC
 					npc_Animator.enabled = true;
 				}
 			}
-			horseDropOff = GameObject.Find("HorseDropoff").GetComponent<MeshRenderer>();
+			horseDropOff = GameObject.Find ("HorseDropoff").GetComponent<MeshRenderer> ();
 			horses = GameObject.Find ("Horses").transform;
 
 			if (GetComponent<Animator> ()) {
@@ -72,7 +77,7 @@ namespace NPC
 		void Update ()
 		{
 			npc_Animator.SetBool ("Play", jumpAround_Horses);
-			overHereLight.SetActive(jumpAround_Horses);
+			overHereLight.SetActive (jumpAround_Horses);
 
 			if (gameManager.missionState == MissionController.HorsesMission) {
 
@@ -86,7 +91,7 @@ namespace NPC
 					horseGuy.tag = "NPC"; // sets the NPC to the blank npc tag so the player can no longer talk to him
 					HorseMission ();
 				} 
-			}else if (gameManager.missionState == MissionController.HorsesMission) {
+			} else if (gameManager.missionState == MissionController.HorsesMission) {
 				jumpAround_Horses = false;
 				horseGuy.tag = "NPC";
 				horsesMission = false;

@@ -7,7 +7,7 @@ namespace Inheritence
 	public class FadeScript
 	{
 		private bool fadeIn = true; 
-//---------------------------- Image Fades -----------------------------------------------------------------------
+//---------------------------- Image Fades ---------------------------------------------//
 
 		/// <summary>
 		/// Brings the alpha up to full

@@ -5,7 +5,7 @@ namespace NPC
 {
 /// <summary>
 /// AI tests one during the alpha stage
-	/// Didn't really work well in the final game
+/// Didn't work well in the final game
 /// </summary>
 
 //-------------------------------------------------------------------//

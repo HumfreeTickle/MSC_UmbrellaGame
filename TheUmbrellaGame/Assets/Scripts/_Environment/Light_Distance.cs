@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Bases the size of the light column on the players position
+/// </summary>
+
 public class Light_Distance : MonoBehaviour
 {
 	private Vector3 baseSize = new Vector3 (3, 3, 3);
@@ -27,11 +31,11 @@ public class Light_Distance : MonoBehaviour
 
 		float distanceFrom = Mathf.Round ((Vector3.Distance (transform.position, umbrella.position) / 100) * 100) / 100 - threshold;
 
-		float emission = Mathf.Lerp (0, intensity, distanceFrom);
+		float emission = Mathf.Lerp (0, intensity, distanceFrom); // lerp base on the distance between player and light column
 
-		Color finalColor = mainColour * Mathf.LinearToGammaSpace (emission);
+		Color finalColor = mainColour * Mathf.LinearToGammaSpace (emission); // creates the colour to add to the material
 		
-		mat.SetColor ("_EmissionColor", finalColor);
+		mat.SetColor ("_EmissionColor", finalColor); // sets the material colour
 
 
 		GetComponent<MeshRenderer> ().enabled = true;
@@ -39,6 +43,8 @@ public class Light_Distance : MonoBehaviour
 
 		sizeChagne = Vector3.Lerp (baseSize, maxSize, distanceFrom);
 
+
+		//--- Changes column into sphere once the player i sclose enough
 		if (Vector3.Distance (transform.parent.position, umbrella.position) / 1000 > 0.02f) {
 			GetComponent<Light> ().enabled = false;
 

@@ -7,6 +7,10 @@ using Inheritence;
 
 namespace Player
 {
+	/// <summary>
+	/// Allows the player to pickup a gameObject, tagged as "Pickup"
+	/// The player can detach the object or apply a force realtive to their own velocity
+	/// </summary>
 	public class grabbing : MonoBehaviour
 	{
 		private GmaeManage gameManager;
@@ -20,7 +24,6 @@ namespace Player
 		private Achievements achieves;
 		private Tutuorial tutorial;
 		private DestroyObject destroy = new Inheritence.DestroyObject ();
-
 		private Collider umbrellaCol;
 		private bool thrown;
 		public float pickupSize = 1.2f;
@@ -31,9 +34,9 @@ namespace Player
 		{
 			gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
 			umbrella = GameObject.Find ("main_Sphere");
-			if(gameManager.consoleControllerType == ConsoleControllerType.PS3){
+			if (gameManager.consoleControllerType == ConsoleControllerType.PS3) {
 				tutorial = GameObject.Find ("Tutorial_PS3").GetComponent<Tutuorial> ();
-			}else if(gameManager.consoleControllerType == ConsoleControllerType.XBox){
+			} else if (gameManager.consoleControllerType == ConsoleControllerType.XBox) {
 				tutorial = GameObject.Find ("Tutorial_XBox").GetComponent<Tutuorial> ();
 			}
 
@@ -148,6 +151,8 @@ namespace Player
 				pickupObject = col.gameObject;
 				originalParent = pickupObject.transform.parent;
 
+				// used to increase the size of the trigger box so the player can pick it up easier
+				// otherwise they can very easily slip outside the trigger area
 				if (col.GetComponent<BoxCollider> ()) {
 					if (col.GetComponent<BoxCollider> ().isTrigger) {
 						if (col.GetComponent<BoxCollider> ().size.magnitude < 1000) {
@@ -184,19 +189,19 @@ namespace Player
 		void OnTriggerStay (Collider col)
 		{
 			if (col.gameObject.tag == "Pickup") {
-
 				if (tutorial.objectTag == "") {
-					tutorial.objectTag = "Interaction";
+					tutorial.objectTag = "Pickup";
 				}
-
 				pickupObject = col.gameObject;
 				originalParent = pickupObject.transform.parent;
 				for (int child = 0; child< pickupObject.transform.childCount; child++) {
 					pickupObject.transform.GetChild (child).gameObject.layer = 15;
 				}
-			}
-
-			if (col.gameObject.tag == "River") {
+			} else if (col.gameObject.tag == "Interaction") {
+				if (tutorial.objectTag == "") {
+					tutorial.objectTag = "Interaction";
+				}
+			} else if (col.gameObject.tag == "River") {
 				if (rb.velocity.magnitude > 10) {
 					if (!IsInvoking ("WaterEffects")) {
 						Invoke ("WaterEffects", 0.02f);
@@ -258,7 +263,7 @@ namespace Player
 			}
 		}
 
-		void WaterEffects ()
+		void WaterEffects () // adds the water partile effect when the player moves through water
 		{
 			instanWaterParticles = Instantiate (waterParticles, transform.position, Quaternion.identity) as GameObject;
 			instanWaterParticles.GetComponent<ParticleSystem> ().Play ();

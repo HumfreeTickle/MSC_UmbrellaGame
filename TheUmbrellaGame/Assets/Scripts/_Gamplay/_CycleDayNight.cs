@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+// --- http://www.galawana.com/unity3d-advance-skybox-blending/ ---//
+// -- Modifiied for our purposes -- //
+// -- No longer based of time, current mission changes the day cycle --//
+
 namespace Environment
 {
 	public enum DayPhase

@@ -1,10 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-
-/// <summary>
-/// Can't remember if this is used or not
-/// </summary>
+ // not used
 public class StartScreenFollower : MonoBehaviour
 {
 	public float speed;

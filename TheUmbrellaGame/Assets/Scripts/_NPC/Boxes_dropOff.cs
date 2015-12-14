@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using NPC;
+using Player;
 
 public class Boxes_dropOff : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class Boxes_dropOff : MonoBehaviour
 	private NPC_BoxesMission boxMission;
 	private GmaeManage gameManager;
 	public GameObject dropParticle;
+	private grabbing grabbingFailSafe;
+
 
 	
 	void Start ()
@@ -17,6 +20,7 @@ public class Boxes_dropOff : MonoBehaviour
 		boxCount = GameObject.Find ("CratePickupCollection").transform.childCount; // the number of boxes in the mission
 		boxMission = GameObject.Find ("Missions").GetComponent<NPC_BoxesMission> ();
 		gameManager = GameObject.Find ("Follow Camera").GetComponent<GmaeManage> ();
+		grabbingFailSafe = GameObject.Find("handle").GetComponent<grabbing>();
 
 		if(!dropParticle){
 			Debug.LogError("No Particles - Boxes");
@@ -30,14 +34,13 @@ public class Boxes_dropOff : MonoBehaviour
 				GetComponent<MeshRenderer> ().enabled = true;
 			} 
 
-
 			if (numberOfBoxesCollected >= boxCount && !boxMission.boxesDropped) {
 				boxMission.boxesDropped = true;
 				boxMission.jumpAround_Boxes = true;
 				boxMission.boxesGuy.tag = "NPC_talk";
 				GetComponent<MeshRenderer> ().enabled = false;
-
 			}
+
 		} else {
 			GetComponent<MeshRenderer> ().enabled = false;
 
@@ -50,7 +53,7 @@ public class Boxes_dropOff : MonoBehaviour
 			col.tag = "Untagged";
 			numberOfBoxesCollected += 1;
 			Instantiate(dropParticle,col.gameObject.transform.position, Quaternion.identity);
-
+			grabbingFailSafe.pickupObject = null;
 			if (col.transform.childCount > 0) {
 				for (int i = 0; i > col.transform.childCount; i++) {
 					col.transform.GetChild (i).GetComponent<Light> ().enabled = false;

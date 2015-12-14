@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+// Alpha stage throwing script.
+// Simplfied in grabbing script
+
 namespace Player.PhysicsStuff
 {
 	public class flingObject : MonoBehaviour

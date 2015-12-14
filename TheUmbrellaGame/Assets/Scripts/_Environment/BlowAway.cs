@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-
-//Not sure about this one
 namespace Environment
 {
 	public class BlowAway : MonoBehaviour

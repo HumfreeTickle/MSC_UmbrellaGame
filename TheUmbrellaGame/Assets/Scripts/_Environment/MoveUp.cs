@@ -2,7 +2,8 @@
 using System.Collections;
 
 
-//not sure what this is for
+//not used
+
 public class MoveUp : MonoBehaviour {
 
 	public GameObject theDestination;

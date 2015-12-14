@@ -18,6 +18,9 @@ public class NavMeshMovement : MonoBehaviour
 	void Start ()
 	{
 		agent = gameObject.GetComponent<NavMeshAgent> ();
+		finalDestination = GameObject.Find ("StepsD (1)").transform;
+
+
 		if (destination != null) {
 			agent.SetDestination (destination.position);
 		}
@@ -32,7 +35,6 @@ public class NavMeshMovement : MonoBehaviour
 			Debug.LogWarning (this.name + " : destination");
 		}
 
-		finalDestination = GameObject.Find ("StepsD (1)").transform;
 	}
 	
 	void Update ()

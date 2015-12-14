@@ -5,7 +5,7 @@ namespace NPC
 {
 	public class TheFollower : MonoBehaviour
 	{
-		//--- no idea what this is for ??????? ---//
+		//--- not used anymore ---//
 
 
 		Transform THEtarget;
